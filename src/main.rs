@@ -4,6 +4,9 @@
 // Feel free to delete this line.
 #![allow(clippy::too_many_arguments, clippy::type_complexity)]
 
+// Disable console on Windows for release builds.
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 
