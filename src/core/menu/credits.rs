@@ -3,13 +3,13 @@ use bevy::prelude::*;
 use super::MenuState;
 use crate::ui::*;
 
-pub fn plugin(app: &mut App) {
+pub(super) fn plugin(app: &mut App) {
     // Setup, update, teardown
     app.add_systems(OnEnter(MenuState::Credits), setup);
     app.add_systems(Update, update.run_if(in_state(MenuState::Credits)));
 }
 
-pub fn setup(mut commands: Commands) {
+fn setup(mut commands: Commands) {
     let list = commands
         .my_root()
         .insert(StateScoped(MenuState::Credits))
@@ -21,7 +21,7 @@ pub fn setup(mut commands: Commands) {
     commands.my_button("Back", UiAction).set_parent(list);
 }
 
-pub fn update(
+fn update(
     mut next_menu_state: ResMut<NextState<MenuState>>,
     mut interaction_query: ButtonQuery<UiAction>,
 ) {

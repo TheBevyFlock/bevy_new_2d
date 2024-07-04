@@ -5,7 +5,7 @@ pub use bevy::prelude::*;
 
 use crate::ui;
 
-pub fn plugin(app: &mut App) {
+pub(super) fn plugin(app: &mut App) {
     // Setup state
     app.init_state::<CoreState>();
     // Add state scoped entities for UI cleanup

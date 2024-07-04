@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use super::CoreState;
 use crate::ui::*;
 
-pub fn plugin(app: &mut App) {
+pub(super) fn plugin(app: &mut App) {
     // Setup state
     app.add_sub_state::<MenuState>();
     app.enable_state_scoped_entities::<MenuState>();

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use super::CoreState;
 
-pub fn plugin(app: &mut App) {
+pub(super) fn plugin(app: &mut App) {
     // Setup, update, teardown
     app.add_systems(OnEnter(CoreState::Game), setup);
 }
