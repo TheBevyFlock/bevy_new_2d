@@ -10,16 +10,11 @@ type InteractiveFilter = (Changed<Interaction>, With<Button>);
 
 fn update(mut interaction_query: Query<(&mut BackgroundColor, &Interaction), InteractiveFilter>) {
     for (mut background, interaction) in &mut interaction_query {
-        match *interaction {
-            Interaction::Pressed => {
-                *background = BUTTON_PRESSED.into();
-            }
-            Interaction::Hovered => {
-                *background = BUTTON_HOVER.into();
-            }
-            Interaction::None => {
-                *background = BUTTON_NORMAL.into();
-            }
+        *background = match interaction {
+            Interaction::Pressed => BUTTON_PRESSED,
+            Interaction::Hovered => BUTTON_HOVER,
+            Interaction::None => BUTTON_NORMAL,
         }
+            .into();
     }
 }

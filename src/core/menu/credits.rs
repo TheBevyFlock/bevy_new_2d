@@ -26,11 +26,13 @@ fn update(
     mut interaction_query: ButtonQuery<UiAction>,
 ) {
     for (interaction, _) in &mut interaction_query {
-        if let Interaction::Pressed = interaction {
+        if matches!(interaction, Interaction::Pressed) {
             next_menu_state.set(MenuState::Main)
         }
     }
 }
 
 #[derive(Component, PartialEq, Eq)]
-pub struct UiAction;
+enum UiAction {
+    Back,
+}

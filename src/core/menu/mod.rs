@@ -52,7 +52,7 @@ fn update(
     mut interactions_query: ButtonQuery<UiAction>,
 ) {
     for (interaction, button) in &mut interactions_query {
-        if let Interaction::Pressed = interaction {
+        if matches!(interaction, Interaction::Pressed) {
             match button {
                 UiAction::Play => next_core_state.set(CoreState::Game),
                 UiAction::Credits => next_menu_state.set(MenuState::Credits),
