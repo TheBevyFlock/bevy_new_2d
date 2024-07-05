@@ -25,14 +25,12 @@ default = [
     # Default to a native dev build.
     "native_dev",
 ]
-core = []
 dev = [
     # Improve compile times for dev builds.
     # NOTE: Uncomment to enable dynamic linking, but this may not work on Windows.
     #"bevy/dynamic_linking",
 ]
 native = [
-    "core",
 ]
 native_dev = [
     "native",
@@ -43,7 +41,6 @@ native_dev = [
     "bevy/embedded_watcher",
 ]
 web = [
-    "core",
     "dep:wasm-bindgen",
 ]
 web_dev = [
