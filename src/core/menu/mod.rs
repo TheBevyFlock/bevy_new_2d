@@ -9,12 +9,17 @@ pub(super) fn plugin(app: &mut App) {
     // Setup state
     app.add_sub_state::<MenuState>();
     app.enable_state_scoped_entities::<MenuState>();
+    #[cfg(debug_assertions)]
+    app.add_systems(
+        Update,
+        bevy::dev_tools::states::log_transitions::<MenuState>,
+    );
 
     // Setup, update, teardown
     app.add_systems(OnEnter(MenuState::Main), setup);
     app.add_systems(Update, update.run_if(in_state(MenuState::Main)));
 
-    // Sub states
+    // Sub plugins
     app.add_plugins(credits::plugin);
 }
 

@@ -1,12 +1,9 @@
 use bevy::prelude::*;
 
 use super::{BUTTON_HOVER, BUTTON_NORMAL, BUTTON_PRESSED};
-pub struct MouseHoverPlugin;
 
-impl Plugin for MouseHoverPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, update);
-    }
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(Update, update);
 }
 
 type InteractiveFilter = (Changed<Interaction>, With<Button>);
