@@ -27,9 +27,8 @@ default = [
     "dev_native",
 ]
 dev = [
-    # Improve compile times for dev builds.
-    # NOTE: Uncomment to enable dynamic linking, but this may not work on Windows.
-    #"bevy/dynamic_linking",
+    # Improve compile times for dev builds by linking Bevy as a dynamic library.
+    "bevy/dynamic_linking",
 ]
 dev_native = [
     "dev",
