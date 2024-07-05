@@ -32,6 +32,7 @@ dev = [
     # Improve compile times for dev builds.
     # NOTE: Uncomment to enable dynamic linking, but this may not work on Windows.
     #"bevy/dynamic_linking",
+    "bevy/bevy_dev_tools",
 ]
 dev_native = [
     "dev",
@@ -40,4 +41,3 @@ dev_native = [
     # Enable embedded asset hot reloading for native dev builds.
     "bevy/embedded_watcher",
 ]
-
