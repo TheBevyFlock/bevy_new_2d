@@ -24,14 +24,14 @@ wasm-bindgen = "0.2"
 [features]
 default = [
     # Default to a native dev build.
-    "native_dev",
+    "dev_native",
 ]
 dev = [
     # Improve compile times for dev builds.
     # NOTE: Uncomment to enable dynamic linking, but this may not work on Windows.
     #"bevy/dynamic_linking",
 ]
-native_dev = [
+dev_native = [
     "dev",
     # Enable asset hot reloading for native dev builds.
     "bevy/file_watcher",

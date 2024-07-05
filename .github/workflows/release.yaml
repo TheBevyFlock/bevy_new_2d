@@ -37,7 +37,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --target wasm32-unknown-unknown --no-default-features --features=web
+          cargo build --release --target wasm32-unknown-unknown --no-default-features
 
       - name: Prepare package
         run: |
@@ -85,7 +85,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --target x86_64-unknown-linux-gnu --no-default-features --features=native,bevy/wayland
+          cargo build --release --target x86_64-unknown-linux-gnu --no-default-features --features=bevy/wayland
 
       - name: Prepare package
         run: |
@@ -131,7 +131,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --target x86_64-pc-windows-msvc --no-default-features --features=native
+          cargo build --release --target x86_64-pc-windows-msvc --no-default-features
 
       - name: Prepare package
         run: |
@@ -181,7 +181,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --target x86_64-apple-darwin --no-default-features --features=native
+          cargo build --release --target x86_64-apple-darwin --no-default-features
 
       - name: Prepare Package
         run: |
@@ -227,7 +227,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --release --target aarch64-apple-darwin --no-default-features --features=native
+          cargo build --release --target aarch64-apple-darwin --no-default-features
 
       - name: Prepare Package
         run: |

@@ -27,8 +27,7 @@
 			"command": "run",
 			"args": [
 				"--release",
-                "--no-default-features",
-                "--features=native"
+                "--no-default-features"
 			],
 			"presentation": {
 				"clear": true
