@@ -4,17 +4,6 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 
-# Compile with Performance Optimizations:
-# https://bevyengine.org/learn/book/getting-started/setup/#compile-with-performance-optimizations
-
-# Enable a small amount of optimization in debug mode
-[profile.dev]
-opt-level = 1
-
-# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
-[profile.dev.package."*"]
-opt-level = 3
-
 [dependencies]
 bevy = "0.14"
 # Disable low-severity logs at compile time for performance.
@@ -37,3 +26,25 @@ dev_native = [
     # Enable embedded asset hot reloading for native dev builds.
     "bevy/embedded_watcher",
 ]
+
+# Compile with Performance Optimizations:
+# https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
+
+# Enable a small amount of optimization in debug mode.
+[profile.dev]
+opt-level = 1
+
+# Enable a large amount of optimization in debug mode for dependencies.
+[profile.dev.package."*"]
+opt-level = 3
+
+# Enable additional optimization in release mode at the cost of compile time.
+[profile.release]
+lto = "thin"
+codgen-units = 1
+
+# Optimize for size in wasm-release mode.
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+strip = "debuginfo"
