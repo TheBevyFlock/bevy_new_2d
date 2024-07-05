@@ -1,8 +1,24 @@
 [package]
-name = "bevy_github_ci_template"
+name = "bevy_template"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
+
+[dependencies]
+bevy = "0.14.0"
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+wasm-bindgen = "0.2"
+
+# The following block tweaks Bevy's features according to our build environment
+
+[dev-dependencies.bevy]
+version = "0.14.0"
+features = ["dynamic_linking"]
+
+[target.'cfg(not(target_family = "wasm"))'.dev-dependencies.bevy]
+version = "0.14.0"
+features = ["file_watcher", "embedded_watcher"]
 
 # Compile with Performance Optimizations:
 # https://bevyengine.org/learn/book/getting-started/setup/#compile-with-performance-optimizations
@@ -14,6 +30,3 @@ opt-level = 1
 # Enable high optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]
 opt-level = 3
-
-[dependencies]
-bevy = "0.12"
