@@ -30,7 +30,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 /// Root state of the entire game.
-#[derive(States, Debug, PartialEq, Hash, Eq, Clone, Default)]
+#[derive(States, Debug, PartialEq, Eq, Hash, Clone, Default)]
 enum CoreState {
     #[default]
     Menu,
