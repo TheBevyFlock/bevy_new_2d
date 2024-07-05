@@ -6,11 +6,11 @@ pub use bevy::prelude::*;
 use crate::ui;
 
 pub(super) fn plugin(app: &mut App) {
-    // Setup state
+    // State setup
     app.init_state::<CoreState>();
     // Add state scoped entities for UI cleanup
     app.enable_state_scoped_entities::<CoreState>();
-    // Print state transitions in debug builds
+    // Print state transitions in dev builds
     #[cfg(feature = "dev")]
     app.add_systems(
         Update,
@@ -21,9 +21,12 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(Startup, setup);
 
     // Sub plugins
-    app.add_plugins(ui::plugin);
     app.add_plugins((menu::plugin, game::plugin));
-    // For a more in-depth UI example visit: https://github.com/MiniaczQ/bevy-substate-project
+
+    // Other
+    app.add_plugins(ui::plugin);
+
+    // For a larger UI example visit: https://github.com/MiniaczQ/bevy-substate-project
 }
 
 /// Root state of the entire game.

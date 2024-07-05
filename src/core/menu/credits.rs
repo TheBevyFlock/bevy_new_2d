@@ -18,7 +18,10 @@ fn setup(mut commands: Commands) {
     commands.my_label("Alice - Foo").set_parent(list);
     commands.my_label("Bob - Bar").set_parent(list);
 
-    commands.my_button("Back").insert(UiAction).set_parent(list);
+    commands
+        .my_button("Back")
+        .insert(UiAction::Back)
+        .set_parent(list);
 }
 
 fn update(

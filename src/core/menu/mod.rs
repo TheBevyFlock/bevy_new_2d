@@ -6,7 +6,7 @@ use super::CoreState;
 use crate::ui::*;
 
 pub(super) fn plugin(app: &mut App) {
-    // Setup state
+    // State setup
     app.add_sub_state::<MenuState>();
     // Add state scoped entities for UI cleanup
     app.enable_state_scoped_entities::<MenuState>();

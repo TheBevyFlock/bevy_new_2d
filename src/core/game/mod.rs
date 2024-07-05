@@ -4,6 +4,7 @@ use super::CoreState;
 
 pub(super) fn plugin(app: &mut App) {
     // Setup, update, teardown
+    // For core game logic, you'll probably need multiple setups, updates, etc.
     app.add_systems(OnEnter(CoreState::Game), setup);
     app.add_systems(Update, update.run_if(in_state(CoreState::Game)));
 }
