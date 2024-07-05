@@ -28,7 +28,8 @@ default = [
 core = []
 dev = [
     # Improve compile times for dev builds.
-    "bevy/dynamic_linking",
+    # NOTE: Uncomment to enable dynamic linking, but this may not work on Windows.
+    #"bevy/dynamic_linking",
 ]
 native = [
     "core",
