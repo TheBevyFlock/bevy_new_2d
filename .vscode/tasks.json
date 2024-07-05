@@ -26,7 +26,8 @@
 			"type": "cargo",
 			"command": "run",
 			"args": [
-				"--release"
+				"--release",
+                "--no-default-features"
 			],
 			"presentation": {
 				"clear": true
