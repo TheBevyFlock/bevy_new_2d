@@ -4,7 +4,7 @@ use super::MenuState;
 use crate::ui::*;
 
 pub(super) fn plugin(app: &mut App) {
-    // Setup, update, teardown
+    // Setup(s), update(s), teardown(s)
     app.add_systems(OnEnter(MenuState::Credits), setup);
     app.add_systems(Update, update.run_if(in_state(MenuState::Credits)));
 }
