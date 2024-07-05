@@ -18,7 +18,7 @@ opt-level = 3
 [dependencies]
 bevy = "0.14"
 # Required for web builds.
-wasm-bindgen = { version = "2", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
 
 [features]
 default = [
