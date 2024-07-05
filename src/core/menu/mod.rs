@@ -8,7 +8,9 @@ use crate::ui::*;
 pub(super) fn plugin(app: &mut App) {
     // Setup state
     app.add_sub_state::<MenuState>();
+    // Add state scoped entities for UI cleanup
     app.enable_state_scoped_entities::<MenuState>();
+    // Print state transitions in debug builds
     #[cfg(feature = "dev")]
     app.add_systems(
         Update,
