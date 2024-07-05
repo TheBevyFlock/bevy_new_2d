@@ -42,7 +42,7 @@ jobs:
       - name: Prepare package
         run: |
           wasm-bindgen --no-typescript --out-name bevy_game --out-dir wasm --target web target/wasm32-unknown-unknown/release/${{ env.binary }}.wasm
-          cp -r assets wasm/ || true # Try to copy, but ignore if it can't copy if source directory does not exist 
+          cp -r assets wasm/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
 
       - name: Package as a zip
         working-directory: ./wasm
@@ -220,7 +220,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-darwin
-      - name: Environment 
+      - name: Environment
         # macOS 11 was the first version to support ARM
         run: |
           export MACOSX_DEPLOYMENT_TARGET="11"
