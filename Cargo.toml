@@ -17,8 +17,9 @@ opt-level = 3
 
 [dependencies]
 bevy = "0.14"
-# Required for web builds.
-wasm-bindgen = { version = "0.2", optional = true }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+wasm-bindgen = "0.2"
 
 [features]
 default = [
@@ -30,21 +31,11 @@ dev = [
     # NOTE: Uncomment to enable dynamic linking, but this may not work on Windows.
     #"bevy/dynamic_linking",
 ]
-native = [
-]
 native_dev = [
-    "native",
     "dev",
     # Enable asset hot reloading for native dev builds.
     "bevy/file_watcher",
     # Enable embedded asset hot reloading for native dev builds.
     "bevy/embedded_watcher",
-]
-web = [
-    "dep:wasm-bindgen",
-]
-web_dev = [
-    "web",
-    "dev",
 ]
 
