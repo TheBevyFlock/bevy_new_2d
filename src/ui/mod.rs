@@ -16,7 +16,7 @@ const LABEL_TEXT: Color = Color::Srgba(tailwind::AMBER_300);
 
 const BACKGROUND: Color = Color::Srgba(tailwind::GRAY_900);
 
-pub type ButtonQuery<'w, 's, 'a, T> =
+pub type ButtonInteractionQuery<'w, 's, 'a, T> =
     Query<'w, 's, (&'a Interaction, &'a T), (Changed<Interaction>, With<Button>)>;
 
 pub(super) fn plugin(app: &mut App) {

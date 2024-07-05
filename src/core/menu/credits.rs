@@ -26,7 +26,7 @@ fn setup(mut commands: Commands) {
 
 fn update(
     mut next_menu_state: ResMut<NextState<MenuState>>,
-    mut interaction_query: ButtonQuery<UiAction>,
+    mut interaction_query: ButtonInteractionQuery<UiAction>,
 ) {
     for (interaction, _) in &mut interaction_query {
         if matches!(interaction, Interaction::Pressed) {
