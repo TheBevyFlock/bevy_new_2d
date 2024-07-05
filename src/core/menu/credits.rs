@@ -15,10 +15,10 @@ fn setup(mut commands: Commands) {
         .insert(StateScoped(MenuState::Credits))
         .id();
 
-    commands.my_label("Alice").set_parent(list);
-    commands.my_label("Bob").set_parent(list);
+    commands.my_label("Alice - Foo").set_parent(list);
+    commands.my_label("Bob - Bar").set_parent(list);
 
-    commands.my_button("Back", UiAction).set_parent(list);
+    commands.my_button("Back").insert(UiAction).set_parent(list);
 }
 
 fn update(

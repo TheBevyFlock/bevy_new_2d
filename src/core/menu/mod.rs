@@ -9,7 +9,7 @@ pub(super) fn plugin(app: &mut App) {
     // Setup state
     app.add_sub_state::<MenuState>();
     app.enable_state_scoped_entities::<MenuState>();
-    #[cfg(debug_assertions)]
+    #[cfg(feature = "dev")]
     app.add_systems(
         Update,
         bevy::dev_tools::states::log_transitions::<MenuState>,
@@ -34,9 +34,13 @@ enum MenuState {
 fn setup(mut commands: Commands) {
     let list = commands.my_root().insert(StateScoped(MenuState::Main)).id();
 
-    commands.my_button("Play", UiAction::Play).set_parent(list);
     commands
-        .my_button("Credits", UiAction::Credits)
+        .my_button("Play")
+        .insert(UiAction::Play)
+        .set_parent(list);
+    commands
+        .my_button("Credits")
+        .insert(UiAction::Credits)
         .set_parent(list);
 }
 

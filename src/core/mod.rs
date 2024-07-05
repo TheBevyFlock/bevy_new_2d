@@ -10,7 +10,7 @@ pub(super) fn plugin(app: &mut App) {
     app.init_state::<CoreState>();
     // Add state scoped entities for UI cleanup
     app.enable_state_scoped_entities::<CoreState>();
-    #[cfg(debug_assertions)]
+    #[cfg(feature = "dev")]
     app.add_systems(
         Update,
         bevy::dev_tools::states::log_transitions::<CoreState>,

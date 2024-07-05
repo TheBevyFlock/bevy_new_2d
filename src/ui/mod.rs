@@ -3,17 +3,24 @@
 mod mouse_hover;
 mod widgets;
 
-use bevy::prelude::*;
+use bevy::{color::palettes::tailwind, prelude::*};
 
 pub use widgets::*;
 
-const BUTTON_NORMAL: Color = Color::srgb(0.15, 0.15, 0.15);
-const BUTTON_HOVER: Color = Color::srgb(0.25, 0.25, 0.25);
-const BUTTON_PRESSED: Color = Color::srgb(0.35, 0.75, 0.35);
+const BUTTON_NORMAL: Color = Color::Srgba(tailwind::GRAY_800);
+const BUTTON_HOVER: Color = Color::Srgba(tailwind::GRAY_600);
+const BUTTON_PRESSED: Color = Color::Srgba(tailwind::GRAY_400);
+
+const BUTTON_TEXT: Color = Color::Srgba(tailwind::GRAY_100);
+const LABEL_TEXT: Color = Color::Srgba(tailwind::AMBER_300);
 
 pub type ButtonQuery<'w, 's, 'a, T> =
     Query<'w, 's, (&'a Interaction, &'a T), (Changed<Interaction>, With<Button>)>;
 
 pub(super) fn plugin(app: &mut App) {
+    // Sub plugins
     app.add_plugins(mouse_hover::plugin);
+
+    // Other
+    app.insert_resource(ClearColor(Color::Srgba(tailwind::GRAY_900)));
 }

@@ -1,11 +1,16 @@
 use bevy::{ecs::system::EntityCommands, prelude::*};
 
-use super::BUTTON_NORMAL;
+use super::{BUTTON_NORMAL, BUTTON_TEXT, LABEL_TEXT};
 
 /// Helper trait for creating common widgets.
 pub trait MyWidgets<'w> {
+    /// Spawns a simple root node.
     fn my_root(&mut self) -> EntityCommands;
-    fn my_button<I: Into<String>, C: Component>(&mut self, text: I, comp: C) -> EntityCommands;
+
+    /// Spawns a simple button node.
+    fn my_button<I: Into<String>>(&mut self, text: I) -> EntityCommands;
+
+    /// Spawns a simple label.
     fn my_label<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 }
 
@@ -26,28 +31,25 @@ impl<'w, 's> MyWidgets<'w> for Commands<'w, 's> {
         })
     }
 
-    fn my_button<I: Into<String>, C: Component>(&mut self, text: I, comp: C) -> EntityCommands {
+    fn my_button<I: Into<String>>(&mut self, text: I) -> EntityCommands {
         let button = self
-            .spawn((
-                ButtonBundle {
-                    style: Style {
-                        width: Val::Px(200.),
-                        height: Val::Px(65.),
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    background_color: BackgroundColor(BUTTON_NORMAL),
+            .spawn((ButtonBundle {
+                style: Style {
+                    width: Val::Px(200.),
+                    height: Val::Px(65.),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
                     ..default()
                 },
-                comp,
-            ))
+                background_color: BackgroundColor(BUTTON_NORMAL),
+                ..default()
+            },))
             .id();
         self.spawn(TextBundle::from_section(
             text,
             TextStyle {
                 font_size: 40.0,
-                color: Color::srgb(0.9, 0.9, 0.9),
+                color: BUTTON_TEXT,
                 ..default()
             },
         ))
@@ -57,14 +59,15 @@ impl<'w, 's> MyWidgets<'w> for Commands<'w, 's> {
 
     fn my_label<I: Into<String>>(&mut self, text: I) -> EntityCommands {
         let label = self
-            .spawn(ButtonBundle {
+            .spawn(NodeBundle {
                 style: Style {
-                    width: Val::Px(200.),
+                    width: Val::Px(300.),
                     height: Val::Px(65.),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     ..default()
                 },
+                background_color: BackgroundColor(BUTTON_NORMAL),
                 ..default()
             })
             .id();
@@ -72,7 +75,7 @@ impl<'w, 's> MyWidgets<'w> for Commands<'w, 's> {
             text,
             TextStyle {
                 font_size: 40.0,
-                color: Color::srgb(0.3, 0.3, 0.7),
+                color: LABEL_TEXT,
                 ..default()
             },
         ))
