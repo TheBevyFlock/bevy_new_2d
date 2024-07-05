@@ -17,6 +17,8 @@ opt-level = 3
 
 [dependencies]
 bevy = "0.14"
+# Bevy's dependencies do a lot of detailed logging, so we disable that on compile time to get a performance boost.
+log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 wasm-bindgen = "0.2"
