@@ -176,7 +176,7 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" >> "${Env:GITHUB_ENV}"
+        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Encoding utf8 -Append
 
       - name: Checkout repository
         uses: actions/checkout@v4
