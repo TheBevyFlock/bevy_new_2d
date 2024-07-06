@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${PLATFORM}" >> "${GITHUB_ENV}"
+        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -69,12 +69,12 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --profile="${PROFILE}" --target="${TARGET}" --no-default-features
+          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
           mkdir -p "${OUT_DIR}"
-          wasm-bindgen "target/${TARGET}/${PROFILE}/${BINARY}.wasm" --out-dir "${OUT_DIR}" --out-name "${BINARY}" --no-typescript --target web 
+          wasm-bindgen "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm" --out-dir "${OUT_DIR}" --out-name "${{ env.BINARY }}" --no-typescript --target web 
           cp -r assets web/* "${OUT_DIR}" || true # Ignore error if `assets` or `web` folder does not exist
 
       - name: Optimize Wasm
@@ -84,7 +84,7 @@ jobs:
 
       - name: Compress package
         run: |
-          zip --recurse-paths "${PACKAGE_NAME}-${PLATFORM}.zip "${OUT_DIR}"
+          zip --recurse-paths "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip" "${OUT_DIR}"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
@@ -116,7 +116,7 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${PLATFORM}" >> "${GITHUB_ENV}"
+        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -134,17 +134,17 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --profile="${PROFILE}" --target="${TARGET}" --no-default-features --features=bevy/wayland
+          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features --features=bevy/wayland
 
       - name: Prepare package
         run: |
           mkdir -p "${OUT_DIR}"
-          cp "target/${TARGET}/${PROFILE}/${BINARY}" "${OUT_DIR}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${OUT_DIR}"
           cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
 
       - name: Compress package
         run: |
-          zip --recurse-paths "${PACKAGE_NAME}-${PLATFORM}.zip" "${OUT_DIR}"
+          zip --recurse-paths "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip" "${OUT_DIR}"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
@@ -176,7 +176,7 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${PLATFORM}" >> "${GITHUB_ENV}"
+        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" >> "${Env:GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -190,17 +190,17 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --profile="${PROFILE}" --target="${TARGET}" --no-default-features
+          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
-          mkdir -p "${OUT_DIR}"
-          cp "target/${TARGET}/${PROFILE}/${BINARY}.exe" "${OUT_DIR}"
-          cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
+          mkdir -p "${Env:OUT_DIR}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.exe" "${Env:OUT_DIR}"
+          cp -r assets "${Env:OUT_DIR}" || true # Ignore error if `assets` folder does not exist
 
       - name: Compress package
         run: |
-          Compress-Archive -Path "${OUT_DIR}/*" -DestinationPath "${PACKAGE_NAME}-${PLATFORM}.zip"
+          Compress-Archive -Path "${Env:OUT_DIR}/*" -DestinationPath "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
@@ -234,7 +234,7 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=${BINARY}.app/Contents/MacOS" >> "${GITHUB_ENV}"
+        run: echo "OUT_DIR=${{ env.BINARY }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -248,17 +248,17 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --profile="${PROFILE}" --target="${TARGET}" --no-default-features
+          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
           mkdir -p "${OUT_DIR}"
-          cp "target/${TARGET}/${PROFILE}/${BINARY}" "${OUT_DIR}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${OUT_DIR}"
           cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
       
       - name: Compress package
         run: |
-          hdiutil create -fs HFS+ -volname "${BINARY}" -srcfolder "${BINARY}.app" "${PACKAGE_NAME}-${PLATFORM}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder "${{ env.BINARY }}.app" "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
@@ -292,7 +292,7 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=${BINARY}.app/Contents/MacOS" >> "${GITHUB_ENV}"
+        run: echo "OUT_DIR=${{ env.BINARY }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -306,17 +306,17 @@ jobs:
 
       - name: Build
         run: |
-          cargo build --profile="${PROFILE}" --target="${TARGET}" --no-default-features
+          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
           mkdir -p "${OUT_DIR}"
-          cp "target/${TARGET}/${PROFILE}/${BINARY}" "${OUT_DIR}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${OUT_DIR}"
           cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
           
       - name: Compress package
         run: |
-          hdiutil create -fs HFS+ -volname "${BINARY}" -srcfolder "${BINARY}.app" "${PACKAGE_NAME}-${PLATFORM}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder "${{ env.BINARY }}.app" "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
