@@ -15,9 +15,10 @@ on:
 
 # Configure constants for this workflow.
 env:
+  # TODO: This may become unnecessary: https://github.com/rust-lang/cargo/issues/6790
   # The base filename of the binary produced by `cargo build`.
   BINARY: bevy_template
-  # The filename prefix to use for packages produced by this workflow.
+  # The name to use for the packaged application produced by this workflow.
   PACKAGE_NAME: bevy-template
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
@@ -35,7 +36,8 @@ jobs:
     steps:
       - name: Get version number from tag
         id: tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
+        run: |
+          echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
     outputs:
       version: ${{ inputs.version || steps.tag.outputs.tag }}
 
@@ -51,7 +53,9 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+        run: |
+          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,15 +71,20 @@ jobs:
         run: |
           cargo install wasm-bindgen-cli
 
-      - name: Build
+      - name: Build binary
         run: |
           cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
-          mkdir -p "${OUT_DIR}"
-          wasm-bindgen "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm" --out-dir "${OUT_DIR}" --out-name "${{ env.BINARY }}" --no-typescript --target web 
-          cp -r assets web/* "${OUT_DIR}" || true # Ignore error if `assets` or `web` folder does not exist
+          mkdir -p "${{ env.OUT_DIR }}"
+          wasm-bindgen "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm" \
+            --out-dir "${{ env.OUT_DIR }}" \
+            --out-name "${{ env.BINARY }}" \
+            --no-typescript \
+            --target web
+          cp -r web/* "${{ env.OUT_DIR }}"
+          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
 
       - name: Optimize Wasm
         uses: NiklasEi/wasm-opt-action@v2
@@ -83,13 +92,14 @@ jobs:
           file: ${{ env.OUT_DIR }}/*.wasm
 
       - name: Compress package
+        working-directory: ./build/${{ env.PACKAGE }}
         run: |
-          zip --recurse-paths "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip" "${OUT_DIR}"
+          zip --recurse-paths "../${{ env.PACKAGE }}.zip" "${{ env.PACKAGE_NAME }}"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          path: build/${{ env.PACKAGE }}.zip
           name: ${{ env.PLATFORM }}
           retention-days: 1
 
@@ -98,8 +108,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
-          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.zip
+          file: build/${{ env.PACKAGE }}.zip
+          asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
@@ -116,7 +126,9 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+        run: |
+          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -132,24 +144,25 @@ jobs:
         run: |
           sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Build
+      - name: Build binary
         run: |
           cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features --features=bevy/wayland
 
       - name: Prepare package
         run: |
-          mkdir -p "${OUT_DIR}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${OUT_DIR}"
-          cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
+          mkdir -p "${{ env.OUT_DIR }}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
+          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
 
       - name: Compress package
+        working-directory: ./build/${{ env.PACKAGE }}
         run: |
-          zip --recurse-paths "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip" "${OUT_DIR}"
+          zip --recurse-paths ../"${{ env.PACKAGE }}.zip" "${{ env.PACKAGE_NAME }}"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          path: build/${{ env.PACKAGE }}.zip
           name: ${{ env.PLATFORM }}
           retention-days: 1
 
@@ -158,8 +171,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
-          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.zip
+          file: build/${{ env.PACKAGE }}.zip
+          asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
@@ -176,7 +189,9 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=build/${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Encoding utf8 -Append
+        run: |
+          "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
+          "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -188,24 +203,25 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
-      - name: Build
+      - name: Build binary
         run: |
           cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
-          mkdir -p "${Env:OUT_DIR}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.exe" "${Env:OUT_DIR}"
-          cp -r assets "${Env:OUT_DIR}" || true # Ignore error if `assets` folder does not exist
+          mkdir -p "${{ env.OUT_DIR }}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.exe" "${{ env.OUT_DIR }}"
+          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
 
       - name: Compress package
+        working-directory: ./build/${{ env.PACKAGE }}
         run: |
-          Compress-Archive -Path "${Env:OUT_DIR}/*" -DestinationPath "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip"
+          Compress-Archive -Path "${{ env.PACKAGE_NAME }}" -DestinationPath "../${{ env.PACKAGE }}.zip"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          path: build/${{ env.PACKAGE }}.zip
           name: ${{ env.PLATFORM }}
           retention-days: 1
 
@@ -214,8 +230,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
-          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.zip
+          file: build/${{ env.PACKAGE }}.zip
+          asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
@@ -234,7 +250,9 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=${{ env.BINARY }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
+        run: |
+          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -246,24 +264,25 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
-      - name: Build
+      - name: Build binary
         run: |
           cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
-          mkdir -p "${OUT_DIR}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${OUT_DIR}"
-          cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
+          mkdir -p "${{ env.OUT_DIR }}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
+          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
       
       - name: Compress package
+        working-directory: ./build/${{ env.PACKAGE }}
         run: |
-          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder "${{ env.BINARY }}.app" "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          path: build/${{ env.PACKAGE }}.dmg
           name: ${{ env.PLATFORM }}
           retention-days: 1
 
@@ -272,8 +291,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file:  ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
-          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.dmg
+          file: build/${{ env.PACKAGE }}.dmg
+          asset_name: ${{ env.PACKAGE }}.dmg
           release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
@@ -292,7 +311,9 @@ jobs:
 
     steps:
       - name: Set up environment
-        run: echo "OUT_DIR=${{ env.BINARY }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
+        run: |
+          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -304,24 +325,25 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
-      - name: Build
+      - name: Build binary
         run: |
           cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
 
       - name: Prepare package
         run: |
-          mkdir -p "${OUT_DIR}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${OUT_DIR}"
-          cp -r assets "${OUT_DIR}" || true # Ignore error if `assets` folder does not exist
+          mkdir -p "${{ env.OUT_DIR }}"
+          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
+          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
           
       - name: Compress package
+        working-directory: ./build/${{ env.PACKAGE }}
         run: |
-          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder "${{ env.BINARY }}.app" "${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          path: build/${{ env.PACKAGE }}.dmg
           name: ${{ env.PLATFORM }}
           retention-days: 1
 
@@ -330,8 +352,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
-          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.dmg
+          file: build/${{ env.PACKAGE }}.dmg
+          asset_name: ${{ env.PACKAGE }}.dmg
           release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
