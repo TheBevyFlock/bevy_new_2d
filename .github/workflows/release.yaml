@@ -322,9 +322,12 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
-      - name: Set up environment
+      - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+          
+      - name: Set OUT_DIR environment variable
+        run: |
           echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
