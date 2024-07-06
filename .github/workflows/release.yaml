@@ -140,7 +140,6 @@ jobs:
       - name: Compress package
         run: |
           zip --recurse-paths ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip ${{ env.OUT_DIR }}
-      
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
