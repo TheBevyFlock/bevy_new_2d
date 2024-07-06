@@ -47,7 +47,7 @@ jobs:
       TARGET: wasm32-unknown-unknown
       PROFILE: wasm-release
       PLATFORM: web
-      OUT_DIR: build/${{ env.PLATFORM }}
+      OUT_DIR: build/web
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
@@ -110,7 +110,7 @@ jobs:
       TARGET: x86_64-unknown-linux-gnu
       PROFILE: release
       PLATFORM: linux
-      OUT_DIR: build/${{ env.PLATFORM }}
+      OUT_DIR: build/linux
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
@@ -167,7 +167,7 @@ jobs:
       TARGET: x86_64-pc-windows-msvc
       PROFILE: release
       PLATFORM: windows
-      OUT_DIR: build/${{ env.PLATFORM }}
+      OUT_DIR: build/windows
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
