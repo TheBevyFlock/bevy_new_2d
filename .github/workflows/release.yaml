@@ -1,280 +1,358 @@
 name: Release
 
+# Only trigger this workflow when a tag is pushed in the format `vA.B.C`.
 on:
   push:
+    # Syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
     tags:
-      - '*'
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version - in the form of v1.2.3'
+        required: true
+        type: string
 
+# Configure constants for this workflow.
 env:
-  # update with the name of the main binary
-  binary: bevy_github_ci_template
-  add_binaries_to_github_release: true
-  #itch_target: <itch.io-username>/<game-name>
-
+  # The base filename of the binary produced by `cargo build`.
+  BINARY: bevy_template
+  # The filename prefix to use for packages produced by this workflow.
+  PACKAGE_NAME: bevy-template
+  # The itch.io page to upload to, in the format: `user-name/project-name`.
+  # Comment this out to disable.
+  ITCH_TARGET: the-bevy-flock/bevy-template
+  # Whether packages produced by this workflow should be uploaded to the Github release.
+  UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
-  use_git_lfs: false
-
+  USE_GIT_LFS: false
 
 jobs:
-
-  # Build for wasm
-  release-wasm:
+  # Extract the version number from the pushed tag.
+  get-version:
     runs-on: ubuntu-latest
+    steps:
+      - name: Get version number from tag
+        id: tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
+    outputs:
+      version: ${{ inputs.version || steps.tag.outputs.tag }}
+
+  # Build for web.
+  build-for-web:
+    runs-on: ubuntu-latest
+    needs: get-version
+    env:
+      TARGET: wasm32-unknown-unknown
+      PROFILE: wasm-release
+      PLATFORM: web
+      OUT_DIR: build/${{ env.PLATFORM }}
+      VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          lfs: ${{ env.use_git_lfs }}
-      - uses: dtolnay/rust-toolchain@stable
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
-      - name: install wasm-bindgen-cli
+          targets: ${{ env.TARGET }}
+
+      - name: Install dependencies
         run: |
           cargo install wasm-bindgen-cli
 
       - name: Build
         run: |
-          cargo build --profile wasm-release --target wasm32-unknown-unknown --no-default-features
+          cargo build --profile=${{ env.PROFILE }} --target=${{ env.TARGET }} --no-default-features
 
       - name: Prepare package
         run: |
-          wasm-bindgen --no-typescript --out-name bevy_game --out-dir wasm --target web target/wasm32-unknown-unknown/release/${{ env.binary }}.wasm
-          cp -r assets wasm/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
+          mkdir -p ${{ env.OUT_DIR }}
+          wasm-bindgen target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm --out-dir ${{ env.OUT_DIR }} --out-name ${{ env.BINARY }} --no-typescript --target web 
+          cp -r assets web/* ${{ env.OUT_DIR }} || true # Ignore error if `assets` or `web` folder does not exist
 
-      - name: Package as a zip
-        working-directory: ./wasm
+      - name: Optimize Wasm
+        uses: NiklasEi/wasm-opt-action@v2
+        with:
+          file: ${{ env.OUT_DIR }}/*.wasm
+
+      - name: Compress package
         run: |
-          zip --recurse-paths ../${{ env.binary }}.zip .
+          zip --recurse-paths ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip ${{ env.OUT_DIR }}
 
-      - name: Upload binaries to artifacts
+      - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.binary }}.zip
-          name: wasm
+          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          name: ${{ env.PLATFORM }}
           retention-days: 1
 
-      - name: Upload binaries to release
-        if: ${{ env.add_binaries_to_github_release == 'true' }}
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.zip
-          asset_name: ${{ env.binary }}-wasm-${{ steps.get_version.outputs.tag }}.zip
+          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.zip
+          release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
 
-  # Build for Linux
-  release-linux:
+  # Build for Linux.
+  build-for-linux:
     runs-on: ubuntu-latest
+    needs: get-version
+    env:
+      TARGET: x86_64-unknown-linux-gnu
+      PROFILE: release
+      PLATFORM: linux
+      OUT_DIR: build/${{ env.PLATFORM }}
+      VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          lfs: ${{ env.use_git_lfs }}
-      - uses: dtolnay/rust-toolchain@stable
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-unknown-linux-gnu
-      - name: install dependencies
+          targets: ${{ env.TARGET }}
+
+      - name: Install dependencies
         run: |
-          sudo apt-get update; sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+          sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Build
         run: |
-          cargo build --release --target x86_64-unknown-linux-gnu --no-default-features --features=bevy/wayland
+          cargo build --profile=${{ env.PROFILE }} --target=${{ env.TARGET }} --no-default-features --features=bevy/wayland
 
       - name: Prepare package
         run: |
-          mkdir linux
-          cp target/x86_64-unknown-linux-gnu/release/${{ env.binary }} linux/
-          cp -r assets linux/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
+          mkdir -p ${{ env.OUT_DIR }}
+          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }} ${{ env.OUT_DIR }}
+          cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
 
-      - name: Package as a zip
-        working-directory: ./linux
+      - name: Compress package
         run: |
-          zip --recurse-paths ../${{ env.binary }}.zip .
-
-      - name: Upload binaries to artifacts
+          zip --recurse-paths ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip ${{ env.OUT_DIR }}
+      - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.binary }}.zip
-          name: linux
+          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          name: ${{ env.PLATFORM }}
           retention-days: 1
 
-      - name: Upload binaries to release
-        if: ${{ env.add_binaries_to_github_release == 'true' }}
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.zip
-          asset_name: ${{ env.binary }}-linux-${{ steps.get_version.outputs.tag }}.zip
+          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.zip
+          release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
 
-  # Build for Windows
-  release-windows:
+  # Build for Windows.
+  build-for-windows:
     runs-on: windows-latest
+    needs: get-version
+    env:
+      TARGET: x86_64-pc-windows-msvc
+      PROFILE: release
+      PLATFORM: windows
+      OUT_DIR: build/${{ env.PLATFORM }}
+      VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          lfs: ${{ env.use_git_lfs }}
-      - uses: dtolnay/rust-toolchain@stable
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-pc-windows-msvc
+          targets: ${{ env.TARGET }}
 
       - name: Build
         run: |
-          cargo build --release --target x86_64-pc-windows-msvc --no-default-features
+          cargo build --profile=${{ env.PROFILE }} --target=${{ env.TARGET }} --no-default-features
 
       - name: Prepare package
         run: |
-          mkdir windows
-          cp target/x86_64-pc-windows-msvc/release/${{ env.binary }}.exe windows/
-          mkdir assets -ea 0 # create the assets directory if it does not exist, it will get ignored in the zip if empty
-          cp -r assets windows/
+          mkdir -p ${{ env.OUT_DIR }}
+          cp target/${ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.exe ${{ env.OUT_DIR }}
+          cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
 
-      - name: Package as a zip
+      - name: Compress package
         run: |
-          Compress-Archive -Path windows/* -DestinationPath ${{ env.binary }}.zip
+          Compress-Archive -Path ${{ env.OUT_DIR }}/* -DestinationPath ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
 
-      - name: Upload binaries to artifacts
+      - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.binary }}.zip
-          name: windows
+          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          name: ${{ env.PLATFORM }}
           retention-days: 1
 
-      - name: Upload binaries to release
-        if: ${{ env.add_binaries_to_github_release == 'true' }}
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.zip
-          asset_name: ${{ env.binary }}-windows-${{ steps.get_version.outputs.tag }}.zip
+          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.zip
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.zip
+          release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
 
-  # Build for MacOS x86_64
-  release-macOS-intel:
+  # Build for MacOS x86_64.
+  build-for-macOS-intel:
     runs-on: macOS-latest
+    needs: get-version
+    env:
+      TARGET: x86_64-apple-darwin
+      PROFILE: release
+      PLATFORM: macOS-intel
+      OUT_DIR: ${{ env.BINARY }}.app/Contents/MacOS
+      VERSION: ${{ needs.get-version.outputs.version }}
+      CFLAGS: -fno-stack-check
+      MACOSX_DEPLOYMENT_TARGET: 10.9
 
     steps:
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          lfs: ${{ env.use_git_lfs }}
-      - uses: dtolnay/rust-toolchain@stable
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin
-      - name: Environment Setup
-        run: |
-          export CFLAGS="-fno-stack-check"
-          export MACOSX_DEPLOYMENT_TARGET="10.9"
+          targets: ${{ env.TARGET }}
 
       - name: Build
         run: |
-          cargo build --release --target x86_64-apple-darwin --no-default-features
+          cargo build --profile=${{ env.PROFILE }} --target=${{ env.TARGET }} --no-default-features
 
-      - name: Prepare Package
+      - name: Prepare package
         run: |
-          mkdir -p ${{ env.binary }}.app/Contents/MacOS
-          cp target/x86_64-apple-darwin/release/${{ env.binary }} ${{ env.binary }}.app/Contents/MacOS/
-          cp -r assets ${{ env.binary }}.app/Contents/MacOS/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
-          hdiutil create -fs HFS+ -volname "${{ env.binary }}" -srcfolder ${{ env.binary }}.app ${{ env.binary }}-macOS-intel.dmg
+          mkdir -p ${{ env.OUT_DIR }}
+          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }} ${{ env.OUT_DIR }}
+          cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
+      
+      - name: Compress package
+        run: |
+          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder ${{ env.BINARY }}.app ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
 
-      - name: Upload binaries to artifacts
+      - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.binary }}-macOS-intel.dmg
-          name: macOS-intel
+          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          name: ${{ env.PLATFORM }}
           retention-days: 1
 
-      - name: Upload binaries to release
-        if: ${{ env.add_binaries_to_github_release == 'true' }}
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file:  ${{ env.binary }}-macOS-intel.dmg
-          asset_name: ${{ env.binary }}-macOS-intel-${{ steps.get_version.outputs.tag }}.dmg
+          file:  ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.dmg
+          release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
 
-  # Build for MacOS Apple Silicon
-  release-macOS-apple-silicon:
+  # Build for MacOS Apple Silicon.
+  build-for-macOS-apple-silicon:
     runs-on: macOS-latest
+    needs: get-version
+    env:
+      TARGET: aarch64-apple-darwin
+      PROFILE: release
+      PLATFORM: macOS-apple-silicon
+      OUT_DIR: ${{ env.BINARY }}.app/Contents/MacOS
+      VERSION: ${{ needs.get-version.outputs.version }}
+      # MacOS 11.0 Big Sur is the first version to support universal binaries.
+      MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          lfs: ${{ env.use_git_lfs }}
-      - uses: dtolnay/rust-toolchain@stable
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-apple-darwin
-      - name: Environment
-        # macOS 11 was the first version to support ARM
-        run: |
-          export MACOSX_DEPLOYMENT_TARGET="11"
+          targets: ${{ env.TARGET }}
 
       - name: Build
         run: |
-          cargo build --release --target aarch64-apple-darwin --no-default-features
+          cargo build --profile=${{ env.PROFILE }} --target=${{ env.TARGET }} --no-default-features
 
-      - name: Prepare Package
+      - name: Prepare package
         run: |
-          mkdir -p ${{ env.binary }}.app/Contents/MacOS
-          cp target/aarch64-apple-darwin/release/${{ env.binary }} ${{ env.binary }}.app/Contents/MacOS/
-          cp -r assets ${{ env.binary }}.app/Contents/MacOS/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
-          hdiutil create -fs HFS+ -volname "${{ env.binary }}-macOS-apple-silicon" -srcfolder ${{ env.binary }}.app ${{ env.binary }}-macOS-apple-silicon.dmg
+          mkdir -p ${{ env.OUT_DIR }}
+          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }} ${{ env.OUT_DIR }}
+          cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
+          
+      - name: Compress package
+        run: |
+          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder ${{ env.BINARY }}.app ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
 
-      - name: Upload binaries to artifacts
+      - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.binary }}-macOS-apple-silicon.dmg
-          name: macOS-apple-silicon
+          path: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          name: ${{ env.PLATFORM }}
           retention-days: 1
 
-      - name: Upload binaries to release
-        if: ${{ env.add_binaries_to_github_release == 'true' }}
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}-macOS-apple-silicon.dmg
-          asset_name: ${{ env.binary }}-macOS-apple-silicon-${{ steps.get_version.outputs.tag }}.dmg
+          file: ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          asset_name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}.dmg
+          release_name: ${{ env.VERSION }}
           tag: ${{ github.ref }}
           overwrite: true
 
+  # Check if upload to itch.io is configured.
   check-if-upload-to-itch-is-configured:
     runs-on: ubuntu-latest
+    steps:
+      - name: Check ITCH_TARGET environment variable
+        id: check-env
+        run: |
+          if [[ -z "${ITCH_TARGET}" ]]; then
+            echo "has-itch-target=no" >> "${GITHUB_OUTPUT}"
+          else
+            echo "has-itch-target=yes" >> "${GITHUB_OUTPUT}"
+          fi
     outputs:
       should-upload: ${{ steps.check-env.outputs.has-itch-target }}
-    steps:
-      - id: check-env
-        run: |
-          if [[ -z "$itch_target" ]]; then
-            echo "has-itch-target=no" >> $GITHUB_OUTPUT
-          else
-            echo "has-itch-target=yes" >> $GITHUB_OUTPUT
-          fi
 
+  # Upload artifacts to itch.io.
   upload-to-itch:
     runs-on: ubuntu-latest
     needs:
+      - get-version
       - check-if-upload-to-itch-is-configured
-      - release-wasm
-      - release-linux
-      - release-windows
-      - release-macOS-intel
-      - release-macOS-apple-silicon
+      - build-for-web
+      - build-for-linux
+      - build-for-windows
+      - build-for-macOS-intel
+      - build-for-macOS-apple-silicon
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
 
     steps:
@@ -289,16 +367,15 @@ jobs:
           unzip butler.zip
           chmod +x butler
           ./butler -V
-      - uses: olegtarasov/get-tag@v2.1.2
-        id: get_version
-      - name: Upload to itch.io
+
+      - name: Upload artifacts to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
         run: |
           for channel in $(ls builds); do
             ./butler push \
                 --fix-permissions \
-                --userversion="${{ steps.get_version.outputs.tag }}" \
-                builds/$channel/* \
-                ${{ env.itch_target }}:$channel
+                --userversion="${{ env.VERSION }}" \
+                builds/"${channel}"/* \
+                ${{ env.ITCH_TARGET }}:"${channel}"
           done
