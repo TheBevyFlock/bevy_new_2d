@@ -14,8 +14,8 @@ on:
 
 # Configure constants for this workflow.
 env:
-  # The base filename of the executable produced by `cargo build`.
-  EXE_NAME: bevy_template
+  # The base filename of the binary produced by `cargo build`.
+  BINARY: bevy_template
   # The filename prefix to use for packages produced by this workflow.
   PACKAGE_NAME: bevy-template
   # The itch.io page to upload to, in the format: `user-name/project-name`.
@@ -71,7 +71,7 @@ jobs:
       - name: Prepare package
         run: |
           mkdir -p ${{ env.OUT_DIR }}
-          wasm-bindgen target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.EXE_NAME }}.wasm --out-dir ${{ env.OUT_DIR }} --out-name ${{ env.EXE_NAME }} --no-typescript --target web 
+          wasm-bindgen target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm --out-dir ${{ env.OUT_DIR }} --out-name ${{ env.BINARY }} --no-typescript --target web 
           cp -r assets web/* ${{ env.OUT_DIR }} || true # Ignore error if `assets` or `web` folder does not exist
 
       - name: Optimize Wasm
@@ -134,7 +134,7 @@ jobs:
       - name: Prepare package
         run: |
           mkdir -p ${{ env.OUT_DIR }}
-          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.EXE_NAME }} ${{ env.OUT_DIR }}
+          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }} ${{ env.OUT_DIR }}
           cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
 
       - name: Compress package
@@ -187,7 +187,7 @@ jobs:
       - name: Prepare package
         run: |
           mkdir -p ${{ env.OUT_DIR }}
-          cp target/${ env.TARGET }}/${{ env.PROFILE }}/${{ env.EXE_NAME }}.exe ${{ env.OUT_DIR }}
+          cp target/${ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.exe ${{ env.OUT_DIR }}
           cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
 
       - name: Compress package
@@ -220,7 +220,7 @@ jobs:
       TARGET: x86_64-apple-darwin
       PROFILE: release
       PLATFORM: macOS-intel
-      OUT_DIR: ${{ env.EXE_NAME }}.app/Contents/MacOS
+      OUT_DIR: ${{ env.BINARY }}.app/Contents/MacOS
       VERSION: ${{ needs.get-version.outputs.version }}
       CFLAGS: -fno-stack-check
       MACOSX_DEPLOYMENT_TARGET: 10.9
@@ -243,12 +243,12 @@ jobs:
       - name: Prepare package
         run: |
           mkdir -p ${{ env.OUT_DIR }}
-          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.EXE_NAME }} ${{ env.OUT_DIR }}
+          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }} ${{ env.OUT_DIR }}
           cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
       
       - name: Compress package
         run: |
-          hdiutil create -fs HFS+ -volname "${{ env.EXE_NAME }}" -srcfolder ${{ env.EXE_NAME }}.app ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder ${{ env.BINARY }}.app ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
@@ -276,7 +276,7 @@ jobs:
       TARGET: aarch64-apple-darwin
       PROFILE: release
       PLATFORM: macOS-apple-silicon
-      OUT_DIR: ${{ env.EXE_NAME }}.app/Contents/MacOS
+      OUT_DIR: ${{ env.BINARY }}.app/Contents/MacOS
       VERSION: ${{ needs.get-version.outputs.version }}
       # MacOS 11.0 Big Sur is the first version to support universal binaries.
       MACOSX_DEPLOYMENT_TARGET: 11.0
@@ -299,12 +299,12 @@ jobs:
       - name: Prepare package
         run: |
           mkdir -p ${{ env.OUT_DIR }}
-          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.EXE_NAME }} ${{ env.OUT_DIR }}
+          cp target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }} ${{ env.OUT_DIR }}
           cp -r assets ${{ env.OUT_DIR }} || true # Ignore error if `assets` folder does not exist
           
       - name: Compress package
         run: |
-          hdiutil create -fs HFS+ -volname "${{ env.EXE_NAME }}" -srcfolder ${{ env.EXE_NAME }}.app ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
+          hdiutil create -fs HFS+ -volname "${{ env.BINARY }}" -srcfolder ${{ env.BINARY }}.app ${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}.dmg
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v3
