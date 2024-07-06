@@ -52,10 +52,13 @@ jobs:
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - name: Set up environment
+      - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}" >> "${GITHUB_ENV}"
+
+      - name: Set OUT_DIR environment variable
+        run: |
+          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -125,10 +128,13 @@ jobs:
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - name: Set up environment
+      - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}" >> "${GITHUB_ENV}"
+
+      - name: Set OUT_DIR environment variable
+        run: |
+          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -188,10 +194,13 @@ jobs:
       VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
-      - name: Set up environment
+      - name: Set PACKAGE environment variable
         run: |
           "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
-          "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
+          
+      - name: Set OUT_DIR environment variable
+        run: |
+          "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -249,10 +258,13 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.9
 
     steps:
-      - name: Set up environment
+      - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
+      
+      - name: Set OUT_DIR environment variable
+        run: |
+          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -313,7 +325,7 @@ jobs:
       - name: Set up environment
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-          echo "OUT_DIR=build/${PACKAGE}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
+          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
