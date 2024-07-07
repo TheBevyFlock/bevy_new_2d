@@ -1,9 +1,7 @@
 // Disable console on Windows for non-dev builds.
 #![cfg_attr(not(feature = "dev"), windows_subsystem = "windows")]
 
-mod core;
-mod ui;
-
+use bevy_template::GamePlugin;
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 
@@ -28,7 +26,8 @@ fn main() {
                         // The window will be made visible after a few frames.
                         // This is useful when you want to avoid the white window that shows up before the GPU is ready to render the app.
                         // Based on: <https://github.com/bevyengine/bevy/blob/v0.14.0/examples/window/window_settings.rs#L56>
-                        visible: true, // TODO: Set to false when the freeze is fixed
+                        // false on windows
+                        visible: cfg!(not(windows)),
                         ..default()
                     }
                     .into(),
@@ -36,6 +35,6 @@ fn main() {
                 }),
         )
         // We separate Bevy configuration from our game configuration.
-        .add_plugins(core::plugin)
+        .add_plugins(GamePlugin)
         .run();
 }
