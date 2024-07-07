@@ -4,7 +4,6 @@ mod mouse_hover;
 mod widgets;
 
 use bevy::{color::palettes::tailwind, prelude::*};
-
 pub use widgets::*;
 
 const BUTTON_NORMAL: Color = Color::Srgba(tailwind::GRAY_800);
