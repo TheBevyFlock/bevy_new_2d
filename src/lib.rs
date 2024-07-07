@@ -10,7 +10,7 @@ use bevy::prelude::*;
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         // State setup
         app.init_state::<AppState>();
         // Add state scoped entities for UI cleanup
