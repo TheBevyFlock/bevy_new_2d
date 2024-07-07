@@ -2,7 +2,7 @@ mod credits;
 
 use bevy::prelude::*;
 
-use super::CoreState;
+use super::RunningState;
 use crate::ui::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -17,7 +17,7 @@ pub(super) fn plugin(app: &mut App) {
         bevy::dev_tools::states::log_transitions::<MenuState>,
     );
 
-    // Setup, update, teardown
+    // Setup(s), update(s), teardown(s)
     app.add_systems(OnEnter(MenuState::Main), setup);
     app.add_systems(Update, update.run_if(in_state(MenuState::Main)));
 
@@ -26,7 +26,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(SubStates, Debug, PartialEq, Hash, Eq, Clone, Default)]
-#[source(CoreState = CoreState::Menu)]
+#[source(RunningState = RunningState::Menu)]
 enum MenuState {
     #[default]
     Main,
@@ -47,14 +47,14 @@ fn setup(mut commands: Commands) {
 }
 
 fn update(
-    mut next_core_state: ResMut<NextState<CoreState>>,
+    mut next_core_state: ResMut<NextState<RunningState>>,
     mut next_menu_state: ResMut<NextState<MenuState>>,
     mut interactions_query: ButtonInteractionQuery<UiAction>,
 ) {
     for (interaction, button) in &mut interactions_query {
         if matches!(interaction, Interaction::Pressed) {
             match button {
-                UiAction::Play => next_core_state.set(CoreState::Game),
+                UiAction::Play => next_core_state.set(RunningState::Game),
                 UiAction::Credits => next_menu_state.set(MenuState::Credits),
             }
         }
