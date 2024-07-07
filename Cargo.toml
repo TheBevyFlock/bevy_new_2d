@@ -7,7 +7,10 @@ license = "MIT OR Apache-2.0 OR CC0-1.0"
 [dependencies]
 bevy = "0.14"
 # Disable low-severity logs at compile time for performance.
-log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
+log = { version = "0.4", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
 
 [features]
 default = [
@@ -27,6 +30,15 @@ dev_native = [
     "bevy/embedded_watcher",
 ]
 
+# Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
+# In some cases they may still signal poor code quality however, so consider commenting out these lines.
+[lints.clippy]
+# Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
+# request more than 7 arguments -- which triggers this lint.
+too_many_arguments = "allow"
+# Queries that access many components may trigger this lint.
+type_complexity = "allow"
+
 # Compile with Performance Optimizations:
 # https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
 
@@ -38,13 +50,21 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
-# Enable additional optimization in release mode at the cost of compile time.
+# Enable more optimization in release mode at the cost of compile time.
 [profile.release]
-lto = "thin"
+# Compile the entire crate as one unit.
+# Significantly slows compile times, marginal improvements.
 codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slightly slows compile times, marginal improvements.
+lto = "thin"
 
-# Optimize for size in wasm-release mode.
+# Optimize for size in wasm-release mode to reduce load times and bandwidth usage on web.
 [profile.wasm-release]
+# Use release profile as default values.
 inherits = "release"
+# Optimize with size in mind (also try "s", sometimes it is better).
+# This doesn't increase compilation times compared to -O3, great improvements.
 opt-level = "z"
+# Strip all debugging information from the binary to reduce file size.
 strip = "debuginfo"
