@@ -20,7 +20,7 @@ enum Deflicker {
     Done,
 }
 
-fn make_window_invisible(mut window: Query<&mut Window>) {
+fn hide_window(mut window: Query<&mut Window>) {
     // This will make the window invisible during `Boot`.
     // This workaround does not currently work on Windows: <https://github.com/bevyengine/bevy/issues/14135>
     window.single_mut().visible = cfg!(target_os = "windows");
@@ -32,6 +32,6 @@ fn finish_deflicker(frames: Res<FrameCount>, mut next_deflicker: ResMut<NextStat
     }
 }
 
-fn make_window_visible(mut window: Query<&mut Window>) {
+fn show_window(mut window: Query<&mut Window>) {
     window.single_mut().visible = true;
 }
