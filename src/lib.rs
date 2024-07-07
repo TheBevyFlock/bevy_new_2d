@@ -19,8 +19,6 @@ impl Plugin for GamePlugin {
 
         #[cfg(feature = "dev")]
         app.add_plugins(dev::plugin);
-
-        // For a larger UI example visit: https://github.com/MiniaczQ/bevy-substate-project
     }
 }
 
