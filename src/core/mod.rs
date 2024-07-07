@@ -13,12 +13,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_sub_state::<RunningState>();
     // Add state scoped entities for UI cleanup
     app.enable_state_scoped_entities::<RunningState>();
-    // Print state transitions in dev builds
-    #[cfg(feature = "dev")]
-    app.add_systems(
-        Update,
-        bevy::dev_tools::states::log_transitions::<RunningState>,
-    );
 
     // Setup(s), update(s), teardown(s)
     app.add_systems(
@@ -36,7 +30,7 @@ pub(super) fn plugin(app: &mut App) {
 // TODO: name needs bikeshedding
 #[derive(SubStates, Debug, PartialEq, Eq, Hash, Clone, Default)]
 #[source(AppState = AppState::Ready)]
-enum RunningState {
+pub(crate) enum RunningState {
     #[default]
     Menu,
     Game,

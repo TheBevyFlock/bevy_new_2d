@@ -10,12 +10,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_sub_state::<MenuState>();
     // Add state scoped entities for UI cleanup
     app.enable_state_scoped_entities::<MenuState>();
-    // Print state transitions in debug builds
-    #[cfg(feature = "dev")]
-    app.add_systems(
-        Update,
-        bevy::dev_tools::states::log_transitions::<MenuState>,
-    );
 
     // Setup(s), update(s), teardown(s)
     app.add_systems(OnEnter(MenuState::Main), setup);
@@ -27,7 +21,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(SubStates, Debug, PartialEq, Hash, Eq, Clone, Default)]
 #[source(RunningState = RunningState::Menu)]
-enum MenuState {
+pub(crate) enum MenuState {
     #[default]
     Main,
     Credits,
