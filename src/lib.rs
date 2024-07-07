@@ -1,7 +1,5 @@
 mod bevy_setup;
 mod core;
-#[cfg(feature = "dev")]
-mod dev;
 mod ui;
 
 use bevy::prelude::*;
@@ -16,9 +14,6 @@ impl Plugin for GamePlugin {
             .enable_state_scoped_entities::<AppState>()
             // Sub-plugins
             .add_plugins((bevy_setup::plugin, core::plugin, ui::plugin));
-
-        #[cfg(feature = "dev")]
-        app.add_plugins(dev::plugin);
     }
 }
 
