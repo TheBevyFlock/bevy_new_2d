@@ -25,7 +25,10 @@ fn main() {
                 })
                 .set(WindowPlugin {
                     primary_window: Window {
-                        title: "Bevy Template".to_string(),
+                        title: "bevy-template".to_string(),
+                        canvas: Some("#bevy".to_string()),
+                        fit_canvas_to_parent: true,
+                        prevent_default_event_handling: true,
                         // This will spawn an invisible window.
                         // The window will be made visible after a few frames.
                         // This is useful when you want to avoid the white window that shows up before the GPU is ready to render the app.
