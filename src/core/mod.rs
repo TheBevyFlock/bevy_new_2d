@@ -2,10 +2,10 @@
 
 mod asset;
 mod camera;
+mod deflicker;
 #[cfg(feature = "dev")]
 mod dev;
 mod window;
-mod deflicker;
 
 use bevy::prelude::*;
 

@@ -13,6 +13,13 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnExit(Deflicker::Running), make_window_visible);
 }
 
+#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
+enum Deflicker {
+    #[default]
+    Running,
+    Done,
+}
+
 fn make_window_invisible(mut window: Query<&mut Window>) {
     // This will make the window invisible during `Boot`.
     // This workaround does not currently work on Windows: <https://github.com/bevyengine/bevy/issues/14135>
@@ -27,11 +34,4 @@ fn finish_deflicker(frames: Res<FrameCount>, mut next_deflicker: ResMut<NextStat
 
 fn make_window_visible(mut window: Query<&mut Window>) {
     window.single_mut().visible = true;
-}
-
-#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
-enum Deflicker {
-    #[default]
-    Running,
-    Done,
 }
