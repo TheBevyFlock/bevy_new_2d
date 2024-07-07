@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-
 use super::MenuState;
 use crate::ui::*;
 

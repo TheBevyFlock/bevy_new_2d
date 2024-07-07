@@ -1,5 +1,7 @@
-mod loading;
-mod ready;
+mod bevy_setup;
+mod core;
+#[cfg(feature = "dev")]
+mod dev;
 mod ui;
 
 use bevy::prelude::*;
@@ -9,18 +11,14 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         // State setup
-        app.init_state::<AppState>();
-        // Add state scoped entities for UI cleanup
-        app.enable_state_scoped_entities::<AppState>();
-        // Print state transitions in dev builds
+        app.init_state::<AppState>()
+            // Add state scoped entities for UI cleanup
+            .enable_state_scoped_entities::<AppState>()
+            // Sub-plugins
+            .add_plugins((bevy_setup::plugin, core::plugin, ui::plugin));
+
         #[cfg(feature = "dev")]
-        app.add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>);
-
-        // Sub plugins
-        app.add_plugins((loading::plugin, ready::plugin));
-
-        // Other
-        app.add_plugins(ui::plugin);
+        app.add_plugins(dev::plugin);
 
         // For a larger UI example visit: https://github.com/MiniaczQ/bevy-substate-project
     }

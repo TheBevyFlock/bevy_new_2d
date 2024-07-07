@@ -1,9 +1,8 @@
 mod game;
 mod menu;
 
-pub use bevy::prelude::*;
-
-use super::AppState;
+use crate::AppState;
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // State setup
