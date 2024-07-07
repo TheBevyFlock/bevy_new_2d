@@ -19,13 +19,19 @@ fn main() {
                     ..default()
                 })
                 .set(WindowPlugin {
-                    primary_window: Some(Window {
+                    primary_window: Window {
                         title: "bevy-template".to_string(),
                         canvas: Some("#bevy".to_string()),
                         fit_canvas_to_parent: true,
                         prevent_default_event_handling: true,
+                        // This will spawn an invisible window.
+                        // The window will be made visible after a few frames.
+                        // This is useful when you want to avoid the white window that shows up before the GPU is ready to render the app.
+                        // Based on: <https://github.com/bevyengine/bevy/blob/v0.14.0/examples/window/window_settings.rs#L56>
+                        visible: true, // TODO: Set to false when the freeze is fixed
                         ..default()
-                    }),
+                    }
+                    .into(),
                     ..default()
                 }),
         )
