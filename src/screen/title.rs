@@ -5,8 +5,7 @@ use crate::util::ui::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Screen setup and teardown.
-    app.add_systems(OnEnter(Screen::Title), enter_title)
-        .add_systems(OnExit(Screen::Title), exit_title);
+    app.add_systems(OnEnter(Screen::Title), enter_title);
 
     app.add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
 }
@@ -29,8 +28,6 @@ fn enter_title(mut commands: Commands) {
         .insert(TitleAction::Credits)
         .set_parent(list);
 }
-
-fn exit_title() {}
 
 fn handle_title_action(
     mut next_screen: ResMut<NextState<Screen>>,
