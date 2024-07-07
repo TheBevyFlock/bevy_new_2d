@@ -14,13 +14,26 @@ use bevy::prelude::*;
 
 fn main() {
     App::new()
-        // Wasm builds will check for meta files (that don't exist) if this isn't set.
-        // This causes errors and even panics on web build on itch.
-        // See https://github.com/bevyengine/bevy_github_ci_template/issues/48.
-        .add_plugins(DefaultPlugins.set(AssetPlugin {
-            meta_check: AssetMetaCheck::Never,
-            ..default()
-        }))
+        .add_plugins(
+            DefaultPlugins
+                .set(AssetPlugin {
+                    // Wasm builds will check for meta files (that don't exist) if this isn't set.
+                    // This causes errors and even panics on web build on itch.
+                    // See https://github.com/bevyengine/bevy_github_ci_template/issues/48.
+                    meta_check: AssetMetaCheck::Never,
+                    ..default()
+                })
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "bevy-template".to_string(),
+                        canvas: Some("#bevy".to_string()),
+                        fit_canvas_to_parent: true,
+                        prevent_default_event_handling: true,
+                        ..default()
+                    }),
+                    ..default()
+                }),
+        )
         // We separate Bevy configuration from our game configuration.
         .add_plugins(core::plugin)
         .run();
