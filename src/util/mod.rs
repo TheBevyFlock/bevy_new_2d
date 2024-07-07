@@ -1,5 +1,10 @@
 //! Self-contained, re-usable utilities that are not specific to this game.
 
+// Unused utilities and re-exports may trigger these lints undesirably.
+// Consider uncommenting these lines.
+// #![allow(dead_code)]
+// #![allow(unused_imports)]
+
 pub mod ui;
 
 use bevy::prelude::*;
