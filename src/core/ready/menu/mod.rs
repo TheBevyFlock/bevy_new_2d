@@ -1,8 +1,8 @@
 mod credits;
 
 use super::RunningState;
-use bevy::prelude::*;
 use crate::ui::*;
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // State setup
