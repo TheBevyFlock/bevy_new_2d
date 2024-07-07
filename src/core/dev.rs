@@ -1,5 +1,6 @@
-use crate::AppState;
 use bevy::prelude::*;
+
+use crate::AppState;
 
 pub(super) fn plugin(app: &mut App) {
     // Print state transitions in dev builds

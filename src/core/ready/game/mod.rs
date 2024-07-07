@@ -1,5 +1,6 @@
-use super::RunningState;
 use bevy::prelude::*;
+
+use super::RunningState;
 
 pub(super) fn plugin(app: &mut App) {
     // Setup(s), update(s), teardown(s)

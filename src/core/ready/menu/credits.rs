@@ -1,6 +1,7 @@
+use bevy::prelude::*;
+
 use super::MenuState;
 use crate::ui::*;
-use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Setup(s), update(s), teardown(s)

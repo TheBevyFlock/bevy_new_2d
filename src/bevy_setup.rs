@@ -1,5 +1,4 @@
-use bevy::asset::AssetMetaCheck;
-use bevy::prelude::*;
+use bevy::{asset::AssetMetaCheck, prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(
@@ -19,9 +18,9 @@ pub(super) fn plugin(app: &mut App) {
                     prevent_default_event_handling: true,
                     // This will spawn an invisible window.
                     // The window will be made visible after a few frames.
-                    // This is useful when you want to avoid the white window that shows up before the GPU is ready to render the app.
-                    // Based on: <https://github.com/bevyengine/bevy/blob/v0.14.0/examples/window/window_settings.rs#L56>
-                    // Not invisible on Windows because of https://github.com/bevyengine/bevy/issues/14135
+                    // This is useful when you want to avoid the white window that shows up before
+                    // the GPU is ready to render the app. Based on: <https://github.com/bevyengine/bevy/blob/v0.14.0/examples/window/window_settings.rs#L56>
+                    // Not invisible on Windows because of <https://github.com/bevyengine/bevy/issues/14135>
                     visible: cfg!(target_os = "windows"),
                     ..default()
                 }

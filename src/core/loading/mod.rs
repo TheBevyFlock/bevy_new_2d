@@ -1,6 +1,6 @@
+use bevy::{core::FrameCount, prelude::*};
+
 use crate::AppState;
-use bevy::core::FrameCount;
-use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Setup(s), update(s), teardown(s)
