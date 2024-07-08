@@ -1,8 +1,11 @@
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, update);
+    app.add_systems(Update, apply_interaction_palette);
 }
+
+pub(crate) type InteractionQuery<'w, 's, T> =
+    Query<'w, 's, (&'static Interaction, T), Changed<Interaction>>;
 
 /// Palette for widget interactions.
 #[derive(Component)]
@@ -22,13 +25,10 @@ impl InteractionPalette {
     }
 }
 
-fn update(
-    mut interaction_query: Query<
-        (&mut BackgroundColor, &Interaction, &InteractionPalette),
-        (Changed<Interaction>, With<Button>),
-    >,
+fn apply_interaction_palette(
+    mut palette_query: InteractionQuery<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
-    for (mut background, interaction, palette) in &mut interaction_query {
+    for (interaction, (palette, mut background)) in &mut palette_query {
         *background = match interaction {
             Interaction::None => palette.none,
             Interaction::Hovered => palette.hovered,

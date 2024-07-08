@@ -1,21 +1,19 @@
 //! Collection of UI helpers.
 
-mod mouse_hover;
-mod palette;
+pub(crate) mod interaction;
+pub(crate) mod palette;
 mod widgets;
 
-use bevy::{color::palettes::tailwind, prelude::*};
-
-pub use palette::*;
-pub use widgets::*;
-
-pub(crate) type ButtonInteractionQuery<'w, 's, 'a, T> =
-    Query<'w, 's, (&'a Interaction, &'a T), (Changed<Interaction>, With<Button>)>;
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    // Sub plugins
-    app.add_plugins(mouse_hover::plugin);
+    app.add_plugins(interaction::plugin);
+}
 
-    // Other
-    app.insert_resource(ClearColor(BACKGROUND));
+pub(crate) mod prelude {
+    pub(crate) use super::{
+        interaction::{InteractionPalette, InteractionQuery},
+        palette as ui_palette,
+        widgets::{RootContainers as _, Widgets as _},
+    };
 }

@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::util::ui::*;
+use crate::util::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), enter_credits);
@@ -33,7 +33,7 @@ fn enter_credits(mut commands: Commands) {
 
 fn handle_credits_action(
     mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: ButtonInteractionQuery<CreditsAction>,
+    mut button_query: InteractionQuery<&CreditsAction>,
 ) {
     for (interaction, action) in &mut button_query {
         if matches!(interaction, Interaction::Pressed) {
