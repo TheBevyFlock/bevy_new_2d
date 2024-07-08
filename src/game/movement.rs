@@ -2,14 +2,17 @@
 
 use bevy::prelude::*;
 
-use super::physics::Velocity;
+use super::{physics::Velocity, spawn::player::Player};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, handle_input);
+    app.add_systems(Update, handle_player_movement_input);
 }
 
 /// Handle keyboard input to move the player.
-fn handle_input(keyboard_input: Res<ButtonInput<KeyCode>>, mut query: Query<&mut Velocity>) {
+fn handle_player_movement_input(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut query: Query<&mut Velocity, With<Player>>,
+) {
     /// Since Bevy's default 2D camera setup is scaled such that
     /// one unit is one pixel, you can think of this as
     /// "How many pixels per second should the player move?"

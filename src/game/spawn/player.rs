@@ -14,6 +14,9 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Debug, Event)]
 pub(crate) struct SpawnPlayer;
 
+#[derive(Debug, Component, Clone, Copy, PartialEq, Eq, Hash)]
+pub(crate) struct Player;
+
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
@@ -21,6 +24,7 @@ fn spawn_player(
 ) {
     commands.spawn((
         Name::new("Player"),
+        Player,
         SpriteBundle {
             texture: asset_server.load("ducky.png"),
             transform: Transform::from_scale(Vec3::splat(0.5)),
