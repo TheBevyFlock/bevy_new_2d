@@ -25,7 +25,7 @@ fn enter_credits(mut commands: Commands) {
         .my_root(|children| {
             children.my_label("Alice - Foo");
             children.my_label("Bob - Bar");
-            
+
             children.my_button("Back").insert(CreditsAction::Back);
         })
         .insert(StateScoped(Screen::Credits));
