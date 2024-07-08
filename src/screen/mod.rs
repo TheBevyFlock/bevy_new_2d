@@ -1,4 +1,3 @@
-mod boot;
 mod credits;
 mod playing;
 mod title;
@@ -11,19 +10,13 @@ pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>()
         .enable_state_scoped_entities::<Screen>();
 
-    app.add_plugins((
-        boot::plugin,
-        title::plugin,
-        credits::plugin,
-        playing::plugin,
-    ));
+    app.add_plugins((title::plugin, credits::plugin, playing::plugin));
 }
 
 #[derive(SubStates, Debug, Hash, PartialEq, Eq, Clone, Default)]
 #[source(WindowState = WindowState::Ready)]
 pub enum Screen {
     #[default]
-    Boot,
     Title,
     Credits,
     Playing,
