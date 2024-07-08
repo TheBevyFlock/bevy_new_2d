@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use super::physics::PhysicalTransform;
+use super::physics::{PhysicalTransform, PreviousPhysicalTransform};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, update_rendered_transform);
@@ -10,17 +10,21 @@ pub(super) fn plugin(app: &mut App) {
 
 fn update_rendered_transform(
     fixed_time: Res<Time<Fixed>>,
-    mut query: Query<(&mut Transform, &PhysicalTransform)>,
+    mut query: Query<(
+        &mut Transform,
+        &PhysicalTransform,
+        &PreviousPhysicalTransform,
+    )>,
 ) {
-    for (mut transform, physical_transform) in query.iter_mut() {
-        let last_rendered_translation = transform.translation;
-        let physical_translation = physical_transform.translation;
+    for (mut transform, current_physical_transform, previous_physical_transform) in query.iter_mut()
+    {
+        let previous = previous_physical_transform.translation;
+        let current = current_physical_transform.translation;
         // The overstep fraction is a value between 0 and 1 that tells us how far we are
         // between two fixed timesteps.
         let alpha = fixed_time.overstep_fraction();
 
-        let next_rendered_translation = last_rendered_translation.lerp(physical_translation, alpha);
-
-        transform.translation = next_rendered_translation;
+        let rendered_translation = previous.lerp(current, alpha);
+        transform.translation = rendered_translation;
     }
 }

@@ -8,7 +8,8 @@ use bevy::{
 pub(super) fn plugin(app: &mut App) {
     // `FixedUpdate` runs before `Update`, so the physics simulation is advanced
     // before the player's visual representation is updated.
-    app.add_systems(FixedUpdate, advance_physics);
+    app.add_systems(FixedUpdate, advance_physics)
+        .observe(on_add_physical_transform);
 }
 
 /// How many units per second the player should move.
@@ -21,8 +22,27 @@ pub(crate) struct Velocity(pub(crate) Vec3);
 #[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
 pub(crate) struct PhysicalTransform(pub(crate) Transform);
 
-/// Make sure that this component is always initialized
-/// with the same value as the `Transform`
+/// The value that [`PhysicalTranslation`] had in the last fixed timestep.
+/// Used for interpolation in the `update_rendered_transform` system.
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+pub(crate) struct PreviousPhysicalTransform(pub(crate) Transform);
+
+/// Make sure that [`PhysicalTransform`] is always initialized
+/// with the same value as the [`Transform`] and add a
+/// [`PreviousPhysicalTransform`]
+fn on_add_physical_transform(
+    trigger: Trigger<OnAdd, PhysicalTransform>,
+    mut commands: Commands,
+    mut query: Query<(&mut PhysicalTransform, &Transform)>,
+) {
+    let entity = trigger.entity();
+    let (mut physical_transform, &initial_transform) = query.get_mut(entity).unwrap();
+    physical_transform.0 = initial_transform;
+    commands
+        .entity(entity)
+        .insert(PreviousPhysicalTransform(initial_transform));
+}
+
 impl Component for PhysicalTransform {
     const STORAGE_TYPE: StorageType = StorageType::Table;
 
@@ -42,9 +62,16 @@ impl Component for PhysicalTransform {
 /// `Res<Time<Fixed>>` automatically. We are being explicit here for clarity.
 fn advance_physics(
     fixed_time: Res<Time<Fixed>>,
-    mut query: Query<(&mut PhysicalTransform, &Velocity)>,
+    mut query: Query<(
+        &mut PhysicalTransform,
+        &mut PreviousPhysicalTransform,
+        &Velocity,
+    )>,
 ) {
-    for (mut physical_transform, velocity) in query.iter_mut() {
-        physical_transform.translation += velocity.0 * fixed_time.delta_seconds();
+    for (mut current_physical_transform, mut previous_physical_transform, velocity) in
+        query.iter_mut()
+    {
+        previous_physical_transform.0 = current_physical_transform.0;
+        current_physical_transform.translation += velocity.0 * fixed_time.delta_seconds();
     }
 }
