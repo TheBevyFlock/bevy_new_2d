@@ -19,11 +19,16 @@ pub(crate) struct Velocity(pub(crate) Vec3);
 /// The actual transform of the player in the physics simulation.
 /// This is separate from the `Transform`, which is merely a visual
 /// representation.
+/// The reason for this separation is that physics simulations
+/// want to run at a fixed timestep, while rendering should run
+/// as fast as possible. The rendering will then interpolate between
+/// the previous and current physical translation to get a smooth
+/// visual representation of the player.
 #[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
 pub(crate) struct PhysicalTransform(pub(crate) Transform);
 
 /// The value that [`PhysicalTranslation`] had in the last fixed timestep.
-/// Used for interpolation in the `update_rendered_transform` system.
+/// Used for interpolation when rendering.
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
 pub(crate) struct PreviousPhysicalTransform(pub(crate) Transform);
 
