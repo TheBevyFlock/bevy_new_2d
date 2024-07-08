@@ -2,6 +2,7 @@
 
 mod credits;
 mod playing;
+mod splash;
 mod title;
 
 use bevy::prelude::*;
@@ -12,7 +13,12 @@ pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>()
         .enable_state_scoped_entities::<Screen>();
 
-    app.add_plugins((title::plugin, credits::plugin, playing::plugin));
+    app.add_plugins((
+        splash::plugin,
+        title::plugin,
+        credits::plugin,
+        playing::plugin,
+    ));
 }
 
 /// The game's screen states. This is a sub-state of [`Booting::Done`].
@@ -20,6 +26,7 @@ pub(super) fn plugin(app: &mut App) {
 #[source(Booting = Booting::Done)]
 pub(crate) enum Screen {
     #[default]
+    Splash,
     Title,
     Credits,
     Playing,
