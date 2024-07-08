@@ -10,7 +10,8 @@ pub(super) fn plugin(app: &mut App) {
 
 /// Interpolate between the previous and current physical translation to get a
 /// smooth visual representation of the player. This is a tradeoff, as it will
-/// also make visual representation lag slightly behind the actual physics simulation.
+/// also make visual representation lag slightly behind the actual physics
+/// simulation.
 fn update_rendered_transform(
     fixed_time: Res<Time<Fixed>>,
     mut query: Query<(

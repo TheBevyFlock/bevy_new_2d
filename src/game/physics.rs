@@ -62,11 +62,8 @@ impl Component for PhysicalTransform {
 
 /// Advance the physics simulation by one fixed timestep. This may run zero or
 /// multiple times per frame.
-///
-/// Note that since this runs in `FixedUpdate`, `Res<Time>` would be
-/// `Res<Time<Fixed>>` automatically. We are being explicit here for clarity.
 fn advance_physics(
-    fixed_time: Res<Time<Fixed>>,
+    fixed_time: Res<Time>,
     mut query: Query<(
         &mut PhysicalTransform,
         &mut PreviousPhysicalTransform,
