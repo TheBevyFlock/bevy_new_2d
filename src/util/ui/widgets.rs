@@ -30,12 +30,12 @@ impl<'a> Spawner<'a> for ChildBuilder<'a> {
 /// Root container spawning trait.
 pub(crate) trait RootContainers {
     /// Spawns root node that covers full screen and verticaly and horizontaly centers it's content.
-    fn ui_root(&mut self, spawn_children: impl FnOnce(&mut ChildBuilder)) -> EntityCommands;
+    fn ui_root(&mut self) -> EntityCommands;
 }
 
 impl<'a, 'b> RootContainers for Commands<'a, 'b> {
-    fn ui_root(&mut self, spawn_children: impl FnOnce(&mut ChildBuilder)) -> EntityCommands {
-        let mut entity_commands = self.spawn(NodeBundle {
+    fn ui_root(&mut self) -> EntityCommands {
+        self.spawn(NodeBundle {
             style: Style {
                 width: Val::Percent(100.),
                 height: Val::Percent(100.),
@@ -47,9 +47,7 @@ impl<'a, 'b> RootContainers for Commands<'a, 'b> {
                 ..default()
             },
             ..default()
-        });
-        entity_commands.with_children(spawn_children);
-        entity_commands
+        })
     }
 }
 

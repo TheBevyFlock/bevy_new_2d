@@ -20,9 +20,9 @@ enum CreditsAction {
 }
 
 fn enter_credits(mut commands: Commands) {
-    commands.ui_root(|_| {});
     commands
-        .ui_root(|children| {
+        .ui_root()
+        .with_children(|children| {
             children.label("Alice - Foo");
             children.label("Bob - Bar");
 
