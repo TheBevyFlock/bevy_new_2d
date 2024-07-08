@@ -18,7 +18,6 @@ pub(crate) struct Velocity(pub(crate) Vec3);
 /// The actual transform of the player in the physics simulation.
 /// This is separate from the `Transform`, which is merely a visual
 /// representation.
-
 #[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
 pub(crate) struct PhysicalTransform(pub(crate) Transform);
 
