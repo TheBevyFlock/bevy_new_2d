@@ -6,12 +6,11 @@
 //! behind it.
 
 use bevy::prelude::*;
-pub(crate) use level::SpawnLevel;
 
-mod level;
 mod movement;
 mod physics;
 mod render;
+pub(crate) mod spawn;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure_sets(Update, GameSystem::Movement);
@@ -20,7 +19,7 @@ pub(super) fn plugin(app: &mut App) {
         movement::plugin,
         physics::plugin,
         render::plugin,
-        level::plugin,
+        spawn::plugin,
     ));
 }
 

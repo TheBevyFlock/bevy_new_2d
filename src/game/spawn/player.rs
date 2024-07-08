@@ -1,19 +1,21 @@
-//! Setup the level
+//! Spawn the player.
 
 use bevy::prelude::*;
 
-use super::physics::{PhysicalTransform, Velocity};
-use crate::screen::Screen;
+use crate::{
+    game::physics::{PhysicalTransform, Velocity},
+    screen::Screen,
+};
 
 #[derive(Debug, Event)]
-pub(crate) struct SpawnLevel;
+pub(crate) struct SpawnPlayer;
 
 pub(super) fn plugin(app: &mut App) {
-    app.observe(spawn_level);
+    app.observe(spawn_player);
 }
 
-fn spawn_level(
-    _trigger: Trigger<SpawnLevel>,
+fn spawn_player(
+    _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
