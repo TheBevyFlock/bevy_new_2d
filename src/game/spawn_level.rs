@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use super::movement::{PhysicalTranslation, Velocity};
 use crate::screen::Screen;
 
 #[derive(Debug, Event)]
@@ -18,8 +19,11 @@ fn spawn_level(
         Name::new("Player"),
         SpriteBundle {
             texture: asset_server.load("ducky.png"),
+            transform: Transform::from_scale(Vec3::splat(0.4)),
             ..Default::default()
         },
+        Velocity::default(),
+        PhysicalTranslation::default(),
         StateScoped(Screen::Playing),
     ));
 }
