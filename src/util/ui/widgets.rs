@@ -2,6 +2,8 @@
 
 use bevy::{ecs::system::EntityCommands, prelude::*};
 
+use crate::util::spawn::Spawn;
+
 use super::{
     interaction::InteractionPalette,
     palette::{
@@ -9,32 +11,14 @@ use super::{
         NODE_BACKGROUND,
     },
 };
-
-/// Internal trait for things that can spawn entities.
-trait Spawner<'a> {
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands;
-}
-
-impl<'a> Spawner<'a> for Commands<'a, 'a> {
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
-        self.spawn(bundle)
-    }
-}
-
-impl<'a> Spawner<'a> for ChildBuilder<'a> {
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
-        self.spawn(bundle)
-    }
-}
-
-/// Root container spawning trait.
-pub(crate) trait RootContainers {
+/// Contanier spawning trait.
+pub(crate) trait Containers {
     /// Spawns a root node that covers the full screen
     /// and centers its content horizontally and vertically.
     fn ui_root(&mut self) -> EntityCommands;
 }
 
-impl<'a, 'b> RootContainers for Commands<'a, 'b> {
+impl<'a, T: Spawn> Containers for T {
     fn ui_root(&mut self) -> EntityCommands {
         self.spawn(NodeBundle {
             style: Style {
@@ -62,7 +46,7 @@ pub(crate) trait Widgets<'a> {
     fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 }
 
-impl<'a, T: Spawner<'a>> Widgets<'a> for T {
+impl<'a, T: Spawn> Widgets<'a> for T {
     fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands {
         let mut entity_commands = self.spawn((
             ButtonBundle {
