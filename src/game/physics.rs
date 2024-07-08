@@ -8,8 +8,7 @@ use bevy::{
 pub(super) fn plugin(app: &mut App) {
     // `FixedUpdate` runs before `Update`, so the physics simulation is advanced
     // before the player's visual representation is updated.
-    app.add_systems(FixedUpdate, advance_physics)
-        .observe(on_add_physical_transform);
+    app.add_systems(FixedUpdate, advance_physics);
 }
 
 /// How many units per second the player should move.
@@ -32,22 +31,10 @@ pub(crate) struct PhysicalTransform(pub(crate) Transform);
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
 pub(crate) struct PreviousPhysicalTransform(pub(crate) Transform);
 
-/// Make sure that [`PhysicalTransform`] is always initialized
-/// with the same value as the [`Transform`] and add a
-/// [`PreviousPhysicalTransform`]
-fn on_add_physical_transform(
-    trigger: Trigger<OnAdd, PhysicalTransform>,
-    mut commands: Commands,
-    mut query: Query<(&mut PhysicalTransform, &Transform)>,
-) {
-    let entity = trigger.entity();
-    let (mut physical_transform, &initial_transform) = query.get_mut(entity).unwrap();
-    physical_transform.0 = initial_transform;
-    commands
-        .entity(entity)
-        .insert(PreviousPhysicalTransform(initial_transform));
-}
-
+/// When adding a [`PhysicalTransform`]:
+/// - make sure it is always initialized with the same value as the
+///   [`Transform`]
+/// - add a [`PreviousPhysicalTransform`] as well
 impl Component for PhysicalTransform {
     const STORAGE_TYPE: StorageType = StorageType::Table;
 
@@ -56,6 +43,10 @@ impl Component for PhysicalTransform {
             let rendered_transform = *world.get::<Transform>(entity).unwrap();
             let mut physical_transform = world.get_mut::<PhysicalTransform>(entity).unwrap();
             physical_transform.0 = rendered_transform;
+            world
+                .commands()
+                .entity(entity)
+                .insert(PreviousPhysicalTransform(rendered_transform));
         });
     }
 }
