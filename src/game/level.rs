@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use super::physics::{PhysicalTranslation, Velocity};
+use super::physics::{PhysicalTransform, Velocity};
 use crate::screen::Screen;
 
 #[derive(Debug, Event)]
@@ -25,7 +25,7 @@ fn spawn_level(
             ..Default::default()
         },
         Velocity::default(),
-        PhysicalTranslation::default(),
+        PhysicalTransform::default(),
         StateScoped(Screen::Playing),
     ));
 }
