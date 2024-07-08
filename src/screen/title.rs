@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::util::ui::*;
+use crate::util::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), enter_title);
@@ -18,21 +18,18 @@ enum TitleAction {
 }
 
 fn enter_title(mut commands: Commands) {
-    let list = commands.my_root().insert(StateScoped(Screen::Title)).id();
-
     commands
-        .my_button("Play")
-        .insert(TitleAction::Play)
-        .set_parent(list);
-    commands
-        .my_button("Credits")
-        .insert(TitleAction::Credits)
-        .set_parent(list);
+        .ui_root()
+        .insert(StateScoped(Screen::Title))
+        .with_children(|children| {
+            children.button("Play").insert(TitleAction::Play);
+            children.button("Credits").insert(TitleAction::Credits);
+        });
 }
 
 fn handle_title_action(
     mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: ButtonInteractionQuery<TitleAction>,
+    mut button_query: InteractionQuery<&TitleAction>,
 ) {
     for (interaction, action) in &mut button_query {
         if matches!(interaction, Interaction::Pressed) {

@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::util::ui::*;
+use crate::util::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), enter_credits);
@@ -20,20 +20,20 @@ enum CreditsAction {
 }
 
 fn enter_credits(mut commands: Commands) {
-    let list = commands.my_root().insert(StateScoped(Screen::Credits)).id();
-
-    commands.my_label("Alice - Foo").set_parent(list);
-    commands.my_label("Bob - Bar").set_parent(list);
-
     commands
-        .my_button("Back")
-        .insert(CreditsAction::Back)
-        .set_parent(list);
+        .ui_root()
+        .insert(StateScoped(Screen::Credits))
+        .with_children(|children| {
+            children.label("Alice - Foo");
+            children.label("Bob - Bar");
+
+            children.button("Back").insert(CreditsAction::Back);
+        });
 }
 
 fn handle_credits_action(
     mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: ButtonInteractionQuery<CreditsAction>,
+    mut button_query: InteractionQuery<&CreditsAction>,
 ) {
     for (interaction, action) in &mut button_query {
         if matches!(interaction, Interaction::Pressed) {
