@@ -1,3 +1,8 @@
+:root {
+    /* Consider adjusting this color to match your splash screen! */
+    --loading-screen-bg-color: #282828;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -20,7 +25,7 @@ body {
 }
 
 #loading-screen {
-    background-color: #282828;
+    background-color: var(--loading-screen-bg-color);
 }
 
 .spinner {
