@@ -5,6 +5,8 @@ mod util;
 
 use bevy::prelude::*;
 
+#[derive(Default)]
+#[non_exhaustive]
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {

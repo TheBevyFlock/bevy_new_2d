@@ -8,7 +8,7 @@ pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_level);
 }
 
-#[derive(Debug, Event)]
+#[derive(Event, Debug)]
 pub(crate) struct SpawnLevel;
 
 fn spawn_level(_trigger: Trigger<SpawnLevel>, mut commands: Commands) {

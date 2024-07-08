@@ -1,6 +1,7 @@
 //! Spawn the player.
 
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     game::physics::{PhysicalTransform, Velocity},
@@ -9,12 +10,16 @@ use crate::{
 
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_player);
+    app.register_type::<Player>();
 }
 
-#[derive(Debug, Event)]
+#[derive(Event, Debug)]
 pub(crate) struct SpawnPlayer;
 
-#[derive(Debug, Component, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(
+    Component, Debug, Clone, Copy, PartialEq, Eq, Default, Hash, Reflect, Serialize, Deserialize,
+)]
+#[reflect(Component, Debug, PartialEq, Hash, Serialize, Deserialize)]
 pub(crate) struct Player;
 
 fn spawn_player(

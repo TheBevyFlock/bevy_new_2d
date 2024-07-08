@@ -7,5 +7,9 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn((
+        Name::new("Camera"),
+        Camera2dBundle::default(),
+        IsDefaultUiCamera,
+    ));
 }

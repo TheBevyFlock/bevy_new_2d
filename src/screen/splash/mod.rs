@@ -1,27 +1,28 @@
 //! A splash screen that plays briefly at startup.
 
 use bevy::{asset::embedded_asset, prelude::*};
-
-use crate::util::ui::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use super::Screen;
+use crate::util::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Add splash image
     embedded_asset!(app, "splash.png");
-    app.add_systems(OnEnter(Screen::Splash), spawn_splash)
-        // Make the screen-flicker bug less jarring on Windows (see `core/deflicker.rs`).
-        .insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
+    app.add_systems(OnEnter(Screen::Splash), spawn_splash);
+    // Make the screen-flicker bug less jarring on Windows
+    // (see `core/deflicker.rs`).
+    app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
     // Add splash timer
-    app.add_systems(OnEnter(Screen::Splash), insert_splash_timer)
-        .add_systems(OnExit(Screen::Splash), remove_splash_timer)
-        .add_systems(
-            Update,
-            (tick_splash_timer, check_splash_timer)
-                .chain()
-                .run_if(in_state(Screen::Splash)),
-        );
+    app.add_systems(OnEnter(Screen::Splash), insert_splash_timer);
+    app.add_systems(OnExit(Screen::Splash), remove_splash_timer);
+    app.add_systems(
+        Update,
+        (tick_splash_timer, check_splash_timer)
+            .chain()
+            .run_if(in_state(Screen::Splash)),
+    );
 }
 
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
@@ -30,27 +31,32 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .ui_root()
         .insert((
+            Name::new("Splash"),
             BackgroundColor(SPLASH_BACKGROUND_COLOR),
             StateScoped(Screen::Splash),
         ))
         .with_children(|children| {
-            children.spawn(ImageBundle {
-                style: Style {
-                    margin: UiRect::all(Val::Auto),
-                    width: Val::Percent(70.0),
+            children.spawn((
+                Name::new("Splash image"),
+                ImageBundle {
+                    style: Style {
+                        margin: UiRect::all(Val::Auto),
+                        width: Val::Percent(70.0),
+                        ..default()
+                    },
+                    image: UiImage::new(
+                        asset_server.load("embedded://bevy_template/screen/splash/splash.png"),
+                    ),
                     ..default()
                 },
-                image: UiImage::new(
-                    asset_server.load("embedded://bevy_template/screen/splash/splash.png"),
-                ),
-                ..default()
-            });
+            ));
         });
 }
 
 const SPLASH_DURATION_SECS: f32 = 1.2;
 
-#[derive(Resource)]
+#[derive(Resource, Debug, Clone, PartialEq, Reflect, Serialize, Deserialize)]
+#[reflect(Resource, Debug, PartialEq, Default, Serialize, Deserialize)]
 struct SplashTimer(Timer);
 
 impl Default for SplashTimer {

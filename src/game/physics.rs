@@ -4,15 +4,30 @@ use bevy::{
     ecs::component::{ComponentHooks, StorageType},
     prelude::*,
 };
+use serde::{Deserialize, Serialize};
 
 pub(super) fn plugin(app: &mut App) {
     // `FixedUpdate` runs before `Update`, so the physics simulation is advanced
     // before the player's visual representation is updated.
     app.add_systems(FixedUpdate, advance_physics);
+    app.register_type::<(Velocity, PhysicalTransform, PreviousPhysicalTransform)>();
 }
 
 /// How many units per second the player should move.
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(
+    Component,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Default,
+    Deref,
+    DerefMut,
+    Reflect,
+    Serialize,
+    Deserialize,
+)]
+#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct Velocity(pub(crate) Vec3);
 
 /// The actual transform of the player in the physics simulation.
@@ -23,12 +38,28 @@ pub(crate) struct Velocity(pub(crate) Vec3);
 /// as fast as possible. The rendering will then interpolate between
 /// the previous and current physical translation to get a smooth
 /// visual representation of the player.
-#[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect, Serialize, Deserialize,
+)]
+#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct PhysicalTransform(pub(crate) Transform);
 
 /// The value that [`PhysicalTranslation`] had in the last fixed timestep.
 /// Used for interpolation when rendering.
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(
+    Component,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Default,
+    Deref,
+    DerefMut,
+    Reflect,
+    Serialize,
+    Deserialize,
+)]
+#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct PreviousPhysicalTransform(pub(crate) Transform);
 
 /// When adding a [`PhysicalTransform`]:

@@ -36,20 +36,23 @@ pub(crate) trait RootContainers {
 
 impl<'a, 'b> RootContainers for Commands<'a, 'b> {
     fn ui_root(&mut self) -> EntityCommands {
-        self.spawn(NodeBundle {
-            style: Style {
-                width: Val::Percent(100.),
-                height: Val::Percent(100.),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                flex_direction: FlexDirection::Column,
-                row_gap: Val::Px(10.),
-                position_type: PositionType::Absolute,
+        self.spawn((
+            Name::new("UI Root"),
+            NodeBundle {
+                style: Style {
+                    width: Val::Percent(100.),
+                    height: Val::Percent(100.),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    flex_direction: FlexDirection::Column,
+                    row_gap: Val::Px(10.),
+                    position_type: PositionType::Absolute,
+                    ..default()
+                },
+                background_color: BACKGROUND.into(),
                 ..default()
             },
-            background_color: BACKGROUND.into(),
-            ..default()
-        })
+        ))
     }
 }
 
@@ -65,6 +68,7 @@ pub(crate) trait Widgets<'a> {
 impl<'a, T: Spawner<'a>> Widgets<'a> for T {
     fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands {
         let mut entity_commands = self.spawn((
+            Name::new("Button"),
             ButtonBundle {
                 style: Style {
                     width: Val::Px(200.),
@@ -83,38 +87,47 @@ impl<'a, T: Spawner<'a>> Widgets<'a> for T {
             ),
         ));
         entity_commands.with_children(|children| {
-            children.spawn(TextBundle::from_section(
-                text,
-                TextStyle {
-                    font_size: 40.0,
-                    color: BUTTON_TEXT,
-                    ..default()
-                },
+            children.spawn((
+                Name::new("Button text"),
+                TextBundle::from_section(
+                    text,
+                    TextStyle {
+                        font_size: 40.0,
+                        color: BUTTON_TEXT,
+                        ..default()
+                    },
+                ),
             ));
         });
         entity_commands
     }
 
     fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands {
-        let mut entity_commands = self.spawn(NodeBundle {
-            style: Style {
-                width: Val::Px(300.),
-                height: Val::Px(65.),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: BackgroundColor(NODE_BACKGROUND),
-            ..default()
-        });
-        entity_commands.with_children(|children| {
-            children.spawn(TextBundle::from_section(
-                text,
-                TextStyle {
-                    font_size: 40.0,
-                    color: LABEL_TEXT,
+        let mut entity_commands = self.spawn((
+            Name::new("Label"),
+            NodeBundle {
+                style: Style {
+                    width: Val::Px(300.),
+                    height: Val::Px(65.),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
                     ..default()
                 },
+                background_color: BackgroundColor(NODE_BACKGROUND),
+                ..default()
+            },
+        ));
+        entity_commands.with_children(|children| {
+            children.spawn((
+                Name::new("Label Text"),
+                TextBundle::from_section(
+                    text,
+                    TextStyle {
+                        font_size: 40.0,
+                        color: LABEL_TEXT,
+                        ..default()
+                    },
+                ),
             ));
         });
         entity_commands
