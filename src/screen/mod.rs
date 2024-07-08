@@ -1,4 +1,4 @@
-//! The states describing the game's main screen states and the transitions between them.
+//! The game's main screen states and transitions between them.
 
 mod credits;
 mod playing;
