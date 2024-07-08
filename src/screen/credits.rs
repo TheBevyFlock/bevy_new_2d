@@ -3,11 +3,10 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::util::ui::prelude::*;
+use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), enter_credits);
-
     app.add_systems(
         Update,
         handle_credits_action.run_if(in_state(Screen::Credits)),

@@ -4,7 +4,7 @@
 
 use bevy::{core::FrameCount, prelude::*};
 
-use super::booting::Booting;
+use super::Booting;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Booting::Pending), hide_window);

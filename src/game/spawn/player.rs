@@ -12,10 +12,10 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Debug, Event)]
-pub(crate) struct SpawnPlayer;
+pub struct SpawnPlayer;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Eq, Hash)]
-pub(crate) struct Player;
+pub struct Player;
 
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,

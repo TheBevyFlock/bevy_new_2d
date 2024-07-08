@@ -2,9 +2,8 @@
 
 use bevy::{asset::embedded_asset, prelude::*};
 
-use crate::util::ui::prelude::*;
-
 use super::Screen;
+use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Add splash image

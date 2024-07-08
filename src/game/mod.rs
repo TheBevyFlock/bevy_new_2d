@@ -10,14 +10,14 @@ use bevy::prelude::*;
 mod movement;
 mod physics;
 mod render;
-pub(crate) mod spawn;
+pub mod spawn;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure_sets(
         Update,
         (GameSystem::UpdateTransform, GameSystem::ReadInput).chain(),
-    );
-    app.add_plugins((
+    )
+    .add_plugins((
         movement::plugin,
         physics::plugin,
         render::plugin,
