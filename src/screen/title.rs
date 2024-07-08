@@ -18,16 +18,12 @@ enum TitleAction {
 }
 
 fn enter_title(mut commands: Commands) {
-    let list = commands.my_root().insert(StateScoped(Screen::Title)).id();
-
     commands
-        .my_button("Play")
-        .insert(TitleAction::Play)
-        .set_parent(list);
-    commands
-        .my_button("Credits")
-        .insert(TitleAction::Credits)
-        .set_parent(list);
+        .my_root(|children| {
+            children.my_button("Play").insert(TitleAction::Play);
+            children.my_button("Credits").insert(TitleAction::Credits);
+        })
+        .insert(StateScoped(Screen::Title));
 }
 
 fn handle_title_action(

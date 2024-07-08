@@ -20,15 +20,15 @@ enum CreditsAction {
 }
 
 fn enter_credits(mut commands: Commands) {
-    let list = commands.my_root().insert(StateScoped(Screen::Credits)).id();
-
-    commands.my_label("Alice - Foo").set_parent(list);
-    commands.my_label("Bob - Bar").set_parent(list);
-
+    commands.my_root(|_| {});
     commands
-        .my_button("Back")
-        .insert(CreditsAction::Back)
-        .set_parent(list);
+        .my_root(|children| {
+            children.my_label("Alice - Foo");
+            children.my_label("Bob - Bar");
+            
+            children.my_button("Back").insert(CreditsAction::Back);
+        })
+        .insert(StateScoped(Screen::Credits));
 }
 
 fn handle_credits_action(
