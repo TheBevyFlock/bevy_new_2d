@@ -1,6 +1,8 @@
+//! Setup the level
+
 use bevy::prelude::*;
 
-use super::movement::{PhysicalTranslation, Velocity};
+use super::physics::{PhysicalTranslation, Velocity};
 use crate::screen::Screen;
 
 #[derive(Debug, Event)]
