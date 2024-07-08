@@ -13,6 +13,7 @@ fn handle_input(keyboard_input: Res<ButtonInput<KeyCode>>, mut query: Query<&mut
     /// Since Bevy's default 2D camera setup is scaled such that
     /// one unit is one pixel, you can think of this as
     /// "How many pixels per second should the player move?"
+    /// Note that physics engines may use different unit/pixel ratios.
     const SPEED: f32 = 210.0;
     for mut velocity in query.iter_mut() {
         velocity.0 = Vec3::ZERO;
