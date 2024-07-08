@@ -3,15 +3,15 @@
 
 use bevy::{core::FrameCount, prelude::*};
 
-use super::window::WindowState;
+use super::booting::BootingState;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(WindowState::Booting), hide_window);
+    app.add_systems(OnEnter(BootingState::Booting), hide_window);
     app.add_systems(
         Update,
-        finish_deflicker.run_if(in_state(WindowState::Booting)),
+        finish_deflicker.run_if(in_state(BootingState::Booting)),
     );
-    app.add_systems(OnExit(WindowState::Booting), show_window);
+    app.add_systems(OnExit(BootingState::Booting), show_window);
 }
 
 fn hide_window(mut window: Query<&mut Window>) {
@@ -20,10 +20,10 @@ fn hide_window(mut window: Query<&mut Window>) {
     window.single_mut().visible = cfg!(target_os = "windows");
 }
 
-fn finish_deflicker(frames: Res<FrameCount>, mut next_deflicker: ResMut<NextState<WindowState>>) {
+fn finish_deflicker(frames: Res<FrameCount>, mut next_deflicker: ResMut<NextState<BootingState>>) {
     if frames.0 >= 3 {
         // TODO: when adding asset loading, make sure both are finished
-        next_deflicker.set(WindowState::Ready)
+        next_deflicker.set(BootingState::Ready)
     }
 }
 

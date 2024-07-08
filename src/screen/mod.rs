@@ -4,7 +4,7 @@ mod title;
 
 use bevy::prelude::*;
 
-use crate::core::window::WindowState;
+use crate::core::booting::BootingState;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>()
@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(SubStates, Debug, Hash, PartialEq, Eq, Clone, Default)]
-#[source(WindowState = WindowState::Ready)]
+#[source(BootingState = BootingState::Ready)]
 pub enum Screen {
     #[default]
     Title,
