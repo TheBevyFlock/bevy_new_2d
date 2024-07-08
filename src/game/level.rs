@@ -25,7 +25,8 @@ fn spawn_level(
             ..Default::default()
         },
         Velocity::default(),
-        // A good alternative hierarchy would also be to have a `Player` root entity
+        // If your physics engine of choice uses `Transform` directly,
+        // a good hierarchy to follow instead is to have a `Player` root entity
         // with the physical transform and the rendered transform as individual children.
         PhysicalTransform::default(),
         StateScoped(Screen::Playing),
