@@ -37,7 +37,8 @@ fn handle_player_movement_input(
     }
     // Need to normalize and scale because otherwise
     // diagonal movement would be faster than horizontal or vertical movement.
-    let intent = intent.normalize_or_zero() * SPEED;
+    let intent = intent.normalize_or_zero();
+    let velocity = intent * SPEED;
 
-    player_velocity.single_mut().0 = intent;
+    player_velocity.single_mut().0 = velocity;
 }
