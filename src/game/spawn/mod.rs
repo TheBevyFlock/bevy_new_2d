@@ -1,5 +1,6 @@
 //! Handles spawning of entities. This is typically done through
 //! [observers](https://docs.rs/bevy/latest/bevy/ecs/prelude/struct.Observer.html).
+// Alternatively this can be done through `Events<E>` or `Commands`.
 
 use bevy::prelude::*;
 
