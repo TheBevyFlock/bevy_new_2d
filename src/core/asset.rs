@@ -1,3 +1,5 @@
+//! Asset loading and management.
+
 use bevy::{asset::AssetMetaCheck, prelude::*};
 
 pub(super) fn plugin(app: &mut App) {

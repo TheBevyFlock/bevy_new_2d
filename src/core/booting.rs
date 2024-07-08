@@ -5,7 +5,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
-pub enum Booting {
+pub(crate) enum Booting {
     #[default]
     Pending,
     Done,

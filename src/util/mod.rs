@@ -3,7 +3,7 @@
 // Unused utilities and re-exports may trigger these lints undesirably.
 #![allow(dead_code, unused_imports)]
 
-pub mod ui;
+pub(crate) mod ui;
 
 use bevy::prelude::*;
 

@@ -1,3 +1,5 @@
+//! The game's main screen states and transitions between them.
+
 mod credits;
 mod playing;
 mod title;
@@ -13,9 +15,10 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins((title::plugin, credits::plugin, playing::plugin));
 }
 
+/// The game's screen states. This is a sub-state of [`Booting::Done`].
 #[derive(SubStates, Debug, Hash, PartialEq, Eq, Clone, Default)]
 #[source(Booting = Booting::Done)]
-pub enum Screen {
+pub(crate) enum Screen {
     #[default]
     Title,
     Credits,

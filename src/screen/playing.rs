@@ -1,9 +1,10 @@
+//! The screen state for the main game loop.
+
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
 
 pub(super) fn plugin(app: &mut App) {
-    // Screen setup and teardown.
     app.add_systems(OnEnter(Screen::Playing), enter_playing)
         .add_systems(OnExit(Screen::Playing), exit_playing);
 
