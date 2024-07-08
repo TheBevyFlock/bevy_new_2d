@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 /// Handle keyboard input to move the player.
 fn handle_player_movement_input(
     input: Res<ButtonInput<KeyCode>>,
-    mut velocity_query: Query<&mut Velocity, With<Player>>,
+    mut player_velocity: Query<&mut Velocity, With<Player>>,
 ) {
     /// Since Bevy's default 2D camera setup is scaled such that
     /// one unit is one pixel, you can think of this as
@@ -39,7 +39,5 @@ fn handle_player_movement_input(
     // diagonal movement would be faster than horizontal or vertical movement.
     let intent = intent.normalize_or_zero() * SPEED;
 
-    for mut velocity in &mut velocity_query {
-        velocity.0 = intent;
-    }
+    player_velocity.single_mut().0 = intent;
 }
