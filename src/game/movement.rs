@@ -4,12 +4,9 @@ use bevy::prelude::*;
 
 use super::physics::Velocity;
 
-
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_systems(Update, handle_input);
+    app.add_systems(Update, handle_input);
 }
-
 
 /// Handle keyboard input to move the player.
 fn handle_input(keyboard_input: Res<ButtonInput<KeyCode>>, mut query: Query<&mut Velocity>) {
@@ -38,4 +35,3 @@ fn handle_input(keyboard_input: Res<ButtonInput<KeyCode>>, mut query: Query<&mut
         velocity.0 = velocity.normalize_or_zero() * SPEED;
     }
 }
-
