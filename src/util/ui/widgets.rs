@@ -3,9 +3,9 @@
 use bevy::{ecs::system::EntityCommands, prelude::*};
 
 use super::{
-    mouse_hover::InteractionPalette,
+    interaction::InteractionPalette,
     palette::{
-        BUTTON_HOVERED_BACKGROUND, BUTTON_PRESSED_BACKGROUND, BUTTON_TEXT, LABEL_TEXT,
+        BACKGROUND, BUTTON_HOVERED_BACKGROUND, BUTTON_PRESSED_BACKGROUND, BUTTON_TEXT, LABEL_TEXT,
         NODE_BACKGROUND,
     },
 };
@@ -47,6 +47,7 @@ impl<'a, 'b> RootContainers for Commands<'a, 'b> {
                 position_type: PositionType::Absolute,
                 ..default()
             },
+            background_color: BACKGROUND.into(),
             ..default()
         })
     }
