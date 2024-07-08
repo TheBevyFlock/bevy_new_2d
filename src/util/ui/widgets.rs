@@ -56,7 +56,7 @@ pub(crate) trait Widgets<'a> {
     /// Spawns a simple button node with text.
     fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 
-    //// Spawns a simple label.
+    /// Spawns a simple label.
     fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 }
 
