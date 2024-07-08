@@ -20,13 +20,13 @@ enum CreditsAction {
 }
 
 fn enter_credits(mut commands: Commands) {
-    commands.my_root(|_| {});
+    commands.ui_root(|_| {});
     commands
-        .my_root(|children| {
-            children.my_label("Alice - Foo");
-            children.my_label("Bob - Bar");
+        .ui_root(|children| {
+            children.label("Alice - Foo");
+            children.label("Bob - Bar");
 
-            children.my_button("Back").insert(CreditsAction::Back);
+            children.button("Back").insert(CreditsAction::Back);
         })
         .insert(StateScoped(Screen::Credits));
 }

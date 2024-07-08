@@ -30,11 +30,11 @@ impl<'a> Spawner<'a> for ChildBuilder<'a> {
 /// Root container spawning trait.
 pub(crate) trait RootContainers {
     /// Spawns root node that covers full screen and verticaly and horizontaly centers it's content.
-    fn my_root(&mut self, spawn_children: impl FnOnce(&mut ChildBuilder)) -> EntityCommands;
+    fn ui_root(&mut self, spawn_children: impl FnOnce(&mut ChildBuilder)) -> EntityCommands;
 }
 
 impl<'a, 'b> RootContainers for Commands<'a, 'b> {
-    fn my_root(&mut self, spawn_children: impl FnOnce(&mut ChildBuilder)) -> EntityCommands {
+    fn ui_root(&mut self, spawn_children: impl FnOnce(&mut ChildBuilder)) -> EntityCommands {
         let mut entity_commands = self.spawn(NodeBundle {
             style: Style {
                 width: Val::Percent(100.),
@@ -56,14 +56,14 @@ impl<'a, 'b> RootContainers for Commands<'a, 'b> {
 /// Widgets spawning trait.
 pub(crate) trait Widgets<'a> {
     /// Spawns a simple button node with text.
-    fn my_button<I: Into<String>>(&mut self, text: I) -> EntityCommands;
+    fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 
     //// Spawns a simple label.
-    fn my_label<I: Into<String>>(&mut self, text: I) -> EntityCommands;
+    fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 }
 
 impl<'a, T: Spawner<'a>> Widgets<'a> for T {
-    fn my_button<I: Into<String>>(&mut self, text: I) -> EntityCommands {
+    fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands {
         let mut entity_commands = self.spawn((
             ButtonBundle {
                 style: Style {
@@ -95,7 +95,7 @@ impl<'a, T: Spawner<'a>> Widgets<'a> for T {
         entity_commands
     }
 
-    fn my_label<I: Into<String>>(&mut self, text: I) -> EntityCommands {
+    fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands {
         let mut entity_commands = self.spawn(NodeBundle {
             style: Style {
                 width: Val::Px(300.),
