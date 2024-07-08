@@ -20,11 +20,11 @@ enum TitleAction {
 fn enter_title(mut commands: Commands) {
     commands
         .ui_root()
+        .insert(StateScoped(Screen::Title))
         .with_children(|children| {
             children.button("Play").insert(TitleAction::Play);
             children.button("Credits").insert(TitleAction::Credits);
-        })
-        .insert(StateScoped(Screen::Title));
+        });
 }
 
 fn handle_title_action(

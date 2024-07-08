@@ -22,13 +22,13 @@ enum CreditsAction {
 fn enter_credits(mut commands: Commands) {
     commands
         .ui_root()
+        .insert(StateScoped(Screen::Credits))
         .with_children(|children| {
             children.label("Alice - Foo");
             children.label("Bob - Bar");
 
             children.button("Back").insert(CreditsAction::Back);
-        })
-        .insert(StateScoped(Screen::Credits));
+        });
 }
 
 fn handle_credits_action(
