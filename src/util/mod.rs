@@ -3,8 +3,8 @@
 // Unused utilities and re-exports may trigger these lints undesirably.
 #![allow(dead_code, unused_imports)]
 
-pub(crate) mod spawn_trigger;
 pub(crate) mod spawn;
+pub(crate) mod spawn_trigger;
 pub(crate) mod ui;
 
 use bevy::prelude::*;

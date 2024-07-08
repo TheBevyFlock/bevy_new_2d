@@ -4,6 +4,8 @@ use bevy::prelude::*;
 
 use crate::game::physics::{PhysicalTransform, Velocity};
 
+use super::SpawnTriggerHelper;
+
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_trigger_player);
 }
@@ -19,7 +21,7 @@ fn spawn_trigger_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    commands.entity(trigger.entity()).insert((
+    commands.get_trigger_entity_or_spawn(trigger).insert((
         Name::new("Player"),
         Player,
         SpriteBundle {
