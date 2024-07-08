@@ -4,12 +4,12 @@ use bevy::prelude::*;
 
 use super::player::SpawnPlayer;
 
-#[derive(Debug, Event)]
-pub(crate) struct SpawnLevel;
-
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_level);
 }
+
+#[derive(Debug, Event)]
+pub(crate) struct SpawnLevel;
 
 fn spawn_level(_trigger: Trigger<SpawnLevel>, mut commands: Commands) {
     // The only thing we have in our level is a player,

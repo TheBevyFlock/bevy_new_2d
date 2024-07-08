@@ -7,12 +7,12 @@ use crate::{
     screen::Screen,
 };
 
-#[derive(Debug, Event)]
-pub(crate) struct SpawnPlayer;
-
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_player);
 }
+
+#[derive(Debug, Event)]
+pub(crate) struct SpawnPlayer;
 
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
