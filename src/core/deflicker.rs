@@ -1,5 +1,6 @@
 //! Based on: <https://github.com/bevyengine/bevy/blob/v0.14.0/examples/window/window_settings.rs#L56>
-//! This is useful when you want to avoid the white flash that shows up before the GPU is ready to render the app.
+//! This is useful when you want to avoid the white flash that shows up before
+//! the GPU is ready to render the app.
 
 use bevy::{core::FrameCount, prelude::*};
 
@@ -11,9 +12,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnExit(Booting::Pending), show_window);
 }
 
+/// This will make the window invisible during `Boot`.
+/// This workaround does not currently work on Windows: <https://github.com/bevyengine/bevy/issues/14135>
 fn hide_window(mut window: Query<&mut Window>) {
-    // This will make the window invisible during `Boot`.
-    // This workaround does not currently work on Windows: <https://github.com/bevyengine/bevy/issues/14135>
     window.single_mut().visible = cfg!(target_os = "windows");
 }
 
