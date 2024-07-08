@@ -100,7 +100,7 @@ jobs:
           zip --recurse-paths "../${{ env.PACKAGE }}.zip" "${{ env.PACKAGE_NAME }}"
 
       - name: Upload package to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: build/${{ env.PACKAGE }}.zip
           name: ${{ env.PLATFORM }}
@@ -166,7 +166,7 @@ jobs:
           zip --recurse-paths ../"${{ env.PACKAGE }}.zip" "${{ env.PACKAGE_NAME }}"
 
       - name: Upload package to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: build/${{ env.PACKAGE }}.zip
           name: ${{ env.PLATFORM }}
@@ -197,7 +197,7 @@ jobs:
       - name: Set PACKAGE environment variable
         run: |
           "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
-          
+
       - name: Set OUT_DIR environment variable
         run: |
           "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
@@ -228,7 +228,7 @@ jobs:
           Compress-Archive -Path "${{ env.PACKAGE_NAME }}" -DestinationPath "../${{ env.PACKAGE }}.zip"
 
       - name: Upload package to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: build/${{ env.PACKAGE }}.zip
           name: ${{ env.PLATFORM }}
@@ -261,7 +261,7 @@ jobs:
       - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-      
+
       - name: Set OUT_DIR environment variable
         run: |
           echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
@@ -285,14 +285,14 @@ jobs:
           mkdir -p "${{ env.OUT_DIR }}"
           cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
           cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
-      
+
       - name: Compress package
         working-directory: ./build/${{ env.PACKAGE }}
         run: |
           hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
 
       - name: Upload package to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: build/${{ env.PACKAGE }}.dmg
           name: ${{ env.PLATFORM }}
@@ -325,7 +325,7 @@ jobs:
       - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-          
+
       - name: Set OUT_DIR environment variable
         run: |
           echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
@@ -349,14 +349,14 @@ jobs:
           mkdir -p "${{ env.OUT_DIR }}"
           cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
           cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
-          
+
       - name: Compress package
         working-directory: ./build/${{ env.PACKAGE }}
         run: |
           hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
 
       - name: Upload package to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: build/${{ env.PACKAGE }}.dmg
           name: ${{ env.PLATFORM }}
@@ -405,7 +405,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ./builds
 
