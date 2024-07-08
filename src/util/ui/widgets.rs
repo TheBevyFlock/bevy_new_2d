@@ -18,7 +18,7 @@ pub(crate) trait Containers {
     fn ui_root(&mut self) -> EntityCommands;
 }
 
-impl<'a, T: Spawn> Containers for T {
+impl<T: Spawn> Containers for T {
     fn ui_root(&mut self) -> EntityCommands {
         self.spawn(NodeBundle {
             style: Style {

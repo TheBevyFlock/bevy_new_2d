@@ -8,7 +8,7 @@ pub(crate) trait SpawnTrigger {
     fn spawn_trigger<E: Event>(&mut self, event: E) -> EntityCommands;
 }
 
-impl<'a, T: Spawn> SpawnTrigger for T {
+impl<T: Spawn> SpawnTrigger for T {
     fn spawn_trigger<E: Event>(&mut self, event: E) -> EntityCommands {
         // Type juggling to get around lifetime downcasting.
         // We cannot recover `entity_commands` if we ever drop it.

@@ -16,7 +16,7 @@ pub(crate) struct InteractionPalette {
 }
 
 impl InteractionPalette {
-    pub fn new(none: Color, hovered: Color, pressed: Color) -> Self {
+    pub(crate) fn new(none: Color, hovered: Color, pressed: Color) -> Self {
         Self {
             none,
             hovered,
