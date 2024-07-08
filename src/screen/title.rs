@@ -6,8 +6,9 @@ use super::Screen;
 use crate::util::ui::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Title), enter_title)
-        .add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
+    app.add_systems(OnEnter(Screen::Title), enter_title);
+
+    app.add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
 }
 
 #[derive(Component, PartialEq, Eq)]

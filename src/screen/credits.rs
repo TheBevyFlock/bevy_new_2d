@@ -6,11 +6,12 @@ use super::Screen;
 use crate::util::ui::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Credits), enter_credits)
-        .add_systems(
-            Update,
-            handle_credits_action.run_if(in_state(Screen::Credits)),
-        );
+    app.add_systems(OnEnter(Screen::Credits), enter_credits);
+
+    app.add_systems(
+        Update,
+        handle_credits_action.run_if(in_state(Screen::Credits)),
+    );
 }
 
 #[derive(Component, PartialEq, Eq)]

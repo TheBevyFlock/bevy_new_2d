@@ -10,8 +10,9 @@ use crate::core::booting::Booting;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>()
-        .enable_state_scoped_entities::<Screen>()
-        .add_plugins((title::plugin, credits::plugin, playing::plugin));
+        .enable_state_scoped_entities::<Screen>();
+
+    app.add_plugins((title::plugin, credits::plugin, playing::plugin));
 }
 
 /// The game's screen states. This is a sub-state of [`Booting::Done`].

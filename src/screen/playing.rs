@@ -6,12 +6,13 @@ use super::Screen;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Playing), enter_playing)
-        .add_systems(OnExit(Screen::Playing), exit_playing)
-        .add_systems(
-            Update,
-            return_to_title_screen
-                .run_if(in_state(Screen::Playing).and_then(input_just_pressed(KeyCode::Escape))),
-        );
+        .add_systems(OnExit(Screen::Playing), exit_playing);
+
+    app.add_systems(
+        Update,
+        return_to_title_screen
+            .run_if(in_state(Screen::Playing).and_then(input_just_pressed(KeyCode::Escape))),
+    );
 }
 
 fn enter_playing(mut commands: Commands, asset_server: Res<AssetServer>) {
