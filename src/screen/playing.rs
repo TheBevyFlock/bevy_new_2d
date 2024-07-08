@@ -3,6 +3,7 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
+use crate::game::SpawnLevel;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Playing), enter_playing)
@@ -15,14 +16,8 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn enter_playing(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn((
-        SpriteBundle {
-            texture: asset_server.load("ducky.png"),
-            ..Default::default()
-        },
-        StateScoped(Screen::Playing),
-    ));
+fn enter_playing(mut commands: Commands) {
+    commands.trigger(SpawnLevel);
 }
 
 // TODO: Reset camera transform here.
