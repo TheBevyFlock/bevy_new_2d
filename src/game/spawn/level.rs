@@ -1,4 +1,4 @@
-//! Spawn our main level by triggering other spawn events.
+//! Spawn the main level by triggering other observers.
 
 use bevy::prelude::*;
 
