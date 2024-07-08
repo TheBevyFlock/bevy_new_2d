@@ -29,7 +29,7 @@ fn enter_title(mut commands: Commands) {
 
 fn handle_title_action(
     mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: ButtonInteractionQuery<TitleAction>,
+    mut button_query: InteractionQuery<TitleAction>,
 ) {
     for (interaction, action) in &mut button_query {
         if matches!(interaction, Interaction::Pressed) {

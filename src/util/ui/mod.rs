@@ -12,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
 
 pub(crate) mod prelude {
     pub(crate) use super::{
-        interaction::{ButtonInteractionQuery, InteractionPalette},
+        interaction::{InteractionPalette, InteractionQuery},
         palette as ui_palette,
         widgets::{RootContainers as _, Widgets as _},
     };
