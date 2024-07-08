@@ -2,14 +2,16 @@
 
 use bevy::{asset::embedded_asset, prelude::*};
 
-use crate::util::ui::*;
+use crate::util::ui::prelude::*;
 
 use super::Screen;
 
 pub(super) fn plugin(app: &mut App) {
     // Add splash image
     embedded_asset!(app, "splash.png");
-    app.add_systems(OnEnter(Screen::Splash), spawn_splash);
+    app.add_systems(OnEnter(Screen::Splash), spawn_splash)
+        // Make the screen-flicker bug less jarring on Windows (see `core/deflicker.rs`).
+        .insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
     // Add splash timer
     app.add_systems(OnEnter(Screen::Splash), insert_splash_timer)
