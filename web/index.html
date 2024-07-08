@@ -2,25 +2,42 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <title>bevy-template</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    <title>bevy-template</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <canvas id="bevy">
-    Javascript and canvas support is required
-  </canvas>
+    <div id="game" class="center">
+        <div id="loading-screen" class="center">
+            <span class="spinner"></span>
+        </div>
 
-  <script type="module">
-    import './restart-audio-context.js'
-    import init from './bevy_template.js'
-    init().catch((error) => {
-      if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
-        throw error;
-      }
-    });
-  </script>
+        <canvas id="bevy">
+            Javascript and canvas support is required
+        </canvas>
+    </div>
+
+    <script type="module">
+        import './restart-audio-context.js'
+        import init from './bevy_template.js'
+        init().catch((error) => {
+            if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
+                throw error;
+            }
+        });
+
+        // Hide loading screen when the game starts.
+        const loading_screen = document.getElementById('loading-screen');
+        const bevy = document.getElementById('bevy');
+        const observer = new MutationObserver(() => {
+            if (bevy.height > 1) {
+                loading_screen.style.display = 'none';
+                observer.disconnect();
+            }
+        });
+        observer.observe(bevy, { attributes: true });
+    </script>
 </body>
 
 </html>
