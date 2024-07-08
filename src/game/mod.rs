@@ -13,8 +13,10 @@ mod render;
 pub(crate) mod spawn;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure_sets(Update, GameSystem::Movement);
-
+    app.configure_sets(
+        Update,
+        (GameSystem::ReadInput, GameSystem::Movement).chain(),
+    );
     app.add_plugins((
         movement::plugin,
         physics::plugin,
@@ -25,5 +27,9 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Debug, SystemSet, Clone, Copy, Eq, PartialEq, Hash)]
 enum GameSystem {
-    Movement,
+    /// Reads input from the player.
+    ReadInput,
+    /// Updates the [`Transform`] of entities based on their
+    /// [`physics::PhysicalTransform`].
+    UpdateTransform,
 }

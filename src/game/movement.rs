@@ -2,10 +2,13 @@
 
 use bevy::prelude::*;
 
-use super::{physics::Velocity, spawn::player::Player};
+use super::{physics::Velocity, spawn::player::Player, GameSystem};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, handle_player_movement_input);
+    app.add_systems(
+        Update,
+        handle_player_movement_input.in_set(GameSystem::ReadInput),
+    );
 }
 
 /// Handle keyboard input to move the player.

@@ -2,10 +2,13 @@
 
 use bevy::prelude::*;
 
-use super::physics::{PhysicalTransform, PreviousPhysicalTransform};
+use super::{physics::{PhysicalTransform, PreviousPhysicalTransform}, GameSystem};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, update_rendered_transform);
+    app.add_systems(
+        Update,
+        update_rendered_transform.in_set(GameSystem::UpdateTransform),
+    );
 }
 
 /// Interpolate between the previous and current physical translation to get a
