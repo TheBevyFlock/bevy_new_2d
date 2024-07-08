@@ -10,10 +10,11 @@ use crate::{
 
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_player);
-    app.register_type::<Player>();
+    app.register_type::<(Player, SpawnPlayer)>();
 }
 
-#[derive(Event, Debug)]
+#[derive(Event, Debug, Hash, PartialEq, Eq, Clone, Default, Reflect, Serialize, Deserialize)]
+#[reflect(Debug, Hash, PartialEq, Default, Serialize, Deserialize)]
 pub(crate) struct SpawnPlayer;
 
 #[derive(
