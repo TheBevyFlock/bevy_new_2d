@@ -5,6 +5,8 @@ mod title;
 
 use bevy::prelude::*;
 
+use crate::core::window::WindowState;
+
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>()
         .enable_state_scoped_entities::<Screen>();
@@ -17,7 +19,8 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
+#[derive(SubStates, Debug, Hash, PartialEq, Eq, Clone, Default)]
+#[source(WindowState = WindowState::Ready)]
 pub enum Screen {
     #[default]
     Boot,

@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
+    app.init_state::<WindowState>();
     app.add_plugins(WindowPlugin {
         primary_window: Window {
             title: "bevy-template".to_string(),
@@ -12,4 +13,11 @@ pub(super) fn plugin(app: &mut App) {
         .into(),
         ..default()
     });
+}
+
+#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
+pub enum WindowState {
+    #[default]
+    Booting,
+    Ready,
 }

@@ -5,7 +5,7 @@ mod camera;
 mod deflicker;
 #[cfg(feature = "dev")]
 mod dev;
-mod window;
+pub mod window;
 
 use bevy::prelude::*;
 
