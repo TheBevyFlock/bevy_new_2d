@@ -5,7 +5,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 pub(crate) type InteractionQuery<'w, 's, T> =
-    Query<'w, 's, (&'static Interaction, &'static T), Changed<Interaction>>;
+    Query<'w, 's, (&'static Interaction, T), Changed<Interaction>>;
 
 /// Palette for widget interactions.
 #[derive(Component)]
@@ -26,12 +26,9 @@ impl InteractionPalette {
 }
 
 fn apply_interaction_palette(
-    mut interaction_query: Query<
-        (&Interaction, &InteractionPalette, &mut BackgroundColor),
-        Changed<Interaction>,
-    >,
+    mut palette_query: InteractionQuery<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
-    for (interaction, palette, mut background) in &mut interaction_query {
+    for (interaction, (palette, mut background)) in &mut palette_query {
         *background = match interaction {
             Interaction::None => palette.none,
             Interaction::Hovered => palette.hovered,

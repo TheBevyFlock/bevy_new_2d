@@ -33,7 +33,7 @@ fn enter_credits(mut commands: Commands) {
 
 fn handle_credits_action(
     mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: InteractionQuery<CreditsAction>,
+    mut button_query: InteractionQuery<&CreditsAction>,
 ) {
     for (interaction, action) in &mut button_query {
         if matches!(interaction, Interaction::Pressed) {
