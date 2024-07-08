@@ -29,7 +29,8 @@ impl<'a> Spawner<'a> for ChildBuilder<'a> {
 
 /// Root container spawning trait.
 pub(crate) trait RootContainers {
-    /// Spawns root node that covers full screen and verticaly and horizontaly centers it's content.
+    /// Spawns a root node that covers the full screen
+    /// and centers its content horizontally and vertically.
     fn ui_root(&mut self) -> EntityCommands;
 }
 
