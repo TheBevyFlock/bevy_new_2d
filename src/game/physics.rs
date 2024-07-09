@@ -13,7 +13,7 @@ pub(super) fn plugin(app: &mut App) {
 
 /// How many units per second the player should move.
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub(crate) struct Velocity(pub(crate) Vec3);
+pub struct Velocity(pub Vec3);
 
 /// The actual transform of the player in the physics simulation.
 /// This is separate from the `Transform`, which is merely a visual
@@ -24,12 +24,12 @@ pub(crate) struct Velocity(pub(crate) Vec3);
 /// the previous and current physical translation to get a smooth
 /// visual representation of the player.
 #[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub(crate) struct PhysicalTransform(pub(crate) Transform);
+pub struct PhysicalTransform(pub Transform);
 
 /// The value that [`PhysicalTranslation`] had in the last fixed timestep.
 /// Used for interpolation when rendering.
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
-pub(crate) struct PreviousPhysicalTransform(pub(crate) Transform);
+pub struct PreviousPhysicalTransform(pub Transform);
 
 /// When adding a [`PhysicalTransform`]:
 /// - make sure it is always initialized with the same value as the

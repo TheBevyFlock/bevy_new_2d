@@ -1,7 +1,7 @@
 //! Foundational features and cross-cutting concerns.
 
 mod asset;
-pub(crate) mod booting;
+pub mod booting;
 mod camera;
 mod deflicker;
 #[cfg(feature = "dev")]

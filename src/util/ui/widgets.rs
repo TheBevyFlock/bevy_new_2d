@@ -28,7 +28,7 @@ impl<'a> Spawner<'a> for ChildBuilder<'a> {
 }
 
 /// Root container spawning trait.
-pub(crate) trait RootContainers {
+pub trait RootContainers {
     /// Spawns a root node that covers the full screen
     /// and centers its content horizontally and vertically.
     fn ui_root(&mut self) -> EntityCommands;
@@ -54,7 +54,7 @@ impl<'a, 'b> RootContainers for Commands<'a, 'b> {
 }
 
 /// Widgets spawning trait.
-pub(crate) trait Widgets<'a> {
+pub trait Widgets<'a> {
     /// Spawns a simple button node with text.
     fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands;
 

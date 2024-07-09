@@ -24,7 +24,7 @@ pub(super) fn plugin(app: &mut App) {
 /// The game's screen states. This is a sub-state of [`Booting::Done`].
 #[derive(SubStates, Debug, Hash, PartialEq, Eq, Clone, Default)]
 #[source(Booting = Booting::Done)]
-pub(crate) enum Screen {
+pub enum Screen {
     #[default]
     Splash,
     Title,
