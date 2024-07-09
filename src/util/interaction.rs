@@ -10,19 +10,9 @@ pub type InteractionQuery<'w, 's, T> =
 /// Palette for widget interactions.
 #[derive(Component)]
 pub struct InteractionPalette {
-    none: Color,
-    hovered: Color,
-    pressed: Color,
-}
-
-impl InteractionPalette {
-    pub fn new(none: Color, hovered: Color, pressed: Color) -> Self {
-        Self {
-            none,
-            hovered,
-            pressed,
-        }
-    }
+    pub none: Color,
+    pub hovered: Color,
+    pub pressed: Color,
 }
 
 fn apply_interaction_palette(
