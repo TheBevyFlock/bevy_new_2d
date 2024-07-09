@@ -1,13 +1,12 @@
 //! A splash screen that plays briefly at startup.
 
-use bevy::{asset::embedded_asset, prelude::*};
+use bevy::prelude::*;
 
 use super::Screen;
 use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Add splash image
-    embedded_asset!(app, "splash.png");
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
@@ -42,10 +41,7 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                         width: Val::Percent(70.0),
                         ..default()
                     },
-                    image: UiImage::new(
-                        // TODO: Change this to your binary name
-                        asset_server.load("embedded://bevy_template/screen/splash/splash.png"),
-                    ),
+                    image: UiImage::new(asset_server.load("splash.png")),
                     ..default()
                 },
             ));

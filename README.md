@@ -18,7 +18,7 @@ cargo run
 Web:
 
 ```sh
-cargo trunk serve
+trunk serve
 ```
 
 ## CI

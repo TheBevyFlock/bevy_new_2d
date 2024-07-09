@@ -1,2 +1,5 @@
 [build]
+# Point to our subdirectory
 target = "web/index.html"
+# This is needed in order to host the game on itch.io
+public_url = "./"
