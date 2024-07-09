@@ -1,9 +1,7 @@
 //! Foundational features and cross-cutting concerns.
 
 mod asset;
-pub mod booting;
 mod camera;
-mod deflicker;
 #[cfg(feature = "dev")]
 mod dev;
 mod window;
@@ -24,7 +22,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     // Other plugins.
-    app.add_plugins((booting::plugin, deflicker::plugin, camera::plugin));
+    app.add_plugins(camera::plugin);
 
     // Debugging tools for dev builds.
     #[cfg(feature = "dev")]
