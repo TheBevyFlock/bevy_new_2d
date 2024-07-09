@@ -1,6 +1,6 @@
 //! Helper traits for creating common widgets.
 
-use bevy::{ecs::system::EntityCommands, prelude::*};
+use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
 
 use super::{
     interaction::InteractionPalette,
@@ -10,40 +10,40 @@ use super::{
     },
 };
 
-/// Internal trait for things that can spawn entities.
-trait Spawner<'a> {
+/// An internal trait for types that can spawn entities.
+trait Spawn {
     fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands;
 }
 
-impl<'a> Spawner<'a> for Commands<'a, 'a> {
+impl Spawn for Commands<'_, '_> {
     fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
         self.spawn(bundle)
     }
 }
 
-impl<'a> Spawner<'a> for ChildBuilder<'a> {
+impl Spawn for ChildBuilder<'_> {
     fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
         self.spawn(bundle)
     }
 }
 
-/// Root container spawning trait.
-pub trait RootContainers {
+/// An extension trait for spawning UI containers.
+pub trait Containers {
     /// Spawns a root node that covers the full screen
     /// and centers its content horizontally and vertically.
     fn ui_root(&mut self) -> EntityCommands;
 }
 
-impl<'a, 'b> RootContainers for Commands<'a, 'b> {
+impl Containers for Commands<'_, '_> {
     fn ui_root(&mut self) -> EntityCommands {
         self.spawn(NodeBundle {
             style: Style {
-                width: Val::Percent(100.),
-                height: Val::Percent(100.),
+                width: Percent(100.0),
+                height: Percent(100.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 flex_direction: FlexDirection::Column,
-                row_gap: Val::Px(10.),
+                row_gap: Px(10.0),
                 position_type: PositionType::Absolute,
                 ..default()
             },
@@ -53,22 +53,22 @@ impl<'a, 'b> RootContainers for Commands<'a, 'b> {
     }
 }
 
-/// Widgets spawning trait.
-pub trait Widgets<'a> {
-    /// Spawns a simple button node with text.
-    fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands;
+/// An extension trait for spawning UI widgets.
+pub trait Widgets {
+    /// Spawn a simple button with text.
+    fn button(&mut self, text: impl Into<String>) -> EntityCommands;
 
-    /// Spawns a simple label.
-    fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands;
+    /// Spawn a simple text label.
+    fn label(&mut self, text: impl Into<String>) -> EntityCommands;
 }
 
-impl<'a, T: Spawner<'a>> Widgets<'a> for T {
-    fn button<I: Into<String>>(&mut self, text: I) -> EntityCommands {
-        let mut entity_commands = self.spawn((
+impl<T: Spawn> Widgets for T {
+    fn button(&mut self, text: impl Into<String>) -> EntityCommands {
+        let mut entity = self.spawn((
             ButtonBundle {
                 style: Style {
-                    width: Val::Px(200.),
-                    height: Val::Px(65.),
+                    width: Px(200.0),
+                    height: Px(65.0),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     ..default()
@@ -76,13 +76,13 @@ impl<'a, T: Spawner<'a>> Widgets<'a> for T {
                 background_color: BackgroundColor(NODE_BACKGROUND),
                 ..default()
             },
-            InteractionPalette::new(
-                NODE_BACKGROUND,
-                BUTTON_HOVERED_BACKGROUND,
-                BUTTON_PRESSED_BACKGROUND,
-            ),
+            InteractionPalette {
+                none: NODE_BACKGROUND,
+                hovered: BUTTON_HOVERED_BACKGROUND,
+                pressed: BUTTON_PRESSED_BACKGROUND,
+            },
         ));
-        entity_commands.with_children(|children| {
+        entity.with_children(|children| {
             children.spawn(TextBundle::from_section(
                 text,
                 TextStyle {
@@ -92,14 +92,14 @@ impl<'a, T: Spawner<'a>> Widgets<'a> for T {
                 },
             ));
         });
-        entity_commands
+        entity
     }
 
-    fn label<I: Into<String>>(&mut self, text: I) -> EntityCommands {
-        let mut entity_commands = self.spawn(NodeBundle {
+    fn label(&mut self, text: impl Into<String>) -> EntityCommands {
+        let mut entity = self.spawn(NodeBundle {
             style: Style {
-                width: Val::Px(300.),
-                height: Val::Px(65.),
+                width: Px(300.0),
+                height: Px(65.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 ..default()
@@ -107,7 +107,7 @@ impl<'a, T: Spawner<'a>> Widgets<'a> for T {
             background_color: BackgroundColor(NODE_BACKGROUND),
             ..default()
         });
-        entity_commands.with_children(|children| {
+        entity.with_children(|children| {
             children.spawn(TextBundle::from_section(
                 text,
                 TextStyle {
@@ -117,6 +117,6 @@ impl<'a, T: Spawner<'a>> Widgets<'a> for T {
                 },
             ));
         });
-        entity_commands
+        entity
     }
 }
