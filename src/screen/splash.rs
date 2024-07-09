@@ -10,8 +10,8 @@ use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Spawn splash screen.
-    app.add_systems(OnEnter(Screen::Splash), spawn_splash);
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
+    app.add_systems(OnEnter(Screen::Splash), spawn_splash);
 
     // Animate splash screen.
     app.add_systems(
