@@ -9,8 +9,6 @@ pub(super) fn plugin(app: &mut App) {
     // Add splash image
     embedded_asset!(app, "splash.png");
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
-    // Make the screen-flicker bug less jarring on Windows
-    // (see `core/deflicker.rs`).
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
     // Add splash timer
