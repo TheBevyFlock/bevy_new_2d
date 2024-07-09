@@ -5,7 +5,11 @@ mod game;
 mod screen;
 mod ui_tools;
 
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{
+    asset::AssetMetaCheck,
+    audio::{AudioPlugin, Volume},
+    prelude::*,
+};
 
 pub struct AppPlugin;
 
@@ -30,6 +34,12 @@ impl Plugin for AppPlugin {
                         ..default()
                     }
                     .into(),
+                    ..default()
+                })
+                .set(AudioPlugin {
+                    global_volume: GlobalVolume {
+                        volume: Volume::new(0.3),
+                    },
                     ..default()
                 }),
         );

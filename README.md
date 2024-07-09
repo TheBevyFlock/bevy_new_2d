@@ -109,6 +109,7 @@ Licensed under either of
 at your option.
 
 The Ducky sprite is CC-0 licensed by [Caz Creates Games](https://caz-creates-games.itch.io/ducky-2).
+Songs by Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 3.0 License http://creativecommons.org/licenses/by/3.0/
 
 ## Contribution
 
