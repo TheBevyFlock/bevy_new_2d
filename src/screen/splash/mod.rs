@@ -22,6 +22,8 @@ pub(super) fn plugin(app: &mut App) {
             .chain()
             .run_if(in_state(Screen::Splash)),
     );
+
+    app.register_type::<SplashTimer>();
 }
 
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
@@ -55,7 +57,7 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
 const SPLASH_DURATION_SECS: f32 = 1.2;
 
 #[derive(Resource, Debug, Clone, PartialEq, Reflect)]
-#[reflect(Resource, Debug, PartialEq, Default)]
+#[reflect(Resource)]
 struct SplashTimer(Timer);
 
 impl Default for SplashTimer {
