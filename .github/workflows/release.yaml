@@ -72,22 +72,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cargo install wasm-bindgen-cli
+          cargo install trunk
 
-      - name: Build binary
+      - name: Build Wasm
         run: |
-          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
-
-      - name: Prepare package
-        run: |
-          mkdir -p "${{ env.OUT_DIR }}"
-          wasm-bindgen "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm" \
-            --out-dir "${{ env.OUT_DIR }}" \
-            --out-name "${{ env.BINARY }}" \
-            --no-typescript \
-            --target web
-          cp -r web/* "${{ env.OUT_DIR }}"
-          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
+          trunk build --profile="${{ env.PROFILE }}" --dist "${{ env.OUT_DIR }}"
 
       - name: Optimize Wasm
         uses: NiklasEi/wasm-opt-action@v2
