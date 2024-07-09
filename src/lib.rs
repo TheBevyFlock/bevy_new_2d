@@ -1,6 +1,6 @@
 mod camera;
 #[cfg(feature = "dev")]
-mod dev;
+mod dev_tools;
 mod game;
 mod screen;
 mod ui_tools;
@@ -44,6 +44,6 @@ impl Plugin for AppPlugin {
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]
-        app.add_plugins(dev::plugin);
+        app.add_plugins(dev_tools::plugin);
     }
 }
