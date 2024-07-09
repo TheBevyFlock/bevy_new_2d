@@ -9,10 +9,19 @@ use super::Screen;
 use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
+    // Spawn splash screen.
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
-    // Add splash timer
+    // Animate splash screen.
+    app.add_systems(
+        Update,
+        (tick_fade_in_out, apply_fade_in_out)
+            .chain()
+            .run_if(in_state(Screen::Splash)),
+    );
+
+    // Add splash timer.
     app.register_type::<SplashTimer>();
     app.add_systems(OnEnter(Screen::Splash), insert_splash_timer);
     app.add_systems(OnExit(Screen::Splash), remove_splash_timer);
@@ -25,6 +34,8 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
+const SPLASH_DURATION_SECS: f32 = 1.8;
+const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
 fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
@@ -55,11 +66,50 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                     )),
                     ..default()
                 },
+                UiImageFadeInOut {
+                    total_duration: SPLASH_DURATION_SECS,
+                    fade_duration: SPLASH_FADE_DURATION_SECS,
+                    t: 0.0,
+                },
             ));
         });
 }
 
-const SPLASH_DURATION_SECS: f32 = 1.2;
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+struct UiImageFadeInOut {
+    /// Total duration in seconds.
+    total_duration: f32,
+    /// Fade duration in seconds.
+    fade_duration: f32,
+    /// Current progress in seconds, between 0 and [`Self::total_duration`].
+    t: f32,
+}
+
+impl UiImageFadeInOut {
+    fn alpha(&self) -> f32 {
+        // Normalize by duration.
+        let t = (self.t / self.total_duration).clamp(0.0, 1.0);
+        let fade = self.fade_duration / self.total_duration;
+
+        // Regular trapezoid-shaped graph, flat at the top with alpha = 1.0.
+        let t = ((1.0 - (2.0 * t - 1.0).abs()) / fade).min(1.0);
+
+        t
+    }
+}
+
+fn tick_fade_in_out(time: Res<Time>, mut animation_query: Query<&mut UiImageFadeInOut>) {
+    for mut anim in &mut animation_query {
+        anim.t += time.delta_seconds();
+    }
+}
+
+fn apply_fade_in_out(mut animation_query: Query<(&UiImageFadeInOut, &mut UiImage)>) {
+    for (anim, mut image) in &mut animation_query {
+        image.color.set_alpha(anim.alpha())
+    }
+}
 
 #[derive(Resource, Debug, Clone, PartialEq, Reflect)]
 #[reflect(Resource)]
