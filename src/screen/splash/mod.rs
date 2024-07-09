@@ -2,7 +2,7 @@
 
 use bevy::{asset::embedded_asset, prelude::*};
 
-use crate::util::ui::prelude::*;
+use crate::util::prelude::*;
 
 use super::Screen;
 
