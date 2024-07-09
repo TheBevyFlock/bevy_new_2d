@@ -67,7 +67,7 @@ opt-level = "z"
 strip = "debuginfo"
 
 # Override some settings for native builds.
-[profile.native-release]
+[profile.release-native]
 # Use release profile as default values.
 inherits = "release"
 # Optimize with performance in mind.
