@@ -1,10 +1,9 @@
 //! A splash screen that plays briefly at startup.
 
 use bevy::{asset::embedded_asset, prelude::*};
-use serde::{Deserialize, Serialize};
 
 use super::Screen;
-use crate::util::ui::prelude::*;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Add splash image
@@ -55,8 +54,8 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 const SPLASH_DURATION_SECS: f32 = 1.2;
 
-#[derive(Resource, Debug, Clone, PartialEq, Reflect, Serialize, Deserialize)]
-#[reflect(Resource, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Resource, Debug, Clone, PartialEq, Reflect)]
+#[reflect(Resource, Debug, PartialEq, Default)]
 struct SplashTimer(Timer);
 
 impl Default for SplashTimer {

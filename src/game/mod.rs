@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 mod movement;
 mod physics;
 mod render;
-pub(crate) mod spawn;
+pub mod spawn;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure_sets(

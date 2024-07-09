@@ -15,13 +15,13 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Event, Debug, Hash, PartialEq, Eq, Clone, Default, Reflect, Serialize, Deserialize)]
 #[reflect(Debug, Hash, PartialEq, Default, Serialize, Deserialize)]
-pub(crate) struct SpawnPlayer;
+pub struct SpawnPlayer;
 
 #[derive(
     Component, Debug, Clone, Copy, PartialEq, Eq, Default, Hash, Reflect, Serialize, Deserialize,
 )]
 #[reflect(Component, Debug, PartialEq, Hash, Serialize, Deserialize)]
-pub(crate) struct Player;
+pub struct Player;
 
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,

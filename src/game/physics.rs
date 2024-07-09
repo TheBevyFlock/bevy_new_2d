@@ -28,7 +28,7 @@ pub(super) fn plugin(app: &mut App) {
     Deserialize,
 )]
 #[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
-pub(crate) struct Velocity(pub(crate) Vec3);
+pub struct Velocity(pub Vec3);
 
 /// The actual transform of the player in the physics simulation.
 /// This is separate from the `Transform`, which is merely a visual
@@ -38,10 +38,8 @@ pub(crate) struct Velocity(pub(crate) Vec3);
 /// as fast as possible. The rendering will then interpolate between
 /// the previous and current physical translation to get a smooth
 /// visual representation of the player.
-#[derive(
-    Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect, Serialize, Deserialize,
-)]
-#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component, Debug)]
 pub(crate) struct PhysicalTransform(pub(crate) Transform);
 
 /// The value that [`PhysicalTranslation`] had in the last fixed timestep.
@@ -60,7 +58,7 @@ pub(crate) struct PhysicalTransform(pub(crate) Transform);
     Deserialize,
 )]
 #[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
-pub(crate) struct PreviousPhysicalTransform(pub(crate) Transform);
+pub struct PreviousPhysicalTransform(pub Transform);
 
 /// When adding a [`PhysicalTransform`]:
 /// - make sure it is always initialized with the same value as the

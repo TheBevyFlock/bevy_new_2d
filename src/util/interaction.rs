@@ -6,26 +6,16 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
 }
 
-pub(crate) type InteractionQuery<'w, 's, T> =
+pub type InteractionQuery<'w, 's, T> =
     Query<'w, 's, (&'static Interaction, T), Changed<Interaction>>;
 
 /// Palette for widget interactions.
-#[derive(Component, Debug, Clone, Copy, PartialEq, Reflect, Serialize, Deserialize)]
-#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
-pub(crate) struct InteractionPalette {
-    none: Color,
-    hovered: Color,
-    pressed: Color,
-}
-
-impl InteractionPalette {
-    pub fn new(none: Color, hovered: Color, pressed: Color) -> Self {
-        Self {
-            none,
-            hovered,
-            pressed,
-        }
-    }
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component, Debug)]
+pub struct InteractionPalette {
+    pub none: Color,
+    pub hovered: Color,
+    pub pressed: Color,
 }
 
 fn apply_interaction_palette(

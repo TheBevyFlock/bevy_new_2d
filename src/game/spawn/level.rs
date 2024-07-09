@@ -12,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Event, Debug, Hash, PartialEq, Eq, Clone, Default, Reflect, Serialize, Deserialize)]
 #[reflect(Debug, Hash, PartialEq, Default, Serialize, Deserialize)]
-pub(crate) struct SpawnLevel;
+pub struct SpawnLevel;
 
 fn spawn_level(_trigger: Trigger<SpawnLevel>, mut commands: Commands) {
     // The only thing we have in our level is a player,
