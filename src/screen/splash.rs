@@ -1,39 +1,11 @@
 //! A splash screen that plays briefly at startup.
 
-use bevy::{
-    asset::load_internal_binary_asset,
-    prelude::*,
-    render::{
-        render_asset::RenderAssetUsages,
-        texture::{ImageSampler, ImageType},
-    },
-};
+use bevy::prelude::*;
 
 use super::Screen;
 use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    // Add splash image as an embedded asset. We do this here because the splash
-    // screen is the first screen to display, so you don't have to wait for the
-    // asset to load. Note that Bevy supports a short version of the boilerplate
-    // below in form of the `embedded_asset!` macro, but that does currently
-    // [not work on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
-    load_internal_binary_asset!(
-        app,
-        SPLASH_IMAGE_HANDLE,
-        "splash.png",
-        |bytes, _path: String| {
-            Image::from_buffer(
-                bytes,
-                ImageType::Extension("png"),
-                default(),
-                true,
-                ImageSampler::linear(),
-                RenderAssetUsages::RENDER_WORLD | RenderAssetUsages::MAIN_WORLD,
-            )
-            .unwrap()
-        }
-    );
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
@@ -49,11 +21,9 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-const SPLASH_IMAGE_HANDLE: Handle<Image> =
-    Handle::weak_from_u128(145948501136218819748366695396142082633);
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 
-fn spawn_splash(mut commands: Commands) {
+fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .ui_root()
         .insert((
@@ -70,7 +40,9 @@ fn spawn_splash(mut commands: Commands) {
                         width: Val::Percent(70.0),
                         ..default()
                     },
-                    image: UiImage::new(SPLASH_IMAGE_HANDLE),
+                    // This should be an embedded asset for instant loading, but that is currently
+                    // [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
+                    image: UiImage::new(asset_server.load("splash.png")),
                     ..default()
                 },
             ));
