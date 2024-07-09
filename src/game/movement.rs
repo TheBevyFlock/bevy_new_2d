@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::game::audio::Sfx;
+use crate::game::audio::sfx::Sfx;
 
 use super::{spawn::player::Player, GameSystem};
 
@@ -61,8 +61,8 @@ fn handle_player_movement_input(
     if intent != Vec3::ZERO {
         let now = time.elapsed();
         if *last_sfx + STEP_SFX_INTERVAL < now {
-            commands.trigger(Sfx::Step);
             *last_sfx = now;
+            commands.trigger(Sfx::Step);
         }
     }
 }
