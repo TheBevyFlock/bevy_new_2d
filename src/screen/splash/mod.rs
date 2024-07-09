@@ -1,6 +1,10 @@
 //! A splash screen that plays briefly at startup.
 
-use bevy::{asset::embedded_asset, prelude::*};
+use bevy::{
+    asset::embedded_asset,
+    prelude::*,
+    render::texture::{ImageLoaderSettings, ImageSampler},
+};
 
 use super::Screen;
 use crate::ui_tools::prelude::*;
@@ -42,9 +46,14 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                         width: Val::Percent(70.0),
                         ..default()
                     },
-                    image: UiImage::new(
-                        asset_server.load("embedded://bevy_template/screen/splash/splash.png"),
-                    ),
+                    image: UiImage::new(asset_server.load_with_settings(
+                        "embedded://bevy_template/screen/splash/splash.png",
+                        |settings: &mut ImageLoaderSettings| {
+                            // Make an exception for the splash image in case
+                            // `ImagePlugin::default_nearest()` is used for pixel art.
+                            settings.sampler = ImageSampler::linear();
+                        },
+                    )),
                     ..default()
                 },
             ));
