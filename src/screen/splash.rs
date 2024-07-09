@@ -1,7 +1,6 @@
 //! A splash screen that plays briefly at startup.
 
 use bevy::{
-    asset::embedded_asset,
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},
 };
@@ -10,8 +9,6 @@ use super::Screen;
 use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    // Add splash image
-    embedded_asset!(app, "splash.png");
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
@@ -47,7 +44,9 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ..default()
                     },
                     image: UiImage::new(asset_server.load_with_settings(
-                        "embedded://bevy_template/screen/splash/splash.png",
+                        // This should be an embedded asset for instant loading, but that is
+                        // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
+                        "splash.png",
                         |settings: &mut ImageLoaderSettings| {
                             // Make an exception for the splash image in case
                             // `ImagePlugin::default_nearest()` is used for pixel art.
