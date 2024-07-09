@@ -18,7 +18,7 @@ cargo run
 Web:
 
 ```sh
-trunk serve
+trunk serve --no-spa
 ```
 
 ## CI

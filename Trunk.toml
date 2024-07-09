@@ -5,7 +5,10 @@ target = "web/index.html"
 public_url = "./"
 
 [server]
-# Required for asset loading
+# Required in order to receive 404s for missing assets,
+# which is what Bevy expects.
+# Note that this option is currently ignored, see https://github.com/trunk-rs/trunk/issues/819
+# So you still have to manually pass the flag to trunk serve: `trunk serve --no-spa`
 no_spa = true
 # Open a browser tab once the initial build is complete.
 open = true
