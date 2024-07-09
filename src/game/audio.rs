@@ -25,8 +25,8 @@ fn play_soundtrack(
         commands.entity(entity).despawn();
     }
     let path = match event {
-        Soundtrack::Credits => "audio/soundtracks/credits.ogg",
-        Soundtrack::Gameplay => "audio/soundtracks/gameplay.ogg",
+        Soundtrack::Credits => "audio/soundtracks/Monkeys Spinning Monkeys.ogg",
+        Soundtrack::Gameplay => "audio/soundtracks/Fluffing A Duck.ogg",
         Soundtrack::Disable => {
             return;
         }
