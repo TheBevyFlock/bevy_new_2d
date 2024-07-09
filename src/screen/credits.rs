@@ -12,7 +12,6 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         handle_credits_action.run_if(in_state(Screen::Credits)),
     );
-
     app.register_type::<CreditsAction>();
 }
 
