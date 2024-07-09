@@ -24,7 +24,7 @@ fn enter_playing(mut commands: Commands) {
 /// Not needed in this case, as we don't actually move the camera, but useful
 /// for most games.
 fn exit_playing(mut cameras: Query<&mut Transform, With<Camera>>) {
-    for mut transform in cameras.iter_mut() {
+    for mut transform in &mut cameras {
         *transform = default();
     }
 }

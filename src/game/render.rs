@@ -26,8 +26,7 @@ fn update_rendered_transform(
         &PreviousPhysicalTransform,
     )>,
 ) {
-    for (mut transform, current_physical_transform, previous_physical_transform) in query.iter_mut()
-    {
+    for (mut transform, current_physical_transform, previous_physical_transform) in &mut query {
         let previous = previous_physical_transform.translation;
         let current = current_physical_transform.translation;
         // The overstep fraction is a value between 0 and 1 that tells us how far we are
