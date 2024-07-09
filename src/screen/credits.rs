@@ -1,7 +1,6 @@
 //! A credits screen that can be accessed from the title screen.
 
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
 
 use super::Screen;
 use crate::util::prelude::*;
@@ -17,8 +16,8 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<CreditsAction>();
 }
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect, Serialize, Deserialize)]
-#[reflect(Component, Debug, PartialEq, Hash, Serialize, Deserialize)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 enum CreditsAction {
     Back,
 }

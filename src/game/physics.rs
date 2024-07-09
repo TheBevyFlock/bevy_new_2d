@@ -4,7 +4,6 @@ use bevy::{
     ecs::component::{ComponentHooks, StorageType},
     prelude::*,
 };
-use serde::{Deserialize, Serialize};
 
 pub(super) fn plugin(app: &mut App) {
     // `FixedUpdate` runs before `Update`, so the physics simulation is advanced
@@ -14,20 +13,8 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 /// How many units per second the player should move.
-#[derive(
-    Component,
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Default,
-    Deref,
-    DerefMut,
-    Reflect,
-    Serialize,
-    Deserialize,
-)]
-#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component)]
 pub struct Velocity(pub Vec3);
 
 /// The actual transform of the player in the physics simulation.
@@ -39,25 +26,13 @@ pub struct Velocity(pub Vec3);
 /// the previous and current physical translation to get a smooth
 /// visual representation of the player.
 #[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
-#[reflect(Component, Debug)]
-pub(crate) struct PhysicalTransform(pub(crate) Transform);
+#[reflect(Component)]
+pub struct PhysicalTransform(pub Transform);
 
 /// The value that [`PhysicalTranslation`] had in the last fixed timestep.
 /// Used for interpolation when rendering.
-#[derive(
-    Component,
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Default,
-    Deref,
-    DerefMut,
-    Reflect,
-    Serialize,
-    Deserialize,
-)]
-#[reflect(Component, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component)]
 pub struct PreviousPhysicalTransform(pub Transform);
 
 /// When adding a [`PhysicalTransform`]:

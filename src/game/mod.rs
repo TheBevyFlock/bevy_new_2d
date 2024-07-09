@@ -6,7 +6,6 @@
 //! behind it.
 
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
 
 mod movement;
 mod physics;
@@ -24,11 +23,9 @@ pub(super) fn plugin(app: &mut App) {
         render::plugin,
         spawn::plugin,
     ));
-    app.register_type::<GameSystem>();
 }
 
-#[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash, Reflect, Serialize, Deserialize)]
-#[reflect(Debug, Hash, PartialEq, Serialize, Deserialize)]
+#[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash)]
 enum GameSystem {
     /// Updates the [`Transform`] of entities based on their
     /// [`physics::PhysicalTransform`].

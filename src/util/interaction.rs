@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, apply_interaction_palette);
@@ -11,7 +10,7 @@ pub type InteractionQuery<'w, 's, T> =
 
 /// Palette for widget interactions.
 #[derive(Component, Debug, Reflect)]
-#[reflect(Component, Debug)]
+#[reflect(Component)]
 pub struct InteractionPalette {
     pub none: Color,
     pub hovered: Color,
