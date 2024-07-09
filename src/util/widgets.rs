@@ -5,7 +5,11 @@ use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
 use super::{
     interaction::InteractionPalette,
     palette::{
-        BACKGROUND, BUTTON_HOVERED_BACKGROUND, BUTTON_PRESSED_BACKGROUND, BUTTON_TEXT, LABEL_TEXT,
+        BACKGROUND,
+        BUTTON_HOVERED_BACKGROUND,
+        BUTTON_PRESSED_BACKGROUND,
+        BUTTON_TEXT,
+        LABEL_TEXT,
         NODE_BACKGROUND,
     },
 };
@@ -87,7 +91,7 @@ impl<T: Spawn> Widgets for T {
         ));
         entity.with_children(|children| {
             children.spawn((
-                Name::new("Button text"),
+                Name::new("Button Text"),
                 TextBundle::from_section(
                     text,
                     TextStyle {
