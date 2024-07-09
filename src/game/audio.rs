@@ -1,17 +1,9 @@
-use bevy::{
-    audio::{PlaybackMode, Volume},
-    prelude::*,
-};
+use bevy::{audio::PlaybackMode, prelude::*};
 use rand::prelude::SliceRandom;
 
 pub fn plugin(app: &mut App) {
-    app.add_systems(Startup, configure_global_volume);
     app.observe(play_soundtrack);
     app.observe(play_sfx);
-}
-
-fn configure_global_volume(mut global_volume: ResMut<GlobalVolume>) {
-    global_volume.volume = Volume::new(0.3);
 }
 
 fn play_soundtrack(
