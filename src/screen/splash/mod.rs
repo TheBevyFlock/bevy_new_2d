@@ -43,6 +43,7 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ..default()
                     },
                     image: UiImage::new(
+                        // TODO: Change this to your binary name
                         asset_server.load("embedded://bevy_template/screen/splash/splash.png"),
                     ),
                     ..default()

@@ -4,7 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <title>bevy-template</title>
-    <link rel="stylesheet" href="style.css" />
+    <link data-trunk rel="copy-dir" href="../assets"/>
+    <link data-trunk rel="inline" href="style.css"/>
+    <link data-trunk rel="inline" href="restart-audio-context.js"/>
+    <link data-trunk rel="rust" data-cargo-no-default-features href="../"/>
 </head>
 
 <body>
@@ -19,14 +22,6 @@
     </div>
 
     <script type="module">
-        import './restart-audio-context.js'
-        import init from './bevy_template.js'
-        init().catch((error) => {
-            if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
-                throw error;
-            }
-        });
-
         // Hide loading screen when the game starts.
         const loading_screen = document.getElementById('loading-screen');
         const bevy = document.getElementById('bevy');

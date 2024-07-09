@@ -1,3 +1,4 @@
 /target
 .cargo/config.toml
-/wasm
+wasm/
+dist/
