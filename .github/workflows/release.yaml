@@ -79,6 +79,7 @@ jobs:
 
       - name: Prepare package
         run: |
+          mkdir -p "${{ env.OUT_DIR }}"
           trunk build --release --dist "${{ env.OUT_DIR }}"
 
       - name: Compress package
