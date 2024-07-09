@@ -7,8 +7,6 @@ mod title;
 
 use bevy::prelude::*;
 
-use crate::core::booting::Booting;
-
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>()
         .enable_state_scoped_entities::<Screen>();
@@ -21,9 +19,8 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-/// The game's screen states. This is a sub-state of [`Booting::Done`].
-#[derive(SubStates, Debug, Hash, PartialEq, Eq, Clone, Default)]
-#[source(Booting = Booting::Done)]
+/// The game's main screen states.
+#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
 pub enum Screen {
     #[default]
     Splash,
