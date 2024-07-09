@@ -1,7 +1,7 @@
 # Rust builds
 /target
 # Trunk builds
-web/dist/
+/web/dist/
 
 # This file contains environment-specific configuration like linker settings
 .cargo/config.toml
