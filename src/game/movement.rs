@@ -53,10 +53,8 @@ fn handle_player_movement_input(
 
     for (mut transform, mut sprite) in &mut player_query {
         transform.translation += target_velocity * time.delta_seconds();
-        if intent.x > 0.0 {
-            sprite.flip_x = false;
-        } else if intent.x < 0.0 {
-            sprite.flip_x = true;
+        if intent.x != 0.0 {
+            sprite.flip_x = intent.x < 0.0;
         }
     }
 
