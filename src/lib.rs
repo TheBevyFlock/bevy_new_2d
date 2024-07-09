@@ -3,7 +3,7 @@ mod camera;
 mod dev;
 mod game;
 mod screen;
-mod util;
+mod ui_tools;
 
 use bevy::{asset::AssetMetaCheck, prelude::*};
 
@@ -35,7 +35,12 @@ impl Plugin for AppPlugin {
         );
 
         // Add other plugins.
-        app.add_plugins((game::plugin, screen::plugin, util::plugin, camera::plugin));
+        app.add_plugins((
+            game::plugin,
+            screen::plugin,
+            ui_tools::plugin,
+            camera::plugin,
+        ));
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]
