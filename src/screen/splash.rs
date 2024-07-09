@@ -1,12 +1,35 @@
 //! A splash screen that plays briefly at startup.
 
-use bevy::prelude::*;
+use bevy::{
+    asset::load_internal_binary_asset,
+    prelude::*,
+    render::{
+        render_asset::RenderAssetUsages,
+        texture::{ImageSampler, ImageType},
+    },
+};
 
 use super::Screen;
 use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Add splash image
+    load_internal_binary_asset!(
+        app,
+        SPLASH_IMAGE_HANDLE,
+        "splash.png",
+        |bytes, _path: String| {
+            Image::from_buffer(
+                bytes,
+                ImageType::Extension("png"),
+                default(),
+                true,
+                ImageSampler::linear(),
+                RenderAssetUsages::RENDER_WORLD | RenderAssetUsages::MAIN_WORLD,
+            )
+            .unwrap()
+        }
+    );
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
@@ -22,6 +45,8 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
+const SPLASH_IMAGE_HANDLE: Handle<Image> =
+    Handle::weak_from_u128(145948501136218819748366695396142082633);
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 
 fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -41,7 +66,7 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                         width: Val::Percent(70.0),
                         ..default()
                     },
-                    image: UiImage::new(asset_server.load("splash.png")),
+                    image: UiImage::new(SPLASH_IMAGE_HANDLE),
                     ..default()
                 },
             ));
