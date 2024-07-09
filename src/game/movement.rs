@@ -1,20 +1,24 @@
 //! Handle player input and translate it into velocity.
+//! Note that the approach used here is simple for demonstration purposes.
+//! If you want to move the player in a smoother way,
+//! consider using a [fixed timestep](https://github.com/bevyengine/bevy/pull/14223).
 
 use bevy::prelude::*;
 
-use super::{physics::Velocity, spawn::player::Player, GameSystem};
+use super::{spawn::player::Player, GameSystem};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
-        handle_player_movement_input.in_set(GameSystem::ReadInput),
+        handle_player_movement_input.in_set(GameSystem::Movement),
     );
 }
 
 /// Handle keyboard input to move the player.
 fn handle_player_movement_input(
+    time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<&mut Velocity, With<Player>>,
+    mut player_query: Query<&mut Transform, With<Player>>,
 ) {
     /// Since Bevy's default 2D camera setup is scaled such that
     /// one unit is one pixel, you can think of this as
@@ -40,7 +44,7 @@ fn handle_player_movement_input(
     let intent = intent.normalize_or_zero();
     let target_velocity = intent * SPEED;
 
-    for mut velocity in &mut player_query {
-        velocity.0 = target_velocity;
+    for mut transform in &mut player_query {
+        transform.translation += target_velocity * time.delta_seconds();
     }
 }
