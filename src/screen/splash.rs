@@ -1,16 +1,9 @@
 //! A splash screen that plays briefly at startup.
 
-<<<<<<< HEAD:src/screen/splash.rs
-use bevy::prelude::*;
-||||||| c2d7bf1:src/screen/splash/mod.rs
-use bevy::{asset::embedded_asset, prelude::*};
-=======
 use bevy::{
-    asset::embedded_asset,
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},
 };
->>>>>>> origin/main:src/screen/splash/mod.rs
 
 use super::Screen;
 use crate::ui_tools::prelude::*;
@@ -51,8 +44,8 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ..default()
                     },
                     image: UiImage::new(asset_server.load_with_settings(
-                        // This should be an embedded asset for instant loading, but that is currently
-                        // [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
+                        // This should be an embedded asset for instant loading, but that is
+                        // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
                         "splash.png",
                         |settings: &mut ImageLoaderSettings| {
                             // Make an exception for the splash image in case
