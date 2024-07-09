@@ -8,9 +8,8 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), enter_title);
 
-    app.add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
-
     app.register_type::<TitleAction>();
+    app.add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
 }
 
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]

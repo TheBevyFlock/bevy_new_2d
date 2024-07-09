@@ -12,6 +12,7 @@ pub(super) fn plugin(app: &mut App) {
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
 
     // Add splash timer
+    app.register_type::<SplashTimer>();
     app.add_systems(OnEnter(Screen::Splash), insert_splash_timer);
     app.add_systems(OnExit(Screen::Splash), remove_splash_timer);
     app.add_systems(
@@ -20,8 +21,6 @@ pub(super) fn plugin(app: &mut App) {
             .chain()
             .run_if(in_state(Screen::Splash)),
     );
-
-    app.register_type::<SplashTimer>();
 }
 
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
@@ -30,7 +29,7 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .ui_root()
         .insert((
-            Name::new("Splash"),
+            Name::new("Splash screen"),
             BackgroundColor(SPLASH_BACKGROUND_COLOR),
             StateScoped(Screen::Splash),
         ))
