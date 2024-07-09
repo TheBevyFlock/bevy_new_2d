@@ -49,6 +49,8 @@ fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
                     image: UiImage::new(asset_server.load_with_settings(
                         "embedded://bevy_template/screen/splash/splash.png",
                         |settings: &mut ImageLoaderSettings| {
+                            // Make an exception for the splash image in case
+                            // `ImagePlugin::default_nearest()` is used for pixel art.
                             settings.sampler = ImageSampler::linear();
                         },
                     )),
