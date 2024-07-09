@@ -9,10 +9,12 @@ pub(super) fn plugin(app: &mut App) {
     // `FixedUpdate` runs before `Update`, so the physics simulation is advanced
     // before the player's visual representation is updated.
     app.add_systems(FixedUpdate, advance_physics);
+    app.register_type::<(Velocity, PhysicalTransform, PreviousPhysicalTransform)>();
 }
 
 /// How many units per second the player should move.
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component)]
 pub struct Velocity(pub Vec3);
 
 /// The actual transform of the player in the physics simulation.
@@ -23,12 +25,14 @@ pub struct Velocity(pub Vec3);
 /// as fast as possible. The rendering will then interpolate between
 /// the previous and current physical translation to get a smooth
 /// visual representation of the player.
-#[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component)]
 pub struct PhysicalTransform(pub Transform);
 
 /// The value that [`PhysicalTranslation`] had in the last fixed timestep.
 /// Used for interpolation when rendering.
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Default, Deref, DerefMut, Reflect)]
+#[reflect(Component)]
 pub struct PreviousPhysicalTransform(pub Transform);
 
 /// When adding a [`PhysicalTransform`]:
@@ -61,9 +65,7 @@ fn advance_physics(
         &Velocity,
     )>,
 ) {
-    for (mut current_physical_transform, mut previous_physical_transform, velocity) in
-        query.iter_mut()
-    {
+    for (mut current_physical_transform, mut previous_physical_transform, velocity) in &mut query {
         previous_physical_transform.0 = current_physical_transform.0;
         current_physical_transform.translation += velocity.0 * fixed_time.delta_seconds();
     }

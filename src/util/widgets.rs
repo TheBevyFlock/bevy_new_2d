@@ -36,20 +36,22 @@ pub trait Containers {
 
 impl Containers for Commands<'_, '_> {
     fn ui_root(&mut self) -> EntityCommands {
-        self.spawn(NodeBundle {
-            style: Style {
-                width: Percent(100.0),
-                height: Percent(100.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                flex_direction: FlexDirection::Column,
-                row_gap: Px(10.0),
-                position_type: PositionType::Absolute,
+        self.spawn((
+            Name::new("UI Root"),
+            NodeBundle {
+                style: Style {
+                    width: Percent(100.0),
+                    height: Percent(100.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    flex_direction: FlexDirection::Column,
+                    row_gap: Px(10.0),
+                    position_type: PositionType::Absolute,
+                    ..default()
+                },
                 ..default()
             },
-            background_color: BACKGROUND.into(),
-            ..default()
-        })
+        ))
     }
 }
 
@@ -65,6 +67,7 @@ pub trait Widgets {
 impl<T: Spawn> Widgets for T {
     fn button(&mut self, text: impl Into<String>) -> EntityCommands {
         let mut entity = self.spawn((
+            Name::new("Button"),
             ButtonBundle {
                 style: Style {
                     width: Px(200.0),
@@ -83,38 +86,47 @@ impl<T: Spawn> Widgets for T {
             },
         ));
         entity.with_children(|children| {
-            children.spawn(TextBundle::from_section(
-                text,
-                TextStyle {
-                    font_size: 40.0,
-                    color: BUTTON_TEXT,
-                    ..default()
-                },
+            children.spawn((
+                Name::new("Button Text"),
+                TextBundle::from_section(
+                    text,
+                    TextStyle {
+                        font_size: 40.0,
+                        color: BUTTON_TEXT,
+                        ..default()
+                    },
+                ),
             ));
         });
         entity
     }
 
     fn label(&mut self, text: impl Into<String>) -> EntityCommands {
-        let mut entity = self.spawn(NodeBundle {
-            style: Style {
-                width: Px(300.0),
-                height: Px(65.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            background_color: BackgroundColor(NODE_BACKGROUND),
-            ..default()
-        });
-        entity.with_children(|children| {
-            children.spawn(TextBundle::from_section(
-                text,
-                TextStyle {
-                    font_size: 40.0,
-                    color: LABEL_TEXT,
+        let mut entity = self.spawn((
+            Name::new("Label"),
+            NodeBundle {
+                style: Style {
+                    width: Px(300.0),
+                    height: Px(65.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
                     ..default()
                 },
+                background_color: BackgroundColor(NODE_BACKGROUND),
+                ..default()
+            },
+        ));
+        entity.with_children(|children| {
+            children.spawn((
+                Name::new("Label Text"),
+                TextBundle::from_section(
+                    text,
+                    TextStyle {
+                        font_size: 40.0,
+                        color: LABEL_TEXT,
+                        ..default()
+                    },
+                ),
             ));
         });
         entity

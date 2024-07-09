@@ -12,9 +12,11 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         handle_credits_action.run_if(in_state(Screen::Credits)),
     );
+    app.register_type::<CreditsAction>();
 }
 
-#[derive(Component, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
+#[reflect(Component)]
 enum CreditsAction {
     Back,
 }

@@ -9,12 +9,14 @@ use crate::{
 
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_player);
+    app.register_type::<Player>();
 }
 
-#[derive(Debug, Event)]
+#[derive(Event, Debug)]
 pub struct SpawnPlayer;
 
-#[derive(Debug, Component, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
+#[reflect(Component)]
 pub struct Player;
 
 fn spawn_player(

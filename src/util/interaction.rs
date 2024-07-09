@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
+    app.register_type::<InteractionPalette>();
     app.add_systems(Update, apply_interaction_palette);
 }
 
@@ -8,7 +9,8 @@ pub type InteractionQuery<'w, 's, T> =
     Query<'w, 's, (&'static Interaction, T), Changed<Interaction>>;
 
 /// Palette for widget interactions.
-#[derive(Component)]
+#[derive(Component, Debug, Reflect)]
+#[reflect(Component)]
 pub struct InteractionPalette {
     pub none: Color,
     pub hovered: Color,

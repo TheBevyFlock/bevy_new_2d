@@ -25,7 +25,7 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-#[derive(Debug, SystemSet, Clone, Copy, Eq, PartialEq, Hash)]
+#[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash)]
 enum GameSystem {
     /// Updates the [`Transform`] of entities based on their
     /// [`physics::PhysicalTransform`].
