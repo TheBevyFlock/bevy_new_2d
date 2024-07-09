@@ -1,8 +1,10 @@
 use bevy::prelude::*;
 
+use crate::game::audio::Sfx;
+
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
-    app.add_systems(Update, apply_interaction_palette);
+    app.add_systems(Update, apply_interaction);
 }
 
 pub type InteractionQuery<'w, 's, T> =
@@ -17,14 +19,21 @@ pub struct InteractionPalette {
     pub pressed: Color,
 }
 
-fn apply_interaction_palette(
+fn apply_interaction(
     mut palette_query: InteractionQuery<(&InteractionPalette, &mut BackgroundColor)>,
+    mut commands: Commands,
 ) {
     for (interaction, (palette, mut background)) in &mut palette_query {
         *background = match interaction {
             Interaction::None => palette.none,
-            Interaction::Hovered => palette.hovered,
-            Interaction::Pressed => palette.pressed,
+            Interaction::Hovered => {
+                commands.trigger(Sfx::ButtonHover);
+                palette.hovered
+            }
+            Interaction::Pressed => {
+                commands.trigger(Sfx::ButtonPress);
+                palette.pressed
+            }
         }
         .into();
     }
