@@ -50,7 +50,9 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
-# Enable more optimization in release mode at the cost of compile time.
+# The default profile is optimized for Wasm builds because
+# that's what [Trunk reads](https://github.com/trunk-rs/trunk/issues/605).
+# Optimize for size in wasm-release mode to reduce load times and bandwidth usage on web.
 [profile.release]
 # Compile the entire crate as one unit.
 # Significantly slows compile times, marginal improvements.
@@ -58,13 +60,17 @@ codegen-units = 1
 # Do a second optimization pass over the entire program, including dependencies.
 # Slightly slows compile times, marginal improvements.
 lto = "thin"
-
-# Optimize for size in wasm-release mode to reduce load times and bandwidth usage on web.
-[profile.wasm-release]
-# Use release profile as default values.
-inherits = "release"
 # Optimize with size in mind (also try "s", sometimes it is better).
 # This doesn't increase compilation times compared to -O3, great improvements.
 opt-level = "z"
 # Strip all debugging information from the binary to reduce file size.
 strip = "debuginfo"
+
+# Override some settings for native builds.
+[profile.native-release]
+# Use release profile as default values.
+inherits = "release"
+# Optimize with performance in mind.
+opt-level = 3
+# Keep debug information in the binary.
+strip = "none"

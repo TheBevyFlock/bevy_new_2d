@@ -47,7 +47,7 @@ jobs:
     needs: get-version
     env:
       TARGET: wasm32-unknown-unknown
-      PROFILE: wasm-release
+      PROFILE: release
       PLATFORM: web
       VERSION: ${{ needs.get-version.outputs.version }}
 
@@ -76,12 +76,7 @@ jobs:
 
       - name: Prepare package
         run: |
-          trunk build --profile="${{ env.PROFILE }}" --dist "${{ env.OUT_DIR }}"
-
-      - name: Optimize Wasm
-        uses: NiklasEi/wasm-opt-action@v2
-        with:
-          file: ${{ env.OUT_DIR }}/*.wasm
+          trunk build --release --dist "${{ env.OUT_DIR }}"
 
       - name: Compress package
         working-directory: ./build/${{ env.PACKAGE }}
@@ -112,7 +107,7 @@ jobs:
     needs: get-version
     env:
       TARGET: x86_64-unknown-linux-gnu
-      PROFILE: release
+      PROFILE: release-native
       PLATFORM: linux
       VERSION: ${{ needs.get-version.outputs.version }}
 
@@ -178,7 +173,7 @@ jobs:
     needs: get-version
     env:
       TARGET: x86_64-pc-windows-msvc
-      PROFILE: release
+      PROFILE: release-native
       PLATFORM: windows
       VERSION: ${{ needs.get-version.outputs.version }}
 
@@ -240,7 +235,7 @@ jobs:
     needs: get-version
     env:
       TARGET: x86_64-apple-darwin
-      PROFILE: release
+      PROFILE: release-native
       PLATFORM: macOS-intel
       VERSION: ${{ needs.get-version.outputs.version }}
       CFLAGS: -fno-stack-check
@@ -304,7 +299,7 @@ jobs:
     needs: get-version
     env:
       TARGET: aarch64-apple-darwin
-      PROFILE: release
+      PROFILE: release-native
       PLATFORM: macOS-apple-silicon
       VERSION: ${{ needs.get-version.outputs.version }}
       # MacOS 11.0 Big Sur is the first version to support universal binaries.
