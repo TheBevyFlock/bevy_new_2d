@@ -70,9 +70,12 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.7.4
+
       - name: Install dependencies
         run: |
-          cargo install trunk
+          cargo binstall trunk --no-confirm
 
       - name: Prepare package
         run: |
