@@ -4,12 +4,12 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, apply_interaction_palette);
 }
 
-pub(crate) type InteractionQuery<'w, 's, T> =
+pub type InteractionQuery<'w, 's, T> =
     Query<'w, 's, (&'static Interaction, T), Changed<Interaction>>;
 
 /// Palette for widget interactions.
 #[derive(Component)]
-pub(crate) struct InteractionPalette {
+pub struct InteractionPalette {
     none: Color,
     hovered: Color,
     pressed: Color,

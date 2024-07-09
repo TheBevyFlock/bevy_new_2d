@@ -9,7 +9,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Debug, Event)]
-pub(crate) struct SpawnLevel;
+pub struct SpawnLevel;
 
 fn spawn_level(_trigger: Trigger<SpawnLevel>, mut commands: Commands) {
     // The only thing we have in our level is a player,
