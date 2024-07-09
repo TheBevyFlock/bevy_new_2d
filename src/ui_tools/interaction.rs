@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
-    app.add_systems(Update, apply_interaction);
+    app.add_systems(Update, apply_interaction_palette);
 }
 
 pub type InteractionQuery<'w, 's, T> =
@@ -17,7 +17,7 @@ pub struct InteractionPalette {
     pub pressed: Color,
 }
 
-fn apply_interaction(
+fn apply_interaction_palette(
     mut palette_query: InteractionQuery<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
     for (interaction, (palette, mut background)) in &mut palette_query {

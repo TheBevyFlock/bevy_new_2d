@@ -29,7 +29,7 @@ pub(super) fn play_soundtrack(
 #[derive(Component)]
 pub(super) struct SoundtrackMarker;
 
-/// Play or disable soundtrack.
+/// Play or disable the soundtrack.
 /// Playing a new soundtrack will overwrite the previous one.
 /// Soundtracks will loop.
 #[derive(Event)]

@@ -7,9 +7,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::game::audio::sfx::Sfx;
-
-use super::{spawn::player::Player, GameSystem};
+use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(

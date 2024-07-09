@@ -20,7 +20,7 @@ pub(super) fn play_sfx(
     commands.spawn(AudioSourceBundle { source, settings });
 }
 
-/// Play an a single sound effect.
+/// Play a single sound effect.
 #[derive(Event)]
 pub enum Sfx {
     ButtonHover,
