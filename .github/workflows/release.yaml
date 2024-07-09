@@ -74,7 +74,7 @@ jobs:
         run: |
           cargo install trunk
 
-      - name: Build Wasm
+      - name: Prepare package
         run: |
           trunk build --profile="${{ env.PROFILE }}" --dist "${{ env.OUT_DIR }}"
 
