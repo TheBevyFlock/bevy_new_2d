@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
 /// one unit is one pixel, you can think of this as
 /// "How many pixels per second should the player move?"
 /// Note that physics engines may use different unit/pixel ratios.
-const MOVEMENT_SPEED: f32 = 240.0;
+const MOVEMENT_SPEED: f32 = 420.0;
 
 /// Time between walk sound effects.
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
@@ -29,7 +29,7 @@ const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
 fn handle_player_movement_input(
     time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<&mut Transform, With<Player>>,
+    mut player_query: Query<(&mut Transform, &mut Sprite), With<Player>>,
     mut last_sfx: Local<Duration>,
     mut commands: Commands,
 ) {
@@ -51,16 +51,19 @@ fn handle_player_movement_input(
     let intent = intent.normalize_or_zero();
     let target_velocity = intent * MOVEMENT_SPEED;
 
-    for mut transform in &mut player_query {
+    for (mut transform, mut sprite) in &mut player_query {
         transform.translation += target_velocity * time.delta_seconds();
+        if intent.x > 0.0 {
+            sprite.flip_x = false;
+        } else if intent.x < 0.0 {
+            sprite.flip_x = true;
+        }
     }
 
-    // If we're moving, play a sound effect
-    if intent != Vec3::ZERO {
-        let now = time.elapsed();
-        if *last_sfx + STEP_SFX_INTERVAL < now {
-            *last_sfx = now;
-            commands.trigger(Sfx::Step);
-        }
+    // If the player is moving, play a step sound effect.
+    let now = time.elapsed();
+    if intent != Vec3::ZERO && *last_sfx + STEP_SFX_INTERVAL < now {
+        *last_sfx = now;
+        commands.trigger(Sfx::Step);
     }
 }
