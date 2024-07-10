@@ -79,9 +79,9 @@ pub struct Movement {
 
 fn apply_movement(
     time: Res<Time>,
-    mut mobility_query: Query<(&MovementController, &Movement, &mut Transform)>,
+    mut movement_query: Query<(&MovementController, &Movement, &mut Transform)>,
 ) {
-    for (controller, mobility, mut transform) in &mut mobility_query {
+    for (controller, mobility, mut transform) in &mut movement_query {
         let velocity = mobility.speed * controller.0;
         let velocity = velocity.extend(0.0);
 
