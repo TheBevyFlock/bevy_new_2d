@@ -5,30 +5,32 @@
 
 use bevy::prelude::*;
 
-use super::{audio::sfx::Sfx, GameSystem};
+use super::audio::sfx::Sfx;
+use crate::AppStep;
 
 pub(super) fn plugin(app: &mut App) {
     // Record directional input as movement controls.
     app.register_type::<MovementController>();
     app.add_systems(
         Update,
-        record_movement_controller.in_set(GameSystem::Movement),
+        record_movement_controller.in_set(AppStep::RecordInput),
     );
 
     // Apply movement based on controls.
     app.register_type::<Movement>();
-    app.add_systems(Update, apply_movement.in_set(GameSystem::Movement));
+    app.add_systems(Update, apply_movement.in_set(AppStep::Update));
 
     // Update facing based on controls.
-    app.add_systems(Update, update_facing);
+    app.add_systems(Update, update_facing.in_set(AppStep::Update));
 
     // Trigger step sound effects based on controls.
     app.register_type::<StepSfx>();
     app.add_systems(
         Update,
-        (tick_step_sfx, trigger_step_sfx)
-            .chain()
-            .in_set(GameSystem::Movement),
+        (
+            tick_step_sfx.in_set(AppStep::TickTimers),
+            trigger_step_sfx.in_set(AppStep::Update),
+        ),
     );
 }
 
