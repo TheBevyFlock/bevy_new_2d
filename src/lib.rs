@@ -18,7 +18,7 @@ impl Plugin for AppPlugin {
         // Order new `AppStep` variants by adding them here:
         app.configure_sets(
             Update,
-            (AppStep::RecordInput, AppStep::TickTimers, AppStep::Update).chain(),
+            (AppStep::TickTimers, AppStep::RecordInput, AppStep::Update).chain(),
         );
 
         // Add Bevy plugins.
@@ -69,10 +69,10 @@ impl Plugin for AppPlugin {
 /// call above.
 #[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash)]
 enum AppStep {
-    /// Record player input.
-    RecordInput,
     /// Tick timers.
     TickTimers,
+    /// Record player input.
+    RecordInput,
     /// Do everything else (consider splitting this into further variants).
     Update,
 }

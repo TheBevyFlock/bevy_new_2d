@@ -5,7 +5,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 use crate::{
-    game::movement::{Movement, MovementController, StepSfx},
+    game::movement::{Movement, MovementController, StepSfx, WrapWithinWindow},
     screen::Screen,
 };
 
@@ -36,6 +36,7 @@ fn spawn_player(
         },
         MovementController::default(),
         Movement { speed: 420.0 },
+        WrapWithinWindow,
         StepSfx::new(Duration::from_millis(250)),
         StateScoped(Screen::Playing),
     ));
