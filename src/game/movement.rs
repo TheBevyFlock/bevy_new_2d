@@ -5,7 +5,7 @@
 
 use std::time::Duration;
 
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PrimaryWindow};
 
 use super::audio::sfx::Sfx;
 use crate::AppStep;
@@ -19,8 +19,13 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     // Apply movement based on controls.
-    app.register_type::<Movement>();
-    app.add_systems(Update, apply_movement.in_set(AppStep::Update));
+    app.register_type::<(Movement, WrapWithinWindow)>();
+    app.add_systems(
+        Update,
+        (apply_movement, wrap_within_window)
+            .chain()
+            .in_set(AppStep::Update),
+    );
 
     // Update facing based on controls.
     app.add_systems(Update, update_facing.in_set(AppStep::Update));
@@ -85,9 +90,24 @@ fn apply_movement(
 ) {
     for (controller, movement, mut transform) in &mut movement_query {
         let velocity = movement.speed * controller.0;
-        let velocity = velocity.extend(0.0);
+        transform.translation += velocity.extend(0.0) * time.delta_seconds();
+    }
+}
 
-        transform.translation += velocity * time.delta_seconds();
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct WrapWithinWindow;
+
+fn wrap_within_window(
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    mut wrap_query: Query<&mut Transform, With<WrapWithinWindow>>,
+) {
+    let size = window_query.single().size() + 50.0;
+    let half_size = size / 2.0;
+    for mut transform in &mut wrap_query {
+        let position = transform.translation.xy();
+        let wrapped = (position + half_size).rem_euclid(size) - half_size;
+        transform.translation = wrapped.extend(transform.translation.z);
     }
 }
 
