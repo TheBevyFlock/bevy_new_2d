@@ -15,6 +15,12 @@ pub struct AppPlugin;
 
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
+        // Order new `AppStep` variants by adding them here:
+        app.configure_sets(
+            Update,
+            (AppStep::RecordInput, AppStep::TickTimers, AppStep::Update).chain(),
+        );
+
         // Add Bevy plugins.
         app.add_plugins(
             DefaultPlugins
@@ -56,4 +62,17 @@ impl Plugin for AppPlugin {
         #[cfg(feature = "dev")]
         app.add_plugins(dev_tools::plugin);
     }
+}
+
+/// High-level groupings of systems for the app in the `Update` schedule.
+/// When adding a new variant, make sure to order it in the `configure_sets`
+/// call above.
+#[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash)]
+enum AppStep {
+    /// Record player input.
+    RecordInput,
+    /// Tick timers.
+    TickTimers,
+    /// Do everything else (consider splitting this into further variants).
+    Update,
 }

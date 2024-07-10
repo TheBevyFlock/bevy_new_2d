@@ -1,8 +1,13 @@
 //! Spawn the player.
 
+use std::time::Duration;
+
 use bevy::prelude::*;
 
-use crate::screen::Screen;
+use crate::{
+    game::movement::{Movement, MovementController, StepSfx},
+    screen::Screen,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_player);
@@ -29,6 +34,9 @@ fn spawn_player(
             transform: Transform::from_scale(Vec3::splat(0.5)),
             ..Default::default()
         },
+        MovementController::default(),
+        Movement { speed: 420.0 },
+        StepSfx::new(Duration::from_millis(250)),
         StateScoped(Screen::Playing),
     ));
 }
