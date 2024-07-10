@@ -8,14 +8,14 @@ use std::time::Duration;
 use bevy::{prelude::*, window::PrimaryWindow};
 
 use super::audio::sfx::Sfx;
-use crate::AppStep;
+use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
     // Record directional input as movement controls.
     app.register_type::<MovementController>();
     app.add_systems(
         Update,
-        record_movement_controller.in_set(AppStep::RecordInput),
+        record_movement_controller.in_set(AppSet::RecordInput),
     );
 
     // Apply movement based on controls.
@@ -24,19 +24,19 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (apply_movement, wrap_within_window)
             .chain()
-            .in_set(AppStep::Update),
+            .in_set(AppSet::Update),
     );
 
     // Update facing based on controls.
-    app.add_systems(Update, update_facing.in_set(AppStep::Update));
+    app.add_systems(Update, update_facing.in_set(AppSet::Update));
 
     // Trigger step sound effects based on controls.
     app.register_type::<StepSfx>();
     app.add_systems(
         Update,
         (
-            tick_step_sfx.in_set(AppStep::TickTimers),
-            trigger_step_sfx.in_set(AppStep::Update),
+            tick_step_sfx.in_set(AppSet::TickTimers),
+            trigger_step_sfx.in_set(AppSet::Update),
         ),
     );
 }
