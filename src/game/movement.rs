@@ -83,8 +83,8 @@ fn apply_movement(
     time: Res<Time>,
     mut movement_query: Query<(&MovementController, &Movement, &mut Transform)>,
 ) {
-    for (controller, mobility, mut transform) in &mut movement_query {
-        let velocity = mobility.speed * controller.0;
+    for (controller, movement, mut transform) in &mut movement_query {
+        let velocity = movement.speed * controller.0;
         let velocity = velocity.extend(0.0);
 
         transform.translation += velocity * time.delta_seconds();
