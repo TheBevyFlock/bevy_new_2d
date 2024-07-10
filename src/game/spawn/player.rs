@@ -1,5 +1,7 @@
 //! Spawn the player.
 
+use std::time::Duration;
+
 use bevy::prelude::*;
 
 use crate::{
@@ -34,7 +36,7 @@ fn spawn_player(
         },
         MovementController::default(),
         Movement { speed: 420.0 },
-        StepSfx(Timer::from_seconds(0.25, TimerMode::Repeating)),
+        StepSfx::new(Duration::from_millis(250)),
         StateScoped(Screen::Playing),
     ));
 }

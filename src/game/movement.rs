@@ -3,6 +3,8 @@
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/pull/14223).
 
+use std::time::Duration;
+
 use bevy::prelude::*;
 
 use super::audio::sfx::Sfx;
@@ -101,18 +103,32 @@ fn update_facing(mut player_query: Query<(&MovementController, &mut Sprite)>) {
 /// Time between walk sound effects.
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-pub struct StepSfx(pub Timer);
+pub struct StepSfx {
+    pub cooldown_timer: Timer,
+}
+
+impl StepSfx {
+    pub fn new(cooldown: Duration) -> Self {
+        let mut cooldown_timer = Timer::new(cooldown, TimerMode::Once);
+        cooldown_timer.set_elapsed(cooldown);
+        Self { cooldown_timer }
+    }
+}
 
 fn tick_step_sfx(time: Res<Time>, mut step_query: Query<&mut StepSfx>) {
     for mut step in &mut step_query {
-        step.0.tick(time.delta());
+        step.cooldown_timer.tick(time.delta());
     }
 }
 
 /// If the player is moving, play a step sound effect.
-fn trigger_step_sfx(mut commands: Commands, step_query: Query<(&MovementController, &StepSfx)>) {
-    for (controller, step) in &step_query {
-        if controller.0 != Vec2::ZERO && step.0.just_finished() {
+fn trigger_step_sfx(
+    mut commands: Commands,
+    mut step_query: Query<(&MovementController, &mut StepSfx)>,
+) {
+    for (controller, mut step) in &mut step_query {
+        if step.cooldown_timer.finished() && controller.0 != Vec2::ZERO {
+            step.cooldown_timer.reset();
             commands.trigger(Sfx::Step);
         }
     }
