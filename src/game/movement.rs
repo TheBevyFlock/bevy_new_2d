@@ -205,14 +205,10 @@ impl PlayerAnimation {
         if !self.timer.finished() {
             return;
         }
-        match self.state {
-            PlayerAnimationState::Idle => {
-                self.frame = (self.frame + 1) % Self::IDLE_FRAMES;
-            }
-            PlayerAnimationState::Walking => {
-                self.frame = (self.frame + 1) % Self::WALKING_FRAMES;
-            }
-        }
+        self.frame = (self.frame + 1) % match self.state {
+            PlayerAnimationState::Idle => Self::IDLE_FRAMES,
+            PlayerAnimationState::Walking => Self::WALKING_FRAMES,
+        };
     }
 
     /// Update animation state if it changes.
