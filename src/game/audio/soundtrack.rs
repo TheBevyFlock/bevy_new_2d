@@ -1,23 +1,24 @@
 use bevy::{audio::PlaybackMode, prelude::*};
 
+use crate::game::assets::SoundtrackAssets;
+
 pub(super) fn play_soundtrack(
     trigger: Trigger<Soundtrack>,
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    soundtracks: Res<SoundtrackAssets>,
     query: Query<Entity, With<SoundtrackMarker>>,
 ) {
     let event = trigger.event();
     for entity in query.iter() {
         commands.entity(entity).despawn();
     }
-    let path = match event {
+    let source = match event {
         Soundtrack::Disable => {
             return;
         }
-        Soundtrack::Credits => "audio/soundtracks/Monkeys Spinning Monkeys.ogg",
-        Soundtrack::Gameplay => "audio/soundtracks/Fluffing A Duck.ogg",
+        Soundtrack::Credits => soundtracks.credits.clone(),
+        Soundtrack::Gameplay => soundtracks.gameplay.clone(),
     };
-    let source = asset_server.load::<AudioSource>(path);
     let settings = PlaybackSettings {
         mode: PlaybackMode::Loop,
         ..default()
