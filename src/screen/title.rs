@@ -18,7 +18,7 @@ enum TitleAction {
     Play,
     Credits,
     /// Exit doesn't work well with embedded applications.
-    #[cfg(not(target = "wasm"))]
+    #[cfg(not(target_family = "wasm"))]
     Exit,
 }
 
@@ -46,7 +46,7 @@ fn handle_title_action(
                 TitleAction::Play => next_screen.set(Screen::Playing),
                 TitleAction::Credits => next_screen.set(Screen::Credits),
 
-                #[cfg(not(target = "wasm"))]
+                #[cfg(not(target_family = "wasm"))]
                 TitleAction::Exit => {
                     app_exit.send(AppExit::Success);
                 }
