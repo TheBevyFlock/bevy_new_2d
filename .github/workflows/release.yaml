@@ -275,8 +275,9 @@ jobs:
 
       - name: Create Universal Binary
         run: |
-          lipo -create -output target/${{ env.PROFILE }}/${{ env.BINARY }} target/aarch64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }} target/x86_64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}
-      - name: Create release
+          lipo -create -output "target/${{ env.PROFILE }}/${{ env.BINARY }}" "target/aarch64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}" "target/x86_64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}"
+
+      - name: Prepare package
         run: |
           mkdir -p "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"
           cat > "build/${{ env.PACKAGE_NAME }}.app/Contents/Info.plist" << EOF
