@@ -9,11 +9,11 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Loading), enter_credits);
-    app.add_systems(Update, update_credits.run_if(in_state(Screen::Loading)));
+    app.add_systems(OnEnter(Screen::Loading), enter_loading);
+    app.add_systems(Update, check_all_loaded.run_if(in_state(Screen::Loading)));
 }
 
-fn enter_credits(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn enter_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Loading))
@@ -27,7 +27,7 @@ fn enter_credits(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(SoundtrackAssets::new(&asset_server));
 }
 
-fn update_credits(
+fn check_all_loaded(
     image_assets: Res<Assets<Image>>,
     audio_assets: Res<Assets<AudioSource>>,
     images: Res<ImageAssets>,
