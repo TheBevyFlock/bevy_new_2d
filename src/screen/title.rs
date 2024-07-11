@@ -30,7 +30,7 @@ fn enter_title(mut commands: Commands) {
             children.button("Play").insert(TitleAction::Play);
             children.button("Credits").insert(TitleAction::Credits);
 
-            #[cfg(not(target = "wasm"))]
+            #[cfg(not(target_family = "wasm"))]
             children.button("Exit").insert(TitleAction::Exit);
         });
 }
