@@ -310,7 +310,7 @@ jobs:
                 </dict>
             </plist>
           EOF
-          cp -r assets/ "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"
+          cp -r assets/ "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"|| true # Ignore error if `assets` folder does not exist
           cp "target/${{ env.PROFILE }}/${{ env.BINARY }}" "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/"
           ln -s /Applications build/
           hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build "${{ env.PACKAGE }}.dmg"
