@@ -30,7 +30,7 @@ pub(super) fn plugin(app: &mut App) {
     // Update facing based on controls.
     app.add_systems(Update, update_facing.in_set(AppSet::Update));
 
-    // Animate and play sound effects on controls.
+    // Animate and play sound effects based on controls.
     app.register_type::<PlayerAnimation>();
     app.add_systems(
         Update,
