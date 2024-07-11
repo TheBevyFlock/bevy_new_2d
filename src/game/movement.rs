@@ -30,14 +30,13 @@ pub(super) fn plugin(app: &mut App) {
     // Update facing based on controls.
     app.add_systems(Update, update_facing.in_set(AppSet::Update));
 
-    // Trigger step sound effects based on controls.
-    app.register_type::<StepSfx>();
+    // Animate and play sound effects on controls.
+    app.register_type::<PlayerAnimation>();
     app.add_systems(
         Update,
-        (
-            tick_step_sfx.in_set(AppSet::TickTimers),
-            trigger_step_sfx.in_set(AppSet::Update),
-        ),
+        (update_animation, trigger_step_sfx)
+            .chain()
+            .in_set(AppSet::Update),
     );
 }
 
@@ -120,36 +119,121 @@ fn update_facing(mut player_query: Query<(&MovementController, &mut Sprite)>) {
     }
 }
 
-/// Time between walk sound effects.
+/// Update the animation.
+fn update_animation(
+    time: Res<Time>,
+    mut query: Query<(&mut PlayerAnimation, &MovementController, &mut TextureAtlas)>,
+) {
+    for (mut animation, controller, mut atlas) in &mut query {
+        animation.update_timer(time.delta());
+
+        let animation_state = if controller.0 == Vec2::ZERO {
+            PlayerAnimationState::Idle
+        } else {
+            PlayerAnimationState::Walking
+        };
+        animation.update_state(animation_state);
+
+        if animation.changed() {
+            atlas.index = animation.get_atlas_index();
+        }
+    }
+}
+
+/// If the player is moving, play a step sound effect synchronized with the animation.
+fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimation>) {
+    for animation in &mut step_query {
+        if animation.state == PlayerAnimationState::Walking && animation.changed() {
+            if animation.frame == 1 || animation.frame == 4 {
+                commands.trigger(Sfx::Step);
+            }
+        }
+    }
+}
+
+/// Component that tracks player's animation state.
+/// It is tightly bound to the texture atlas we use.
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-pub struct StepSfx {
-    pub cooldown_timer: Timer,
+pub struct PlayerAnimation {
+    timer: Timer,
+    frame: usize,
+    state: PlayerAnimationState,
 }
 
-impl StepSfx {
-    pub fn new(cooldown: Duration) -> Self {
-        let mut cooldown_timer = Timer::new(cooldown, TimerMode::Once);
-        cooldown_timer.set_elapsed(cooldown);
-        Self { cooldown_timer }
+#[derive(Reflect, PartialEq)]
+pub enum PlayerAnimationState {
+    Idle,
+    Walking,
+}
+
+impl PlayerAnimation {
+    /// How many idle frames are there.
+    const IDLE_FRAMES: usize = 2;
+    /// What's the interval between idle frames.
+    const IDLE_INTERVAL: Duration = Duration::from_millis(500);
+
+    fn idle() -> Self {
+        Self {
+            timer: Timer::new(Self::IDLE_INTERVAL, TimerMode::Repeating),
+            frame: 0,
+            state: PlayerAnimationState::Idle,
+        }
     }
-}
 
-fn tick_step_sfx(time: Res<Time>, mut step_query: Query<&mut StepSfx>) {
-    for mut step in &mut step_query {
-        step.cooldown_timer.tick(time.delta());
+    /// How many walking frames are there.
+    const WALKING_FRAMES: usize = 6;
+    /// What's the interval between walking frames.
+    const WALKING_INTERVAL: Duration = Duration::from_millis(50);
+
+    fn walking() -> Self {
+        Self {
+            timer: Timer::new(Self::WALKING_INTERVAL, TimerMode::Repeating),
+            frame: 0,
+            state: PlayerAnimationState::Walking,
+        }
     }
-}
 
-/// If the player is moving, play a step sound effect.
-fn trigger_step_sfx(
-    mut commands: Commands,
-    mut step_query: Query<(&MovementController, &mut StepSfx)>,
-) {
-    for (controller, mut step) in &mut step_query {
-        if step.cooldown_timer.finished() && controller.0 != Vec2::ZERO {
-            step.cooldown_timer.reset();
-            commands.trigger(Sfx::Step);
+    pub fn new() -> Self {
+        Self::idle()
+    }
+
+    /// Update animation timers.
+    pub fn update_timer(&mut self, delta: Duration) {
+        self.timer.tick(delta);
+        if !self.timer.finished() {
+            return;
+        }
+        match self.state {
+            PlayerAnimationState::Idle => {
+                self.frame = (self.frame + 1) % Self::IDLE_FRAMES;
+            }
+            PlayerAnimationState::Walking => {
+                self.frame = (self.frame + 1) % Self::WALKING_FRAMES;
+            }
+        }
+    }
+
+    /// Update animation state if it changes.
+    pub fn update_state(&mut self, state: PlayerAnimationState) {
+        if self.state != state {
+            match state {
+                PlayerAnimationState::Idle => *self = Self::idle(),
+                PlayerAnimationState::Walking => *self = Self::walking(),
+            }
+        }
+    }
+
+    /// Whether animation changed this tick.
+    pub fn changed(&self) -> bool {
+        self.timer.finished()
+    }
+
+    /// Return sprite index in the atlas.
+    pub fn get_atlas_index(&self) -> usize {
+        match self.state {
+            PlayerAnimationState::Idle => self.frame,
+            PlayerAnimationState::Walking => 6 + self.frame,
         }
     }
 }

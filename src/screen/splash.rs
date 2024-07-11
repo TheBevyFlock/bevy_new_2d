@@ -6,7 +6,7 @@ use bevy::{
 };
 
 use super::Screen;
-use crate::{ui_tools::prelude::*, AppSet};
+use crate::ui_tools::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Spawn splash screen.
@@ -27,10 +27,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnExit(Screen::Splash), remove_splash_timer);
     app.add_systems(
         Update,
-        (
-            tick_splash_timer.in_set(AppSet::TickTimers),
-            check_splash_timer.in_set(AppSet::Update),
-        )
+        (tick_splash_timer, check_splash_timer)
+            .chain()
             .run_if(in_state(Screen::Splash)),
     );
 }
