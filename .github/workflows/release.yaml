@@ -23,7 +23,7 @@ env:
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: the-bevy-flock/bevy-template
-  # The organization or author that owns the rights to the game
+  # The organization or author that owns the rights to the game.
   OWNER: the-bevy-flock
   # Whether packages produced by this workflow should be uploaded to the Github release.
   UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
