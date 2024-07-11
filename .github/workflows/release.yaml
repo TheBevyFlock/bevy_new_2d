@@ -243,6 +243,7 @@ jobs:
         # macOS 11.0 Big Sur is the first version to support universal binaries
         MACOSX_DEPLOYMENT_TARGET: 11.0
         PROFILE: release-native
+        PLATFORM: macos
         VERSION: ${{ needs.get-version.outputs.version }}
     steps:
       - name: Set PACKAGE environment variable
