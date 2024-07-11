@@ -247,7 +247,7 @@ jobs:
     steps:
       - name: Set PACKAGE environment variable
         run: |
-          "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
+          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
