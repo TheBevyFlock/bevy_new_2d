@@ -235,7 +235,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-  # Build for MacOS x86_64 and Apple Silicon
+  # Build for MacOS x86_64 and Apple Silicon.
   build-for-macos:
     runs-on: macos-latest
     needs: get-version
