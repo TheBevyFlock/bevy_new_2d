@@ -23,6 +23,8 @@ env:
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: the-bevy-flock/bevy-template
+  # The organization or author that owns the rights to the game
+  OWNER: the-bevy-flock
   # Whether packages produced by this workflow should be uploaded to the Github release.
   UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
@@ -271,12 +273,42 @@ jobs:
           lipo -create -output target/${{ env.PROFILE }}/${{ env.BINARY }} target/aarch64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }} target/x86_64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}
       - name: Create release
         run: |
-          mkdir -p build/macos/Game.app/Contents/MacOS/assets
-          cp -r assets/ build/macos/Game.app/Contents/MacOS/assets
-          cp target/${{ env.PROFILE }}/${{ env.BINARY }} build/macos/Game.app/Contents/MacOS/
-          mv build/macos/Game.app build/macos/${{ env.PACKAGE }}.app
-          ln -s /Applications build/macos/
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE }}" -srcfolder build/macos ${{ env.PACKAGE }}.dmg
+          mkdir -p "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"
+          cat > "build/${{ env.PACKAGE_NAME }}.app/Contents/Info.plist" << EOF
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+                <dict>
+                    <key>CFBundleDevelopmentRegion</key>
+                    <string>en</string>
+                    <key>CFBundleDisplayName</key>
+                    <string>${{ env.PACKAGE_NAME }}</string>
+                    <key>CFBundleExecutable</key>
+                    <string>${{ env.BINARY }}</string>
+                    <key>CFBundleIdentifier</key>
+                    <string>${{ env.OWNER }}.${{ env.PACKAGE_NAME}}</string>
+                    <key>CFBundleName</key>
+                    <string>${{ env.PACKAGE_NAME }}</string>
+                    <key>CFBundleShortVersionString</key>
+                    <string>${{ env.VERSION }}</string>
+                    <key>CFBundleVersion</key>
+                    <string>${{ env.VERSION }}</string>
+                    <key>CFBundleInfoDictionaryVersion</key>
+                    <string>6.0</string>
+                    <key>CFBundlePackageType</key>
+                    <string>APPL</string>
+                    <key>CFBundleSupportedPlatforms</key>
+                    <array>
+                        <string>MacOSX</string>
+                    </array>
+                </dict>
+            </plist>
+          EOF
+          cp -r assets/ "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"
+          cp target/${{ env.PROFILE }}/${{ env.BINARY }} "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/"
+          ln -s /Applications build/
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build ${{ env.PACKAGE }}.dmg
+
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
