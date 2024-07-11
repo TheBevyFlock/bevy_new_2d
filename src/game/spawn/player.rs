@@ -30,7 +30,7 @@ fn spawn_player(
         Name::new("Player"),
         Player,
         SpriteBundle {
-            texture: asset_server.load("ducky.png"),
+            texture: asset_server.load("images/ducky.png"),
             transform: Transform::from_scale(Vec3::splat(0.5)),
             ..Default::default()
         },
