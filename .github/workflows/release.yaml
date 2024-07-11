@@ -268,7 +268,8 @@ jobs:
         with:
           toolchain: stable
           targets: x86_64-apple-darwin
-      - name: Build release for x86 Apple
+
+      - name: Build binary for Apple x86_64
         run: |
           SDKROOT=$(xcrun -sdk macosx --show-sdk-path) cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=x86_64-apple-darwin
       - name: Create Universal Binary
