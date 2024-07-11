@@ -262,7 +262,8 @@ jobs:
       - name: Build binary for Apple Silicon
         run: |
           SDKROOT=$(xcrun -sdk macosx --show-sdk-path) cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=aarch64-apple-darwin
-      - name: Install rust toolchain for Apple x86
+
+      - name: Install rust toolchain for Apple x86_64
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
