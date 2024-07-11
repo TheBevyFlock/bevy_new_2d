@@ -143,10 +143,11 @@ fn update_animation(
 /// If the player is moving, play a step sound effect synchronized with the animation.
 fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimation>) {
     for animation in &mut step_query {
-        if animation.state == PlayerAnimationState::Walking && animation.changed() {
-            if animation.frame == 1 || animation.frame == 4 {
-                commands.trigger(Sfx::Step);
-            }
+        if animation.state == PlayerAnimationState::Walking
+            && animation.changed()
+            && (animation.frame == 1 || animation.frame == 4)
+        {
+            commands.trigger(Sfx::Step);
         }
     }
 }
