@@ -319,7 +319,7 @@ jobs:
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: "build/${{ env.PACKAGE }}.dmg"
+          path: build/${{ env.PACKAGE }}.dmg
           name: ${{ env.PLATFORM }}
           retention-days: 1
 
