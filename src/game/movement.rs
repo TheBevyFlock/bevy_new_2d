@@ -145,7 +145,7 @@ fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimati
     for animation in &mut step_query {
         if animation.state == PlayerAnimationState::Walking
             && animation.changed()
-            && (animation.frame == 1 || animation.frame == 4)
+            && (animation.frame == 2 || animation.frame == 5)
         {
             commands.trigger(Sfx::Step);
         }
