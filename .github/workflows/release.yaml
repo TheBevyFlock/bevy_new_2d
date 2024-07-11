@@ -233,6 +233,60 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
+  build-for-macos:
+    runs-on: macos-latest
+    needs: get-version
+    env:
+        # macOS 11.0 Big Sur is the first version to support universal binaries
+        MACOSX_DEPLOYMENT_TARGET: 11.0
+        PROFILE: release-native
+        VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Set PACKAGE environment variable
+        run: |
+          "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+            targets: aarch64-apple-darwin
+      - name: Build release for Apple Silicon
+        run: |
+          SDKROOT=$(xcrun -sdk macosx --show-sdk-path) cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=aarch64-apple-darwin
+      - name: Install rust toolchain for Apple x86
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          targets: x86_64-apple-darwin
+      - name: Build release for x86 Apple
+        run: |
+          SDKROOT=$(xcrun -sdk macosx --show-sdk-path) cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=x86_64-apple-darwin
+      - name: Create Universal Binary
+        run: |
+          lipo -create -output target/${{ env.PROFILE }}/${{ env.BINARY }} target/aarch64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }} target/x86_64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}
+      - name: Create release
+        run: |
+          mkdir -p build/macos/Game.app/Contents/MacOS/assets
+          cp -r assets/ build/macos/Game.app/Contents/MacOS/assets
+          cp target/${{ env.PROFILE }}/${{ env.BINARY }} build/macos/Game.app/Contents/MacOS/
+          mv build/macos/Game.app build/macos/${{ env.PACKAGE }}.app
+          ln -s /Applications build/macos/
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE }}" -srcfolder build/macos ${{ env.PACKAGE }}.dmg
+      - name: Upload release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.PACKAGE }}.dmg
+          asset_name: ${{ env.PACKAGE }}.dmg
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
   # Build for MacOS x86_64.
   build-for-macOS-intel:
     runs-on: macOS-latest
