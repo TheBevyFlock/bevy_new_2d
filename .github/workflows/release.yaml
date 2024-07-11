@@ -23,6 +23,8 @@ env:
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: the-bevy-flock/bevy-template
+  # The organization or author that owns the rights to the game.
+  OWNER: the-bevy-flock
   # Whether packages produced by this workflow should be uploaded to the Github release.
   UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
@@ -102,7 +104,7 @@ jobs:
           file: build/${{ env.PACKAGE }}.zip
           asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
   # Build for Linux.
@@ -168,7 +170,7 @@ jobs:
           file: build/${{ env.PACKAGE }}.zip
           asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
   # Build for Windows.
@@ -230,29 +232,22 @@ jobs:
           file: build/${{ env.PACKAGE }}.zip
           asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
-  # Build for MacOS x86_64.
-  build-for-macOS-intel:
-    runs-on: macOS-latest
+  # Build for MacOS x86_64 and Apple Silicon.
+  build-for-macos:
+    runs-on: macos-latest
     needs: get-version
     env:
-      TARGET: x86_64-apple-darwin
-      PROFILE: release-native
-      PLATFORM: macOS-intel
-      VERSION: ${{ needs.get-version.outputs.version }}
-      CFLAGS: -fno-stack-check
-      MACOSX_DEPLOYMENT_TARGET: 10.9
-
+        # macOS 11.0 Big Sur is the first version to support universal binaries
+        MACOSX_DEPLOYMENT_TARGET: 11.0
+        PROFILE: release-native
+        VERSION: ${{ needs.get-version.outputs.version }}
     steps:
       - name: Set PACKAGE environment variable
         run: |
           echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -262,22 +257,64 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ env.TARGET }}
+            targets: aarch64-apple-darwin
 
-      - name: Build binary
+      - name: Build binary for Apple Silicon
         run: |
-          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
+          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=aarch64-apple-darwin
+
+      - name: Install rust toolchain for Apple x86_64
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: x86_64-apple-darwin
+
+      - name: Build binary for Apple x86_64
+        run: |
+          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=x86_64-apple-darwin
+
+      - name: Create Universal Binary
+        run: |
+          lipo -create -output "target/${{ env.PROFILE }}/${{ env.BINARY }}" "target/aarch64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}" "target/x86_64-apple-darwin/${{ env.PROFILE }}/${{ env.BINARY }}"
 
       - name: Prepare package
         run: |
-          mkdir -p "${{ env.OUT_DIR }}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
-          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
+          mkdir -p "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"
+          cat > "build/${{ env.PACKAGE_NAME }}.app/Contents/Info.plist" << EOF
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+                <dict>
+                    <key>CFBundleDevelopmentRegion</key>
+                    <string>en</string>
+                    <key>CFBundleDisplayName</key>
+                    <string>${{ env.PACKAGE_NAME }}</string>
+                    <key>CFBundleExecutable</key>
+                    <string>${{ env.BINARY }}</string>
+                    <key>CFBundleIdentifier</key>
+                    <string>${{ env.OWNER }}.${{ env.PACKAGE_NAME}}</string>
+                    <key>CFBundleName</key>
+                    <string>${{ env.PACKAGE_NAME }}</string>
+                    <key>CFBundleShortVersionString</key>
+                    <string>${{ env.VERSION }}</string>
+                    <key>CFBundleVersion</key>
+                    <string>${{ env.VERSION }}</string>
+                    <key>CFBundleInfoDictionaryVersion</key>
+                    <string>6.0</string>
+                    <key>CFBundlePackageType</key>
+                    <string>APPL</string>
+                    <key>CFBundleSupportedPlatforms</key>
+                    <array>
+                        <string>MacOSX</string>
+                    </array>
+                </dict>
+            </plist>
+          EOF
+          cp -r assets/ "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"|| true # Ignore error if `assets` folder does not exist
+          cp "target/${{ env.PROFILE }}/${{ env.BINARY }}" "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/"
+          ln -s /Applications build/
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build "build/${{ env.PACKAGE }}.dmg"
 
-      - name: Compress package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
@@ -294,71 +331,7 @@ jobs:
           file: build/${{ env.PACKAGE }}.dmg
           asset_name: ${{ env.PACKAGE }}.dmg
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
-          overwrite: true
-
-  # Build for MacOS Apple Silicon.
-  build-for-macOS-apple-silicon:
-    runs-on: macOS-latest
-    needs: get-version
-    env:
-      TARGET: aarch64-apple-darwin
-      PROFILE: release-native
-      PLATFORM: macOS-apple-silicon
-      VERSION: ${{ needs.get-version.outputs.version }}
-      # MacOS 11.0 Big Sur is the first version to support universal binaries.
-      MACOSX_DEPLOYMENT_TARGET: 11.0
-
-    steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-
-      - name: Build binary
-        run: |
-          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
-
-      - name: Prepare package
-        run: |
-          mkdir -p "${{ env.OUT_DIR }}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
-          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
-
-      - name: Compress package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/${{ env.PACKAGE }}.dmg
-          name: ${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.dmg
-          asset_name: ${{ env.PACKAGE }}.dmg
-          release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
   # Check if upload to itch.io is configured.
@@ -385,8 +358,7 @@ jobs:
       - build-for-web
       - build-for-linux
       - build-for-windows
-      - build-for-macOS-intel
-      - build-for-macOS-apple-silicon
+      - build-for-macos
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
