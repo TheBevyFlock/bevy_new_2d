@@ -313,7 +313,7 @@ jobs:
           cp -r assets/ "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"
           cp "target/${{ env.PROFILE }}/${{ env.BINARY }}" "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/"
           ln -s /Applications build/
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build ${{ env.PACKAGE }}.dmg
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build "${{ env.PACKAGE }}.dmg"
 
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
