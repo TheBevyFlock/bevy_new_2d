@@ -235,6 +235,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
+  # Build for MacOS x86_64 and Apple Silicon
   build-for-macos:
     runs-on: macos-latest
     needs: get-version
@@ -319,134 +320,6 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
-  # Build for MacOS x86_64.
-  build-for-macOS-intel:
-    runs-on: macOS-latest
-    needs: get-version
-    env:
-      TARGET: x86_64-apple-darwin
-      PROFILE: release-native
-      PLATFORM: macOS-intel
-      VERSION: ${{ needs.get-version.outputs.version }}
-      CFLAGS: -fno-stack-check
-      MACOSX_DEPLOYMENT_TARGET: 10.9
-
-    steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-
-      - name: Build binary
-        run: |
-          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
-
-      - name: Prepare package
-        run: |
-          mkdir -p "${{ env.OUT_DIR }}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
-          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
-
-      - name: Compress package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/${{ env.PACKAGE }}.dmg
-          name: ${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.dmg
-          asset_name: ${{ env.PACKAGE }}.dmg
-          release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
-          overwrite: true
-
-  # Build for MacOS Apple Silicon.
-  build-for-macOS-apple-silicon:
-    runs-on: macOS-latest
-    needs: get-version
-    env:
-      TARGET: aarch64-apple-darwin
-      PROFILE: release-native
-      PLATFORM: macOS-apple-silicon
-      VERSION: ${{ needs.get-version.outputs.version }}
-      # MacOS 11.0 Big Sur is the first version to support universal binaries.
-      MACOSX_DEPLOYMENT_TARGET: 11.0
-
-    steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo "OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS" >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-
-      - name: Build binary
-        run: |
-          cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
-
-      - name: Prepare package
-        run: |
-          mkdir -p "${{ env.OUT_DIR }}"
-          cp "target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}" "${{ env.OUT_DIR }}"
-          cp -r assets "${{ env.OUT_DIR }}" || true # Ignore error if `assets` folder does not exist
-
-      - name: Compress package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder "${{ env.PACKAGE_NAME }}.app" "../${{ env.PACKAGE }}.dmg"
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/${{ env.PACKAGE }}.dmg
-          name: ${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.dmg
-          asset_name: ${{ env.PACKAGE }}.dmg
-          release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
-          overwrite: true
-
   # Check if upload to itch.io is configured.
   check-if-upload-to-itch-is-configured:
     runs-on: ubuntu-latest
@@ -471,8 +344,7 @@ jobs:
       - build-for-web
       - build-for-linux
       - build-for-windows
-      - build-for-macOS-intel
-      - build-for-macOS-apple-silicon
+      - build-for-macos
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
