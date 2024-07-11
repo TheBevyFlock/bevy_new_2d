@@ -313,13 +313,22 @@ jobs:
           cp -r assets/ "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/assets"|| true # Ignore error if `assets` folder does not exist
           cp "target/${{ env.PROFILE }}/${{ env.BINARY }}" "build/${{ env.PACKAGE_NAME }}.app/Contents/MacOS/"
           ln -s /Applications build/
-          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build "${{ env.PACKAGE }}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ env.PACKAGE_NAME }}" -srcfolder build "build/${{ env.PACKAGE }}.dmg"
 
-      - name: Upload release
+
+      - name: Upload package to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: "build/${{ env.PACKAGE }}.dmg"
+          name: ${{ env.PLATFORM }}
+          retention-days: 1
+
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.PACKAGE }}.dmg
+          file: build/${{ env.PACKAGE }}.dmg
           asset_name: ${{ env.PACKAGE }}.dmg
           release_name: ${{ env.VERSION }}
           tag: ${{ env.VERSION }}
