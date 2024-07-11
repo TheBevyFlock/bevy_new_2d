@@ -104,7 +104,7 @@ jobs:
           file: build/${{ env.PACKAGE }}.zip
           asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
   # Build for Linux.
@@ -170,7 +170,7 @@ jobs:
           file: build/${{ env.PACKAGE }}.zip
           asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
   # Build for Windows.
@@ -232,7 +232,7 @@ jobs:
           file: build/${{ env.PACKAGE }}.zip
           asset_name: ${{ env.PACKAGE }}.zip
           release_name: ${{ env.VERSION }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.VERSION }}
           overwrite: true
 
   # Build for MacOS x86_64 and Apple Silicon.
