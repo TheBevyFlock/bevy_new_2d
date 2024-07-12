@@ -8,7 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  # Enable sccache to speed up builds.
+  # This enables sccache to speed up builds.
   SCCACHE_GHA_ENABLED: true
   RUSTC_WRAPPER: sccache
 

@@ -30,7 +30,7 @@ env:
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
-  # Enable sccache to speed up builds.
+  # This enables sccache to speed up builds.
   SCCACHE_GHA_ENABLED: true
   RUSTC_WRAPPER: sccache
 
