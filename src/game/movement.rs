@@ -27,16 +27,20 @@ pub(super) fn plugin(app: &mut App) {
             .in_set(AppSet::Update),
     );
 
-    // Update facing based on controls.
-    app.add_systems(Update, update_facing.in_set(AppSet::Update));
-
     // Animate and play sound effects based on controls.
     app.register_type::<PlayerAnimation>();
     app.add_systems(
         Update,
-        (update_animation, trigger_step_sfx)
-            .chain()
-            .in_set(AppSet::Update),
+        (
+            update_animation_timer.in_set(AppSet::TickTimers),
+            (
+                update_animation_movement,
+                update_animation_atlas,
+                trigger_step_sfx,
+            )
+                .chain()
+                .in_set(AppSet::Update),
+        ),
     );
 }
 
@@ -110,22 +114,14 @@ fn wrap_within_window(
     }
 }
 
-fn update_facing(mut player_query: Query<(&MovementController, &mut Sprite)>) {
-    for (controller, mut sprite) in &mut player_query {
+fn update_animation_movement(
+    mut player_query: Query<(&MovementController, &mut Sprite, &mut PlayerAnimation)>,
+) {
+    for (controller, mut sprite, mut animation) in &mut player_query {
         let dx = controller.0.x;
         if dx != 0.0 {
             sprite.flip_x = dx < 0.0;
         }
-    }
-}
-
-/// Update the animation.
-fn update_animation(
-    time: Res<Time>,
-    mut query: Query<(&mut PlayerAnimation, &MovementController, &mut TextureAtlas)>,
-) {
-    for (mut animation, controller, mut atlas) in &mut query {
-        animation.update_timer(time.delta());
 
         let animation_state = if controller.0 == Vec2::ZERO {
             PlayerAnimationState::Idle
@@ -133,7 +129,19 @@ fn update_animation(
             PlayerAnimationState::Walking
         };
         animation.update_state(animation_state);
+    }
+}
 
+/// Update the animation timer.
+fn update_animation_timer(time: Res<Time>, mut query: Query<&mut PlayerAnimation>) {
+    for mut animation in &mut query {
+        animation.update_timer(time.delta());
+    }
+}
+
+/// Update the texture atlas to reflect changes.
+fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)>) {
+    for (animation, mut atlas) in &mut query {
         if animation.changed() {
             atlas.index = animation.get_atlas_index();
         }
@@ -205,10 +213,11 @@ impl PlayerAnimation {
         if !self.timer.finished() {
             return;
         }
-        self.frame = (self.frame + 1) % match self.state {
-            PlayerAnimationState::Idle => Self::IDLE_FRAMES,
-            PlayerAnimationState::Walking => Self::WALKING_FRAMES,
-        };
+        self.frame = (self.frame + 1)
+            % match self.state {
+                PlayerAnimationState::Idle => Self::IDLE_FRAMES,
+                PlayerAnimationState::Walking => Self::WALKING_FRAMES,
+            };
     }
 
     /// Update animation state if it changes.
