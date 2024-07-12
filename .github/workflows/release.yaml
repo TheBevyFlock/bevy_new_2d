@@ -17,14 +17,14 @@ on:
 env:
   # TODO: This may become unnecessary: https://github.com/rust-lang/cargo/issues/6790
   # The base filename of the binary produced by `cargo build`.
-  BINARY: bevy_template
+  BINARY: {{crate_name}}
   # The name to use for the packaged application produced by this workflow.
-  PACKAGE_NAME: bevy-template
+  PACKAGE_NAME: {{project-name}}
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
-  ITCH_TARGET: the-bevy-flock/bevy-template
+  ITCH_TARGET: {{itch_username}}/{{project-name}}
   # The organization or author that owns the rights to the game.
-  OWNER: the-bevy-flock
+  OWNER: {{itch_username}}
   # Whether packages produced by this workflow should be uploaded to the Github release.
   UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
