@@ -32,7 +32,7 @@ jobs:
         run: |
           cargo test --workspace --all-targets --all-features
           # Workaround for https://github.com/rust-lang/cargo/issues/6669
-          cargo test --workspace --docs
+          cargo test --workspace --doc
 
   # Run clippy lints.
   clippy_check:
