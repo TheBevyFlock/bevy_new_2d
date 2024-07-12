@@ -1,5 +1,5 @@
 [template]
-include = ["Cargo.toml", ".github/workflows/*"]
+include = ["Cargo.toml", "Cargo.lock", ".github/workflows/*", "*.rs"]
 
 [placeholders.itch_username]
 prompt = "Enter your itch.io username"

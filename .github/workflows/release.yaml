@@ -30,7 +30,7 @@ env:
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
-
+{% raw -%}
 jobs:
   # Extract the version number from the pushed tag.
   get-version:
@@ -388,3 +388,4 @@ jobs:
                 builds/"${channel}"/* \
                 ${{ env.ITCH_TARGET }}:"${channel}"
           done
+{%- endraw %}
