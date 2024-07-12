@@ -8,6 +8,9 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  # Enable sccache to speed up builds.
+  SCCACHE_GHA_ENABLED: "true"
+  RUSTC_WRAPPER: "sccache"
 
 jobs:
   # Run cargo test --all-targets
@@ -97,7 +100,7 @@ jobs:
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
-        
+
       - name: Cache target directory
         uses: Leafwing-Studios/cargo-cache@v1
 
