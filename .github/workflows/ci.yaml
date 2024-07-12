@@ -93,4 +93,4 @@ jobs:
         uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Check documentation
-        run: cargo doc --workspace --all-features
+        run: cargo doc --workspace --all-features --document-private-items
