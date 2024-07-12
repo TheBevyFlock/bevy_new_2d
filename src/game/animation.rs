@@ -55,7 +55,7 @@ fn update_animation_timer(time: Res<Time>, mut query: Query<&mut PlayerAnimation
     }
 }
 
-/// Update the texture atlas to reflect changes.
+/// Update the texture atlas to reflect changes in the animation.
 fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)>) {
     for (animation, mut atlas) in &mut query {
         if animation.changed() {
@@ -93,9 +93,9 @@ pub enum PlayerAnimationState {
 }
 
 impl PlayerAnimation {
-    /// How many idling frames are there.
+    /// The number of idle frames.
     const IDLE_FRAMES: usize = 2;
-    /// What's the interval between idling frames.
+    /// The duration of each idle frame.
     const IDLE_INTERVAL: Duration = Duration::from_millis(500);
 
     fn idling() -> Self {
@@ -106,9 +106,9 @@ impl PlayerAnimation {
         }
     }
 
-    /// How many walking frames are there.
+    /// The number of walking frames.
     const WALKING_FRAMES: usize = 6;
-    /// What's the interval between walking frames.
+    /// The duration of each walking frame.
     const WALKING_INTERVAL: Duration = Duration::from_millis(50);
 
     fn walking() -> Self {
