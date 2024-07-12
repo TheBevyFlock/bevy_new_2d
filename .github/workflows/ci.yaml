@@ -28,9 +28,6 @@ jobs:
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
 
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
-
       - name: Install Dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
 
@@ -53,9 +50,6 @@ jobs:
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
-
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Install Dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
@@ -80,9 +74,6 @@ jobs:
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
 
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
-
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
 
@@ -100,9 +91,6 @@ jobs:
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
-
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Install Dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
