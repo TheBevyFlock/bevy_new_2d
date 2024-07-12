@@ -2,13 +2,7 @@
 
 use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
 
-use super::{
-    interaction::InteractionPalette,
-    palette::{
-        BACKGROUND, BUTTON_HOVERED_BACKGROUND, BUTTON_PRESSED_BACKGROUND, BUTTON_TEXT, HEADER_TEXT,
-        LABEL_TEXT, NODE_BACKGROUND,
-    },
-};
+use super::{interaction::InteractionPalette, palette::*};
 
 /// An internal trait for types that can spawn entities.
 trait Spawn {
