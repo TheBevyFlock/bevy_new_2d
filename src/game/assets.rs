@@ -1,69 +1,127 @@
-use bevy::prelude::*;
+use std::ops::Deref;
+
+use bevy::{prelude::*, utils::HashMap};
+
+#[derive(PartialEq, Eq, Hash, Reflect)]
+pub enum ImageAsset {
+    Ducky,
+}
 
 #[derive(Resource, Reflect)]
 pub struct ImageAssets {
-    pub ducky: Handle<Image>,
+    pub assets: HashMap<ImageAsset, Handle<Image>>,
 }
 
 impl ImageAssets {
     pub fn new(asset_server: &AssetServer) -> Self {
-        Self {
-            ducky: asset_server.load("images/ducky.png"),
-        }
+        let mut assets = HashMap::new();
+
+        assets.insert(ImageAsset::Ducky, asset_server.load("images/ducky.png"));
+
+        Self { assets }
     }
 
     pub fn all_loaded(&self, assets: &Assets<Image>) -> bool {
-        assets.contains(&self.ducky)
+        self.assets
+            .iter()
+            .all(|(_, handle)| assets.contains(handle))
     }
+}
+
+impl Deref for ImageAssets {
+    type Target = HashMap<ImageAsset, Handle<Image>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.assets
+    }
+}
+
+#[derive(PartialEq, Eq, Hash, Reflect)]
+pub enum SfxAsset {
+    ButtonHover,
+    ButtonPress,
+    Step1,
+    Step2,
+    Step3,
+    Step4,
 }
 
 #[derive(Resource, Reflect)]
 pub struct SfxAssets {
-    pub button_hover: Handle<AudioSource>,
-    pub button_press: Handle<AudioSource>,
-    pub step1: Handle<AudioSource>,
-    pub step2: Handle<AudioSource>,
-    pub step3: Handle<AudioSource>,
-    pub step4: Handle<AudioSource>,
+    pub assets: HashMap<SfxAsset, Handle<AudioSource>>,
 }
 
 impl SfxAssets {
     pub fn new(asset_server: &AssetServer) -> Self {
-        Self {
-            button_hover: asset_server.load("audio/sfx/button_hover.ogg"),
-            button_press: asset_server.load("audio/sfx/button_press.ogg"),
-            step1: asset_server.load("audio/sfx/step1.ogg"),
-            step2: asset_server.load("audio/sfx/step2.ogg"),
-            step3: asset_server.load("audio/sfx/step3.ogg"),
-            step4: asset_server.load("audio/sfx/step4.ogg"),
-        }
+        let mut assets = HashMap::new();
+
+        assets.insert(
+            SfxAsset::ButtonHover,
+            asset_server.load("audio/sfx/button_hover.ogg"),
+        );
+        assets.insert(
+            SfxAsset::ButtonPress,
+            asset_server.load("audio/sfx/button_press.ogg"),
+        );
+        assets.insert(SfxAsset::Step1, asset_server.load("audio/sfx/step1.ogg"));
+        assets.insert(SfxAsset::Step2, asset_server.load("audio/sfx/step2.ogg"));
+        assets.insert(SfxAsset::Step3, asset_server.load("audio/sfx/step3.ogg"));
+        assets.insert(SfxAsset::Step4, asset_server.load("audio/sfx/step4.ogg"));
+
+        Self { assets }
     }
 
     pub fn all_loaded(&self, assets: &Assets<AudioSource>) -> bool {
-        assets.contains(&self.button_hover)
-            && assets.contains(&self.button_press)
-            && assets.contains(&self.step1)
-            && assets.contains(&self.step2)
-            && assets.contains(&self.step3)
-            && assets.contains(&self.step4)
+        self.assets
+            .iter()
+            .all(|(_, handle)| assets.contains(handle))
     }
+}
+
+impl Deref for SfxAssets {
+    type Target = HashMap<SfxAsset, Handle<AudioSource>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.assets
+    }
+}
+
+#[derive(PartialEq, Eq, Hash, Reflect)]
+pub enum SoundtrackAsset {
+    Credits,
+    Gameplay,
 }
 
 #[derive(Resource, Reflect)]
 pub struct SoundtrackAssets {
-    pub credits: Handle<AudioSource>,
-    pub gameplay: Handle<AudioSource>,
+    pub assets: HashMap<SoundtrackAsset, Handle<AudioSource>>,
 }
 
 impl SoundtrackAssets {
     pub fn new(asset_server: &AssetServer) -> Self {
-        Self {
-            credits: asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
-            gameplay: asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
-        }
+        let mut assets = HashMap::new();
+        assets.insert(
+            SoundtrackAsset::Credits,
+            asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
+        );
+        assets.insert(
+            SoundtrackAsset::Gameplay,
+            asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
+        );
+        Self { assets }
     }
 
     pub fn all_loaded(&self, assets: &Assets<AudioSource>) -> bool {
-        assets.contains(&self.credits) && assets.contains(&self.gameplay)
+        self.assets
+            .iter()
+            .all(|(_, handle)| assets.contains(handle))
+    }
+}
+
+impl Deref for SoundtrackAssets {
+    type Target = HashMap<SoundtrackAsset, Handle<AudioSource>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.assets
     }
 }

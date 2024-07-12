@@ -1,6 +1,6 @@
 use bevy::{audio::PlaybackMode, prelude::*};
 
-use crate::game::assets::SoundtrackAssets;
+use crate::game::assets::{SoundtrackAsset, SoundtrackAssets};
 
 pub(super) fn play_soundtrack(
     trigger: Trigger<Soundtrack>,
@@ -12,13 +12,16 @@ pub(super) fn play_soundtrack(
     for entity in query.iter() {
         commands.entity(entity).despawn();
     }
+
     let source = match event {
         Soundtrack::Disable => {
             return;
         }
-        Soundtrack::Credits => soundtracks.credits.clone(),
-        Soundtrack::Gameplay => soundtracks.gameplay.clone(),
-    };
+        Soundtrack::Credits => &soundtracks[&SoundtrackAsset::Credits],
+        Soundtrack::Gameplay => &soundtracks[&SoundtrackAsset::Gameplay],
+    }
+    .clone_weak();
+
     let settings = PlaybackSettings {
         mode: PlaybackMode::Loop,
         ..default()

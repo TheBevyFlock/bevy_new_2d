@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 use crate::{
     game::{
-        assets::ImageAssets,
+        assets::{ImageAsset, ImageAssets},
         movement::{Movement, MovementController, StepSfx, WrapWithinWindow},
     },
     screen::Screen,
@@ -29,7 +29,7 @@ fn spawn_player(_trigger: Trigger<SpawnPlayer>, mut commands: Commands, images: 
         Name::new("Player"),
         Player,
         SpriteBundle {
-            texture: images.ducky.clone(),
+            texture: images[&ImageAsset::Ducky].clone_weak(),
             transform: Transform::from_scale(Vec3::splat(0.5)),
             ..Default::default()
         },
