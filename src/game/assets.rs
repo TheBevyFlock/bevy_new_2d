@@ -1,4 +1,8 @@
-use bevy::{prelude::*, utils::HashMap};
+use bevy::{
+    prelude::*,
+    render::texture::{ImageLoaderSettings, ImageSampler},
+    utils::HashMap,
+};
 
 #[derive(PartialEq, Eq, Hash, Reflect)]
 pub enum ImageAsset {
@@ -12,7 +16,15 @@ impl ImageAssets {
     pub fn new(asset_server: &AssetServer) -> Self {
         let mut assets = HashMap::new();
 
-        assets.insert(ImageAsset::Ducky, asset_server.load("images/ducky.png"));
+        assets.insert(
+            ImageAsset::Ducky,
+            asset_server.load_with_settings(
+                "images/ducky.png",
+                |settings: &mut ImageLoaderSettings| {
+                    settings.sampler = ImageSampler::nearest();
+                },
+            ),
+        );
 
         Self(assets)
     }

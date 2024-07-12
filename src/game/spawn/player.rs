@@ -1,15 +1,12 @@
 //! Spawn the player.
 
-use bevy::{
-    prelude::*,
-    render::texture::{ImageLoaderSettings, ImageSampler},
-};
+use bevy::prelude::*;
 
 use crate::{
     game::{
         animation::PlayerAnimation,
-        movement::{Movement, MovementController, StepSfx, WrapWithinWindow},
         assets::{ImageAsset, ImageAssets},
+        movement::{Movement, MovementController, WrapWithinWindow},
     },
     screen::Screen,
 };
@@ -29,15 +26,9 @@ pub struct Player;
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    images: Res<ImageAssets>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    let texture = asset_server.load_with_settings(
-        "images/ducky.png",
-        |settings: &mut ImageLoaderSettings| {
-            settings.sampler = ImageSampler::nearest();
-        },
-    );
     // A texture atlas is a way to split one image with a grid into multiple sprites.
     // By attaching it to a [`SpriteBundle`] and providing an index, we can specify which section of the image we want to see.
     // We will use this to animate our player character. You can learn more about texture atlases in this example:
@@ -51,7 +42,7 @@ fn spawn_player(
         Player,
         SpriteBundle {
             texture: images[&ImageAsset::Ducky].clone_weak(),
-            transform: Transform::from_scale(Vec3::splat(0.5)),
+            transform: Transform::from_scale(Vec3::splat(8.0)),
             ..Default::default()
         },
         TextureAtlas {

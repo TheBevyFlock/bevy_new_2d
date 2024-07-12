@@ -86,7 +86,7 @@ fn wrap_within_window(
     window_query: Query<&Window, With<PrimaryWindow>>,
     mut wrap_query: Query<&mut Transform, With<WrapWithinWindow>>,
 ) {
-    let size = window_query.single().size() + 200.0;
+    let size = window_query.single().size() + 256.0;
     let half_size = size / 2.0;
     for mut transform in &mut wrap_query {
         let position = transform.translation.xy();
