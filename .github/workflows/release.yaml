@@ -31,8 +31,8 @@ env:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
   # Enable sccache to speed up builds.
-  SCCACHE_GHA_ENABLED: "true"
-  RUSTC_WRAPPER: "sccache"
+  SCCACHE_GHA_ENABLED: true
+  RUSTC_WRAPPER: sccache
 
 jobs:
   # Extract the version number from the pushed tag.
