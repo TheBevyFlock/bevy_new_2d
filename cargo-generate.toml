@@ -1,6 +1,3 @@
-[template]
-include = [".github/workflows.release.yaml"]
-
 [placeholders.itch_username]
 prompt = "Enter your itch.io username"
 type = "string"
