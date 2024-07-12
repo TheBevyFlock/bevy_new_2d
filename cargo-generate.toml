@@ -1,3 +1,6 @@
+[template]
+include = ["Cargo.toml", ".github/workflows/*"]
+
 [placeholders.itch_username]
 prompt = "Enter your itch.io username"
 type = "string"
