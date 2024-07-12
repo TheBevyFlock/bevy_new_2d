@@ -31,8 +31,8 @@ jobs:
       - name: Run tests
         run: |
           cargo test --workspace --all-targets --all-features
-          # TODO: Workaround for https://github.com/rust-lang/cargo/issues/6669
-          cargo test --workspace --docs --all-features
+          # Workaround for https://github.com/rust-lang/cargo/issues/6669
+          cargo test --workspace --docs
 
   # Run clippy lints.
   clippy_check:
