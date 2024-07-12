@@ -1,13 +1,10 @@
 //! Handle player input and translate it into movement.
 //! Note that the approach used here is simple for demonstration purposes.
 //! If you want to move the player in a smoother way,
-//! consider using a [fixed timestep](https://github.com/bevyengine/bevy/pull/14223).
-
-use std::time::Duration;
+//! consider using a [fixed timestep](https://github.com/bevyengine/bevy/blob/main/examples/movement/physics_in_fixed_timestep.rs).
 
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use super::audio::sfx::Sfx;
 use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
@@ -25,22 +22,6 @@ pub(super) fn plugin(app: &mut App) {
         (apply_movement, wrap_within_window)
             .chain()
             .in_set(AppSet::Update),
-    );
-
-    // Animate and play sound effects based on controls.
-    app.register_type::<PlayerAnimation>();
-    app.add_systems(
-        Update,
-        (
-            update_animation_timer.in_set(AppSet::TickTimers),
-            (
-                update_animation_movement,
-                update_animation_atlas,
-                trigger_step_sfx,
-            )
-                .chain()
-                .in_set(AppSet::Update),
-        ),
     );
 }
 
@@ -111,135 +92,5 @@ fn wrap_within_window(
         let position = transform.translation.xy();
         let wrapped = (position + half_size).rem_euclid(size) - half_size;
         transform.translation = wrapped.extend(transform.translation.z);
-    }
-}
-
-fn update_animation_movement(
-    mut player_query: Query<(&MovementController, &mut Sprite, &mut PlayerAnimation)>,
-) {
-    for (controller, mut sprite, mut animation) in &mut player_query {
-        let dx = controller.0.x;
-        if dx != 0.0 {
-            sprite.flip_x = dx < 0.0;
-        }
-
-        let animation_state = if controller.0 == Vec2::ZERO {
-            PlayerAnimationState::Idle
-        } else {
-            PlayerAnimationState::Walking
-        };
-        animation.update_state(animation_state);
-    }
-}
-
-/// Update the animation timer.
-fn update_animation_timer(time: Res<Time>, mut query: Query<&mut PlayerAnimation>) {
-    for mut animation in &mut query {
-        animation.update_timer(time.delta());
-    }
-}
-
-/// Update the texture atlas to reflect changes.
-fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)>) {
-    for (animation, mut atlas) in &mut query {
-        if animation.changed() {
-            atlas.index = animation.get_atlas_index();
-        }
-    }
-}
-
-/// If the player is moving, play a step sound effect synchronized with the animation.
-fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimation>) {
-    for animation in &mut step_query {
-        if animation.state == PlayerAnimationState::Walking
-            && animation.changed()
-            && (animation.frame == 2 || animation.frame == 5)
-        {
-            commands.trigger(Sfx::Step);
-        }
-    }
-}
-
-/// Component that tracks player's animation state.
-/// It is tightly bound to the texture atlas we use.
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct PlayerAnimation {
-    timer: Timer,
-    frame: usize,
-    state: PlayerAnimationState,
-}
-
-#[derive(Reflect, PartialEq)]
-pub enum PlayerAnimationState {
-    Idle,
-    Walking,
-}
-
-impl PlayerAnimation {
-    /// How many idle frames are there.
-    const IDLE_FRAMES: usize = 2;
-    /// What's the interval between idle frames.
-    const IDLE_INTERVAL: Duration = Duration::from_millis(500);
-
-    fn idle() -> Self {
-        Self {
-            timer: Timer::new(Self::IDLE_INTERVAL, TimerMode::Repeating),
-            frame: 0,
-            state: PlayerAnimationState::Idle,
-        }
-    }
-
-    /// How many walking frames are there.
-    const WALKING_FRAMES: usize = 6;
-    /// What's the interval between walking frames.
-    const WALKING_INTERVAL: Duration = Duration::from_millis(50);
-
-    fn walking() -> Self {
-        Self {
-            timer: Timer::new(Self::WALKING_INTERVAL, TimerMode::Repeating),
-            frame: 0,
-            state: PlayerAnimationState::Walking,
-        }
-    }
-
-    pub fn new() -> Self {
-        Self::idle()
-    }
-
-    /// Update animation timers.
-    pub fn update_timer(&mut self, delta: Duration) {
-        self.timer.tick(delta);
-        if !self.timer.finished() {
-            return;
-        }
-        self.frame = (self.frame + 1)
-            % match self.state {
-                PlayerAnimationState::Idle => Self::IDLE_FRAMES,
-                PlayerAnimationState::Walking => Self::WALKING_FRAMES,
-            };
-    }
-
-    /// Update animation state if it changes.
-    pub fn update_state(&mut self, state: PlayerAnimationState) {
-        if self.state != state {
-            match state {
-                PlayerAnimationState::Idle => *self = Self::idle(),
-                PlayerAnimationState::Walking => *self = Self::walking(),
-            }
-        }
-    }
-
-    /// Whether animation changed this tick.
-    pub fn changed(&self) -> bool {
-        self.timer.finished()
-    }
-
-    /// Return sprite index in the atlas.
-    pub fn get_atlas_index(&self) -> usize {
-        match self.state {
-            PlayerAnimationState::Idle => self.frame,
-            PlayerAnimationState::Walking => 6 + self.frame,
-        }
     }
 }

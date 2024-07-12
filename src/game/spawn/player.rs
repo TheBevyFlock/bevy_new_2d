@@ -6,7 +6,10 @@ use bevy::{
 };
 
 use crate::{
-    game::movement::{Movement, MovementController, PlayerAnimation, WrapWithinWindow},
+    game::{
+        animation::PlayerAnimation,
+        movement::{Movement, MovementController, WrapWithinWindow},
+    },
     screen::Screen,
 };
 
