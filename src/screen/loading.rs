@@ -1,4 +1,5 @@
-//! A credits screen that can be accessed from the title screen.
+//! A loading screen during which game assets are loaded.
+//! This reduces stuttering, especially for audio on WASM.
 
 use bevy::prelude::*;
 
