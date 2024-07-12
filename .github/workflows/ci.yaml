@@ -72,7 +72,7 @@ jobs:
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
 
-      - name: Run clippy
+      - name: Run clippy lints
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
 
   # Check formatting.
