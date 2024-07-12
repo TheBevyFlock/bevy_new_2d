@@ -18,20 +18,16 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.toml') }}
+        
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Install Dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+
       - name: Run cargo test
         run: cargo test --all-targets
 
@@ -43,22 +39,18 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.toml') }}
+
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Install Dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+
       - name: Run clippy
         run: cargo clippy --all-targets -- -D warnings
 
@@ -70,10 +62,15 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
+
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
 
@@ -85,9 +82,15 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
+
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Install Dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+
       - name: Run cargo doc
         run: cargo doc --no-deps

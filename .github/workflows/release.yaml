@@ -72,6 +72,9 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@v1.7.4
 
@@ -135,6 +138,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ env.TARGET }}
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Install dependencies
         run: |
@@ -202,6 +208,9 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Build binary
         run: |
           cargo build --profile="${{ env.PROFILE }}" --target="${{ env.TARGET }}" --no-default-features
@@ -260,6 +269,9 @@ jobs:
         with:
             targets: aarch64-apple-darwin
 
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Build binary for Apple Silicon
         run: |
           SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build --profile="${{ env.PROFILE }}" --no-default-features --target=aarch64-apple-darwin
@@ -269,6 +281,9 @@ jobs:
         with:
           toolchain: stable
           targets: x86_64-apple-darwin
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Build binary for Apple x86_64
         run: |
