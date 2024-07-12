@@ -30,6 +30,9 @@ env:
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
+  # Enable sccache to speed up builds.
+  SCCACHE_GHA_ENABLED: "true"
+  RUSTC_WRAPPER: "sccache"
 
 jobs:
   # Extract the version number from the pushed tag.
@@ -71,6 +74,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ env.TARGET }}
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - name: Cache target directory
         uses: Leafwing-Studios/cargo-cache@v1
@@ -138,6 +144,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ env.TARGET }}
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - name: Cache target directory
         uses: Leafwing-Studios/cargo-cache@v1
@@ -208,6 +217,9 @@ jobs:
         with:
           targets: ${{ env.TARGET }}
 
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
+
       - name: Cache target directory
         uses: Leafwing-Studios/cargo-cache@v1
 
@@ -268,6 +280,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
             targets: aarch64-apple-darwin
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
 
       - name: Cache target directory
         uses: Leafwing-Studios/cargo-cache@v1
