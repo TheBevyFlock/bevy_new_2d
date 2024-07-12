@@ -8,7 +8,8 @@ use bevy::{
 use crate::{
     game::{
         animation::PlayerAnimation,
-        movement::{Movement, MovementController, WrapWithinWindow},
+        movement::{Movement, MovementController, StepSfx, WrapWithinWindow},
+        assets::{ImageAsset, ImageAssets},
     },
     screen::Screen,
 };
@@ -49,8 +50,8 @@ fn spawn_player(
         Name::new("Player"),
         Player,
         SpriteBundle {
-            texture: texture.clone(),
-            transform: Transform::from_scale(Vec3::splat(8.0)),
+            texture: images[&ImageAsset::Ducky].clone_weak(),
+            transform: Transform::from_scale(Vec3::splat(0.5)),
             ..Default::default()
         },
         TextureAtlas {
