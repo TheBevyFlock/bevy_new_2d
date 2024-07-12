@@ -1,18 +1,16 @@
 use bevy::{audio::PlaybackMode, prelude::*};
 use rand::prelude::SliceRandom;
 
-pub(super) fn play_sfx(
-    trigger: Trigger<Sfx>,
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+use crate::game::assets::{SfxAsset, SfxAssets};
+
+pub(super) fn play_sfx(trigger: Trigger<Sfx>, mut commands: Commands, sfxs: Res<SfxAssets>) {
     let event = trigger.event();
-    let path = match event {
-        Sfx::ButtonHover => "audio/sfx/button_hover.ogg",
-        Sfx::ButtonPress => "audio/sfx/button_press.ogg",
-        Sfx::Step => random_step(),
-    };
-    let source = asset_server.load::<AudioSource>(path);
+    let source = match event {
+        Sfx::ButtonHover => &sfxs[&SfxAsset::ButtonHover],
+        Sfx::ButtonPress => &sfxs[&SfxAsset::ButtonPress],
+        Sfx::Step => random_step(&sfxs),
+    }
+    .clone_weak();
     let settings = PlaybackSettings {
         mode: PlaybackMode::Despawn,
         ..default()
@@ -28,12 +26,12 @@ pub enum Sfx {
     Step,
 }
 
-fn random_step() -> &'static str {
+fn random_step(sfxs: &SfxAssets) -> &Handle<AudioSource> {
     [
-        "audio/sfx/step1.ogg",
-        "audio/sfx/step2.ogg",
-        "audio/sfx/step3.ogg",
-        "audio/sfx/step4.ogg",
+        &sfxs[&SfxAsset::Step1],
+        &sfxs[&SfxAsset::Step2],
+        &sfxs[&SfxAsset::Step3],
+        &sfxs[&SfxAsset::Step4],
     ]
     .choose(&mut rand::thread_rng())
     .unwrap()

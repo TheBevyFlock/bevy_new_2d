@@ -5,7 +5,10 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 use crate::{
-    game::movement::{Movement, MovementController, StepSfx, WrapWithinWindow},
+    game::{
+        assets::{ImageAsset, ImageAssets},
+        movement::{Movement, MovementController, StepSfx, WrapWithinWindow},
+    },
     screen::Screen,
 };
 
@@ -21,16 +24,12 @@ pub struct SpawnPlayer;
 #[reflect(Component)]
 pub struct Player;
 
-fn spawn_player(
-    _trigger: Trigger<SpawnPlayer>,
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+fn spawn_player(_trigger: Trigger<SpawnPlayer>, mut commands: Commands, images: Res<ImageAssets>) {
     commands.spawn((
         Name::new("Player"),
         Player,
         SpriteBundle {
-            texture: asset_server.load("images/ducky.png"),
+            texture: images[&ImageAsset::Ducky].clone_weak(),
             transform: Transform::from_scale(Vec3::splat(0.5)),
             ..Default::default()
         },
