@@ -4,6 +4,6 @@
 use bevy::prelude::*;
 use bevy_template::AppPlugin;
 
-fn main() {
-    App::new().add_plugins(AppPlugin).run();
+fn main() -> AppExit {
+    App::new().add_plugins(AppPlugin).run()
 }
