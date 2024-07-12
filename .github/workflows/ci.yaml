@@ -11,7 +11,7 @@ env:
 
 jobs:
   # Run unit tests.
-  test:
+  unit-test:
     name: Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -32,7 +32,7 @@ jobs:
         run: cargo test --workspace --all-targets --all-features
 
   # Run doc tests.
-  test:
+  doc-test:
     name: Doc Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
