@@ -5,8 +5,8 @@ use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
 use super::{
     interaction::InteractionPalette,
     palette::{
-        BACKGROUND, BUTTON_HOVERED_BACKGROUND, BUTTON_PRESSED_BACKGROUND, BUTTON_TEXT, LABEL_TEXT,
-        NODE_BACKGROUND,
+        BACKGROUND, BUTTON_HOVERED_BACKGROUND, BUTTON_PRESSED_BACKGROUND, BUTTON_TEXT, HEADER_TEXT,
+        LABEL_TEXT, NODE_BACKGROUND,
     },
 };
 
@@ -60,6 +60,9 @@ pub trait Widgets {
     /// Spawn a simple button with text.
     fn button(&mut self, text: impl Into<String>) -> EntityCommands;
 
+    /// Spawn a simple header label. Bigger than [`Widgets::label`].
+    fn header(&mut self, text: impl Into<String>) -> EntityCommands;
+
     /// Spawn a simple text label.
     fn label(&mut self, text: impl Into<String>) -> EntityCommands;
 }
@@ -101,12 +104,12 @@ impl<T: Spawn> Widgets for T {
         entity
     }
 
-    fn label(&mut self, text: impl Into<String>) -> EntityCommands {
+    fn header(&mut self, text: impl Into<String>) -> EntityCommands {
         let mut entity = self.spawn((
-            Name::new("Label"),
+            Name::new("Header"),
             NodeBundle {
                 style: Style {
-                    width: Px(300.0),
+                    width: Px(500.0),
                     height: Px(65.0),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
@@ -118,11 +121,41 @@ impl<T: Spawn> Widgets for T {
         ));
         entity.with_children(|children| {
             children.spawn((
-                Name::new("Label Text"),
+                Name::new("Header Text"),
                 TextBundle::from_section(
                     text,
                     TextStyle {
                         font_size: 40.0,
+                        color: HEADER_TEXT,
+                        ..default()
+                    },
+                ),
+            ));
+        });
+        entity
+    }
+
+    fn label(&mut self, text: impl Into<String>) -> EntityCommands {
+        let mut entity = self.spawn((
+            Name::new("Label"),
+            NodeBundle {
+                style: Style {
+                    width: Px(500.0),
+                    height: Px(30.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+                ..default()
+            },
+        ));
+        entity.with_children(|children| {
+            children.spawn((
+                Name::new("Label Text"),
+                TextBundle::from_section(
+                    text,
+                    TextStyle {
+                        font_size: 24.0,
                         color: LABEL_TEXT,
                         ..default()
                     },

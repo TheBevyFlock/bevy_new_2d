@@ -27,8 +27,14 @@ fn enter_credits(mut commands: Commands) {
         .ui_root()
         .insert(StateScoped(Screen::Credits))
         .with_children(|children| {
+            children.header("Made by");
             children.label("Alice - Foo");
             children.label("Bob - Bar");
+
+            children.header("Assets");
+            children.label("Bevy logo - CC0 by Carter Anderson");
+            children.label("Ducky sprite - CC0 by Caz Creates Games");
+            children.label("Music - CC BY 3.0 by Kevin MacLeod");
 
             children.button("Back").insert(CreditsAction::Back);
         });
