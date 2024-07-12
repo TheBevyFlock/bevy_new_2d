@@ -16,8 +16,10 @@ pub(super) fn plugin(app: &mut App) {
     // Animate splash screen.
     app.add_systems(
         Update,
-        (tick_fade_in_out, apply_fade_in_out)
-            .chain()
+        (
+            tick_fade_in_out.in_set(AppSet::TickTimers),
+            apply_fade_in_out.in_set(AppSet::Update),
+        )
             .run_if(in_state(Screen::Splash)),
     );
 

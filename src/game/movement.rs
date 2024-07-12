@@ -3,11 +3,8 @@
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/blob/latest/examples/movement/physics_in_fixed_timestep.rs).
 
-use std::time::Duration;
-
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use super::audio::sfx::Sfx;
 use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
@@ -25,19 +22,6 @@ pub(super) fn plugin(app: &mut App) {
         (apply_movement, wrap_within_window)
             .chain()
             .in_set(AppSet::Update),
-    );
-
-    // Update facing based on controls.
-    app.add_systems(Update, update_facing.in_set(AppSet::Update));
-
-    // Trigger step sound effects based on controls.
-    app.register_type::<StepSfx>();
-    app.add_systems(
-        Update,
-        (
-            tick_step_sfx.in_set(AppSet::TickTimers),
-            trigger_step_sfx.in_set(AppSet::Update),
-        ),
     );
 }
 
@@ -102,54 +86,11 @@ fn wrap_within_window(
     window_query: Query<&Window, With<PrimaryWindow>>,
     mut wrap_query: Query<&mut Transform, With<WrapWithinWindow>>,
 ) {
-    let size = window_query.single().size() + 50.0;
+    let size = window_query.single().size() + 256.0;
     let half_size = size / 2.0;
     for mut transform in &mut wrap_query {
         let position = transform.translation.xy();
         let wrapped = (position + half_size).rem_euclid(size) - half_size;
         transform.translation = wrapped.extend(transform.translation.z);
-    }
-}
-
-fn update_facing(mut player_query: Query<(&MovementController, &mut Sprite)>) {
-    for (controller, mut sprite) in &mut player_query {
-        let dx = controller.0.x;
-        if dx != 0.0 {
-            sprite.flip_x = dx < 0.0;
-        }
-    }
-}
-
-/// Time between walk sound effects.
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct StepSfx {
-    pub cooldown_timer: Timer,
-}
-
-impl StepSfx {
-    pub fn new(cooldown: Duration) -> Self {
-        let mut cooldown_timer = Timer::new(cooldown, TimerMode::Once);
-        cooldown_timer.set_elapsed(cooldown);
-        Self { cooldown_timer }
-    }
-}
-
-fn tick_step_sfx(time: Res<Time>, mut step_query: Query<&mut StepSfx>) {
-    for mut step in &mut step_query {
-        step.cooldown_timer.tick(time.delta());
-    }
-}
-
-/// If the player is moving, play a step sound effect.
-fn trigger_step_sfx(
-    mut commands: Commands,
-    mut step_query: Query<(&MovementController, &mut StepSfx)>,
-) {
-    for (controller, mut step) in &mut step_query {
-        if step.cooldown_timer.finished() && controller.0 != Vec2::ZERO {
-            step.cooldown_timer.reset();
-            commands.trigger(Sfx::Step);
-        }
     }
 }
