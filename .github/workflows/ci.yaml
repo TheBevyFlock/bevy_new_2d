@@ -31,8 +31,7 @@ jobs:
         uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Run tests
-        run: |
-          cargo test --workspace --all-features --all-targets
+        run: cargo test --workspace --all-features --all-targets
 
   # Run doc tests.
   doc-test:
@@ -53,8 +52,7 @@ jobs:
         uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Run doc tests
-        run: |
-          cargo test --workspace --all-features --doc
+        run: cargo test --workspace --all-features --doc
 
   # Run clippy lints.
   clippy_check:
