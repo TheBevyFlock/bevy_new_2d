@@ -29,9 +29,11 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
+        with:
+          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
 
       - name: Run tests
-        run: cargo test --all-targets
+        run: cargo test --workspace --all-features --all-targets
 
   # Run doc tests.
   doc-test:
@@ -50,12 +52,14 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
+        with:
+          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
 
       - name: Run doc tests
         run: cargo test --workspace --all-features --doc
 
   # Run clippy lints.
-  clippy_check:
+  clippy:
     name: Clippy
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -73,6 +77,8 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
+        with:
+          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
 
       - name: Run clippy lints
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
@@ -111,6 +117,8 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
+        with:
+          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
 
       - name: Check documentation
         run: cargo doc --workspace --all-features --document-private-items --no-deps
