@@ -16,7 +16,6 @@ on:
 
 # Configure constants for this workflow.
 env:
-  # This may become unnecessary: https://github.com/rust-lang/cargo/issues/6790
   # The base filename of the binary produced by `cargo build`.
   BINARY: bevy_template
   # The name to use for the packaged application produced by this workflow.
