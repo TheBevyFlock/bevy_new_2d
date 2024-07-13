@@ -4,6 +4,6 @@
 use bevy::prelude::*;
 use {{crate_name}}::AppPlugin;
 
-fn main() {
-    App::new().add_plugins(AppPlugin).run();
+fn main() -> AppExit {
+    App::new().add_plugins(AppPlugin).run()
 }

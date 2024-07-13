@@ -8,28 +8,33 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUSTFLAGS: --deny warnings
+  RUSTDOCFLAGS: --deny warnings
 
 jobs:
-  # Run unit tests.
+  # Run tests.
   test:
-    name: Test Suite
+    name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout sources
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install stable toolchain
+      - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
 
-      - name: Run cargo test
-        run: cargo test --all-targets
+      - name: Populate target directory from cache
+        uses: Leafwing-Studios/cargo-cache@v1
+
+      - name: Run tests
+        run: |
+          cargo test --workspace --all-features --all-targets
+          # Workaround for https://github.com/rust-lang/cargo/issues/6669
+          cargo test --workspace --all-features --doc
 
   # Run clippy lints.
   clippy_check:
@@ -37,60 +42,57 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout sources
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install stable toolchain
+      - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
 
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
 
-      - name: Run clippy
-        run: cargo clippy --all-targets -- -D warnings
+      - name: Populate target directory from cache
+        uses: Leafwing-Studios/cargo-cache@v1
 
-  # Run cargo fmt --all -- --check
+      - name: Run clippy lints
+        run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
+
+  # Check formatting.
   format:
     name: Format
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout sources
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install stable toolchain
+      - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
 
   # Check documentation.
   doc:
-    name: Doc
+    name: Docs
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout sources
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install stable toolchain
+      - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
 
-      - name: Run cargo doc
-        run: cargo doc --no-deps
+      - name: Populate target directory from cache
+        uses: Leafwing-Studios/cargo-cache@v1
+
+      - name: Check documentation
+        run: cargo doc --workspace --all-features --document-private-items --no-deps
