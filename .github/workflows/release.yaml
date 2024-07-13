@@ -22,7 +22,9 @@ env:
   PACKAGE_NAME: {{project-name}}
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
+  {%- if itch_username != "" -%}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
+  {%- endif -%}
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
   # Whether packages produced by this workflow should be uploaded to the Github release.
@@ -31,7 +33,7 @@ env:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
 
-{% raw -%}
+{%- raw -%}
 jobs:
   # Extract the version number from the pushed tag.
   get-version:
@@ -351,6 +353,9 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
+{%- endraw -%}
+{%- if itch_username != "" -%}
+{%- raw -%}
   # Check if upload to itch.io is configured.
   check-if-upload-to-itch-is-configured:
     runs-on: ubuntu-latest
@@ -404,4 +409,5 @@ jobs:
                 builds/"${channel}"/* \
                 ${{ env.ITCH_TARGET }}:"${channel}"
           done
-{%- endraw %}
+{%- endraw -%}
+{%- endif -%}
