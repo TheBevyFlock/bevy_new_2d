@@ -30,7 +30,7 @@ jobs:
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
         with:
-          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
+          cache-group: ${{ github.job }}-${{ github.workflow_sha }}
 
       - name: Run tests
         run: cargo test --workspace --all-features --all-targets
@@ -53,7 +53,7 @@ jobs:
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
         with:
-          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
+          cache-group: ${{ github.job }}-${{ github.workflow_sha }}
 
       - name: Run doc tests
         run: cargo test --workspace --all-features --doc
@@ -78,7 +78,7 @@ jobs:
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
         with:
-          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
+          cache-group: ${{ github.job }}-${{ github.workflow_sha }}
 
       - name: Run clippy lints
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
@@ -118,7 +118,7 @@ jobs:
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
         with:
-          cache-group: ${{ github.job }}-${{ hashFiles('.github/workflows/ci.yaml') }}
+          cache-group: ${{ github.job }}-${{ github.workflow_sha }}
 
       - name: Check documentation
         run: cargo doc --workspace --all-features --document-private-items --no-deps
