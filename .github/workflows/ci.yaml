@@ -31,7 +31,7 @@ jobs:
         uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Run tests
-        run: cargo test --workspace --all-targets
+        run: cargo test --all-targets
 
   # Run doc tests.
   doc-test:
