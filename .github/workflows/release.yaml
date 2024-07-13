@@ -155,12 +155,12 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
+      - name: Populate target directory from cache
+        uses: Leafwing-Studios/cargo-cache@v1
+
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
-
-      - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Build binary
         run: |
