@@ -57,8 +57,12 @@ jobs:
           echo 'github.workflow_ref = ${{ github.workflow_ref }}'
           echo 'github.workflow = ${{ github.workflow }}'
           export WORKFLOW_PATH='${{ github.workflow_ref }}'
-          echo "WORKFLOW_PATH = ${WORKFLOW_PATH%%@*}"
-          echo "WORKFLOW_PATH=${WORKFLOW_PATH%%@*}" >> "${GITHUB_ENV}"
+          echo "WORKFLOW_PATH = ${WORKFLOW_PATH}"
+          export WORKFLOW_PATH="${WORKFLOW_PATH%%@*}"
+          echo "WORKFLOW_PATH = ${WORKFLOW_PATH}"
+          export WORKFLOW_PATH="${WORKFLOW_PATH#'${{ github.repository }}/'}"
+          echo "WORKFLOW_PATH = ${WORKFLOW_PATH}"
+          echo "WORKFLOW_PATH=${WORKFLOW_PATH}" >> "${GITHUB_ENV}"
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
