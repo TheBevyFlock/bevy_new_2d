@@ -24,6 +24,8 @@ env:
   # Comment this out to disable.
   {%- if itch_username != "" -%}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
+  {%- else -%}
+  #ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- endif -%}
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
@@ -353,9 +355,6 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
-{%- endraw -%}
-{%- if itch_username != "" -%}
-{%- raw -%}
   # Check if upload to itch.io is configured.
   check-if-upload-to-itch-is-configured:
     runs-on: ubuntu-latest
@@ -410,4 +409,3 @@ jobs:
                 ${{ env.ITCH_TARGET }}:"${channel}"
           done
 {%- endraw -%}
-{%- endif -%}
