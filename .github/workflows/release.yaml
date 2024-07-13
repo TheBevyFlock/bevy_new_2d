@@ -35,7 +35,7 @@ env:
   USE_GIT_LFS: false
 
 jobs:
-  # Extract the version number from the pushed tag.
+  # Determine the version number for this workflow.
   get-version:
     runs-on: ubuntu-latest
     steps:
@@ -134,10 +134,13 @@ jobs:
           - platform: macos
             targets: x86_64-apple-darwin aarch64-apple-darwin
             profile: release-native
-            package_ext: .dmg
             out_dir_suffix: .app/Contents/MacOS
+            package_ext: .dmg
             runner: macos-latest
     runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Set up environment
         run: |
@@ -220,7 +223,8 @@ jobs:
             </plist>
           EOF
 
-      - name: Finish package
+      - name: Finish package (non-Windows)
+        if: ${{ matrix.platform != 'windows' }}
         working-directory: tmp/package
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
@@ -229,6 +233,12 @@ jobs:
           else
             zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
           fi
+
+      - name: Finish package (Windows)
+        if: ${{ matrix.platform == 'windows' }}
+        working-directory: tmp/package
+        shell: pwsh
+        run: Compress-Archive -Path '${{ env.PACKAGE_NAME }}' -DestinationPath '${{ env.PACKAGE }}${{ matrix.package_ext }}'
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
