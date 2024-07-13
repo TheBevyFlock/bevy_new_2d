@@ -50,10 +50,20 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
 
+      - name: Hash workflow file
+        run: |
+          echo 'github.sha = ${{ github.sha }}'
+          echo 'github.workflow_sha = ${{ github.workflow_sha }}'
+          echo 'github.workflow_ref = ${{ github.workflow_ref }}'
+          echo 'github.workflow = ${{ github.workflow }}'
+          export WORKFLOW_PATH='${{ github.workflow_ref }}'
+          echo "WORKFLOW_PATH = ${WORKFLOW_PATH%%@*}"
+          echo "WORKFLOW_PATH=${WORKFLOW_PATH%%@*}" >> "${GITHUB_ENV}"
+
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
         with:
-          cache-group: ${{ github.job }}-${{ github.workflow_sha }}
+          cache-group: ${{ github.job }}-${{ hashFiles(env.WORKFLOW_PATH) }}
 
       - name: Run doc tests
         run: cargo test --workspace --all-features --doc
