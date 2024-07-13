@@ -46,69 +46,7 @@ jobs:
       # Use the input from workflow dispatch, or fall back to the git tag.
       version: ${{ inputs.version || steps.tag.outputs.tag }}
 
-  # Build and package a release for web.
-  build-for-web:
-    runs-on: ubuntu-latest
-    needs: get-version
-    env:
-      TARGET: wasm32-unknown-unknown
-      PLATFORM: web
-      PACKAGE_EXT: .zip
-      VERSION: ${{ needs.get-version.outputs.version }}
-    steps:
-      - name: Set up environment
-        run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
-          echo 'OUT_DIR=tmp/package/${{ env.PACKAGE_NAME }}' >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Prepare output directory
-        run: rm -rf '${{ env.OUT_DIR }}'; mkdir -p '${{ env.OUT_DIR }}'
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-
-      - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v1
-
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@v1.7.4
-
-      - name: Install trunk
-        run: cargo binstall trunk --no-confirm
-
-      - name: Run trunk
-        run: trunk build --release --dist '${{ env.OUT_DIR }}'
-
-      - name: Finish package
-        working-directory: tmp/package
-        run: zip --recurse-paths '${{ env.PACKAGE }}${{ env.PACKAGE_EXT }}' '${{ env.PACKAGE_NAME }}'
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: tmp/package/${{ env.PACKAGE }}${{ env.PACKAGE_EXT }}
-          name: package-${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: tmp/package/${{ env.PACKAGE }}${{ env.PACKAGE_EXT }}
-          asset_name: ${{ env.PACKAGE }}${{ env.PACKAGE_EXT }}
-          release_name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
-          overwrite: true
-
-  # Build and package a release for non-web platforms.
+  # Build and package a release for each platform.
   build:
     needs:
       - get-version
@@ -117,6 +55,13 @@ jobs:
     strategy:
       matrix:
         include:
+          - platform: web
+            targets: wasm32-unknown-unknown
+            profile: release
+            binary_ext: .wasm
+            package_ext: .zip
+            runner: ubuntu-latest
+
           - platform: linux
             targets: x86_64-unknown-linux-gnu
             profile: release-native
@@ -171,14 +116,26 @@ jobs:
       - name: Prepare output directories
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
 
-      - name: Build binaries
+      - name: Install cargo-binstall (Web)
+        if: ${{ matrix.platform == 'web' }}
+        uses: cargo-bins/cargo-binstall@v1.7.4
+
+      - name: Install and run trunk (Web)
+        if: ${{ matrix.platform == 'web' }}
+        run: |
+          cargo binstall trunk --no-confirm
+          trunk build --release --dist '${{ env.OUT_DIR }}'
+
+      - name: Build binaries (non-Web)
+        if: ${{ matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
             cargo build --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
             mv target/"${target}"/'${{ matrix.profile }}/${{ env.BINARY }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
           done
 
-      - name: Add binaries to package
+      - name: Add binaries to package (non-Web)
+        if: ${{ matrix.platform != 'web' }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
@@ -186,7 +143,8 @@ jobs:
             mv tmp/binary/* '${{ env.OUT_DIR }}'
           fi
 
-      - name: Add assets to package
+      - name: Add assets to package (non-Web)
+        if: ${{ matrix.platform != 'web' }}
         run: cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
 
       - name: Add app metadata to package (MacOS)
@@ -274,7 +232,6 @@ jobs:
     needs:
       - get-version
       - get-itch-target
-      - build-for-web
       - build
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
