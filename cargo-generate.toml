@@ -2,6 +2,6 @@
 include = ["Cargo.toml", "Cargo.lock", ".github/workflows/*", "*.rs"]
 
 [placeholders.itch_username]
-prompt = "Enter your itch.io username. Leave Blank to disable itch.io upload."
+prompt = "Enter your itch.io username. Leave blank to disable itch.io upload."
 type = "string"
 default = ""

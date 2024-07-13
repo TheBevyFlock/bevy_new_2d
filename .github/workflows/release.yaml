@@ -25,7 +25,7 @@ env:
   {%- if itch_username != "" -%}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- else -%}
-  #ITCH_TARGET: {{itch_username}}/{{project-name}}
+  # ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- endif -%}
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
