@@ -37,7 +37,7 @@ jobs:
           cargo test --workspace --all-features --doc
 
   # Run clippy lints.
-  clippy_check:
+  clippy:
     name: Clippy
     runs-on: ubuntu-latest
     timeout-minutes: 30
