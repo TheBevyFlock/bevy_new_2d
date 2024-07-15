@@ -17,12 +17,12 @@ on:
 # Configure constants for this workflow.
 env:
   # The base filename of the binary produced by `cargo build`.
-  BINARY: bevy_template
+  BINARY: bevy_quickstart
   # The name to use for the packaged application produced by this workflow.
-  PACKAGE_NAME: bevy-template
+  PACKAGE_NAME: bevy_quickstart
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
-  ITCH_TARGET: the-bevy-flock/bevy-template
+  ITCH_TARGET: the-bevy-flock/bevy-quickstart
   # The organization or author that owns the rights to the game.
   OWNER: the-bevy-flock
   # The path to the assets directory.
