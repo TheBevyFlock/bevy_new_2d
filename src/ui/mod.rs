@@ -1,4 +1,4 @@
-//! Re-usable UI widgets & theming.
+//! Reusable UI widgets & theming.
 
 // Unused utilities and re-exports may trigger these lints undesirably.
 #![allow(dead_code, unused_imports)]
