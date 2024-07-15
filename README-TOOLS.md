@@ -20,7 +20,6 @@ A few libraries that the authors of this template have vetted and think you migh
 | [`bevy_kira_audio`](https://github.com/NiklasEi/bevy_kira_audio)                       | Audio          | Advanced audio                        |
 | [`sickle_ui`](https://github.com/UmbraLuminosa/sickle_ui)                              | UI             | UI widgets                            |
 | [`bevy_egui`](https://github.com/mvlabat/bevy_egui)                                    | UI / Debugging | UI framework (great for debug UI)     |
-| [`bevy_hanabi`](https://github.com/djeedai/bevy_hanabi)                                | VFX            | GPU particle system                   |
 
 In particular:
 
