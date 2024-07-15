@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::ui_tools::prelude::*;
+use crate::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), enter_title);
