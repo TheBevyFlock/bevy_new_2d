@@ -43,33 +43,33 @@ type_complexity = "allow"
 # Compile with Performance Optimizations:
 # https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
 
-# Enable a small amount of optimization in debug mode.
+# Enable a small amount of optimization in the dev profile.
 [profile.dev]
 opt-level = 1
 
-# Enable a large amount of optimization in debug mode for dependencies.
+# Enable a large amount of optimization in the dev profile for dependencies.
 [profile.dev.package."*"]
 opt-level = 3
 
 # The default profile is optimized for Wasm builds because
 # that's what [Trunk reads](https://github.com/trunk-rs/trunk/issues/605).
-# Optimize for size in wasm-release mode to reduce load times and bandwidth usage on web.
+# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
 [profile.release]
 # Compile the entire crate as one unit.
-# Significantly slows compile times, marginal improvements.
+# Slows compile times, marginal improvements.
 codegen-units = 1
 # Do a second optimization pass over the entire program, including dependencies.
-# Slightly slows compile times, marginal improvements.
+# Slows compile times, marginal improvements.
 lto = "thin"
-# Optimize with size in mind (also try "s", sometimes it is better).
-# This doesn't increase compilation times compared to -O3, great improvements.
-opt-level = "z"
-# Strip all debugging information from the binary to reduce file size.
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
 strip = "debuginfo"
 
 # Override some settings for native builds.
 [profile.release-native]
-# Use release profile as default values.
+# Default to release profile values.
 inherits = "release"
 # Optimize with performance in mind.
 opt-level = 3
