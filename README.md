@@ -38,7 +38,7 @@ This template comes with a basic project structure that you may find useful:
 | [`src/lib.rs`](src/lib.rs)             | App setup.                                             |
 | [`src/screen/`](src/screen)            | Splash screen, title screen, playing screen, etc.      |
 | [`src/game/`](src/game)                | Game mechanics & content (replace with your own code). |
-| [`src/ui/`](src/ui)                    | Re-usable UI widgets & theming.                        |
+| [`src/ui/`](src/ui)                    | Reusable UI widgets & theming.                         |
 | [`src/dev_tools.rs`](src/dev_tools.rs) | Dev tools for dev builds.                              |
 
 Feel free to move things around however you want, though.
