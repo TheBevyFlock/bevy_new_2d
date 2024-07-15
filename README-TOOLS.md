@@ -1,6 +1,6 @@
 # Useful 3rd-party tools
 
-Check out the [Bevy Assets](https://bevyengine.org/assets/) page to see more options.
+Check out the [Bevy Assets](https://bevyengine.org/assets/) page to browse more options.
 
 ## Libraries
 
