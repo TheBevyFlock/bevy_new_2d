@@ -42,9 +42,7 @@
             "type": "process",
             "command": "trunk",
             "args": [
-                "serve",
-                "--no-spa",
-                "--open"
+                "serve"
             ],
             "options": {
                 "env": {
@@ -65,9 +63,7 @@
             "command": "trunk",
             "args": [
                 "serve",
-                "--no-spa",
-                "--release",
-                "--open"
+                "--release"
             ],
             "presentation": {
                 "clear": true
