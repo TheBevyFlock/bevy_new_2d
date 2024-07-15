@@ -63,7 +63,8 @@
             "command": "trunk",
             "args": [
                 "serve",
-                "--release"
+                "--release",
+                "--no-default-features"
             ],
             "presentation": {
                 "clear": true
