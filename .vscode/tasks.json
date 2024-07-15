@@ -36,6 +36,43 @@
                 "$rustc"
             ],
             "group": "build"
+        },
+        {
+            "label": "Run web dev",
+            "type": "process",
+            "command": "trunk",
+            "args": [
+                "serve"
+            ],
+            "options": {
+                "env": {
+                    "RUST_BACKTRACE": "full"
+                }
+            },
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Run web release",
+            "type": "process",
+            "command": "trunk",
+            "args": [
+                "serve",
+                "--release",
+                "--no-default-features"
+            ],
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": "build"
         }
     ]
 }
