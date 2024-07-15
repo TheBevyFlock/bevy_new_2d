@@ -1,10 +1,10 @@
 # Useful 3rd-party tools
 
-Check out the [Bevy Assets](https://bevyengine.org/assets/) page for more options.
+Check out the [Bevy Assets](https://bevyengine.org/assets/) page for more great options.
 
 ## Libraries
 
-The following libraries will likely be useful for most games:
+A few libraries that the authors of this template have vetted and think you might find useful:
 
 | Name                                                                                   | Category      | Description                           |
 | -------------------------------------------------------------------------------------- | ------------- | ------------------------------------- |
