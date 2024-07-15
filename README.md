@@ -51,7 +51,7 @@ Feel free to move things around however you want, though.
 Running your game locally is very simple:
 
 - Use `cargo run` to run a native dev build.
-- Use [`trunk serve --no-spa --open`](https://trunkrs.dev/) to run a web dev build.
+- Use [`trunk serve`](https://trunkrs.dev/) to run a web dev build.
 
 If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](.vscode/tasks.json) file.
 
