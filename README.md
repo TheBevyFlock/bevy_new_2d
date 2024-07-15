@@ -1,16 +1,16 @@
-# Bevy Template
+# Bevy Quickstart
 
 This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#Write-your-game) and [CI / CD](#Release-your-game) that can deploy to [itch.io](https://itch.io).
 
 > [!Note]
-> [Play this template on itch.io!](https://the-bevy-flock.itch.io/bevy-template)
+> [Play this template on itch.io!](https://the-bevy-flock.itch.io/bevy-quickstart)
 
 ## Create a new game
 
 Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
 
 ```sh    
-cargo generate TheBevyFlock/bevy-template --branch cargo-generate
+cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
@@ -19,13 +19,13 @@ Then [create a GitHub repository](https://github.com/new) and push your local re
   <summary>Alternatively, click here for manual setup instructions.</summary>
 ### Manual setup
 
-Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/bevy-template/) and select `Use this template`, then `Create a new repository`:
+Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/bevy_quickstart/) and select `Use this template`, then `Create a new repository`:
 
 ![example](TODO)
 
 Next, clone your new Github repository to a local repository and create an `Initial commit` with the following changes:
 - Delete `LICENSE` and `README` files.
-- Search for and replace instances of `bevy_template` with the name of your project.
+- Search for and replace instances of `bevy_quickstart` with the name of your project.
 - Adjust the `env` variables in [`.github/workflows/release.yaml`](.github/workflows/release.yaml).
 </details>
 
@@ -44,7 +44,7 @@ This template comes with a basic project structure that you may find useful:
 Feel free to move things around however you want, though.
 
 > [!Tip]
-> Be sure to check out the amazing [3rd-party tools](TODO) in the Bevy ecosystem!
+> Be sure to check out the amazing [3rd-party tools](README-TOOLS.md) in the Bevy ecosystem!
 
 ## Run your game
 
@@ -57,7 +57,7 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 
 ## Release your game
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases. See [CI / CD](TODO) for more information.
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases. See [CI / CD](README-CI-CD.md) for more information.
 
 # License
 
