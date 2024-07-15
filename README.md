@@ -7,10 +7,6 @@ This template is a great way to get started on a new [Bevy](https://bevyengine.o
 
 ## Create a new game
 
-There are two options to get started: [`cargo generate`](https://github.com/cargo-generate/cargo-generate), or manual setup.
-
-### Cargo generate
-
 Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
 
 ```sh    
@@ -19,7 +15,8 @@ cargo generate TheBevyFlock/bevy-template --branch cargo-generate
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
 
-
+<details>
+  <summary>Alternatively, click here for manual setup instructions.</summary>
 ### Manual setup
 
 Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/bevy-template/) and select `Use this template`, then `Create a new repository`:
@@ -30,6 +27,7 @@ Next, clone your new Github repository to a local repository and create an `Init
 - Delete `LICENSE` and `README` files.
 - Search for and replace instances of `bevy_template` with the name of your project.
 - Adjust the `env` variables in [`.github/workflows/release.yaml`](.github/workflows/release.yaml).
+</details>
 
 ## Write your game
 
