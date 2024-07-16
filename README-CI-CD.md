@@ -1,22 +1,22 @@
 # Bevy Quickstart CI / CD
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd) (see [`.github/workflows/`](.github/workflows)).
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd) (defined in [`.github/workflows/`](.github/workflows)).
 
 ## CI (testing)
 
-The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit to `main` and:
+The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit to `main`, and:
 
 - Run tests.
 - Run Clippy lints.
 - Check formatting.
-- Check that the documentation can build.
+- Check documentation.
 
 > [!Tip]
 > You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.
 
 ## CD (releasing)
 
-The [CD workflow](.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3` and:
+The [CD workflow](.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and:
 
 - Create a release build for Windows, MacOS, Linux, and web.
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
@@ -31,7 +31,6 @@ In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
 Enter a version number in the format `v1.2.3`, then hit the green `Run workflow` button.
 </details>
-<br/>
 
 > [!Important]
 > Read on for setup instructions to enable this workflow.
