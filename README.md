@@ -16,9 +16,7 @@ cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
 
 <details>
-  <summary>Alternatively, click here for manual setup instructions.</summary>
-### Manual setup
-
+  <summary>This template can also be set up manually.</summary>
 Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/bevy_quickstart/) and select `Use this template`, then `Create a new repository`:
 
 ![example](TODO)
