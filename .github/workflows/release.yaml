@@ -106,7 +106,7 @@ jobs:
           targets: ${{ matrix.targets }}
 
       - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v1
+        uses: Leafwing-Studios/cargo-cache@v2
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
