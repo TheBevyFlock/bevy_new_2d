@@ -1,6 +1,6 @@
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#Write-your-game) and [CI / CD](#Release-your-game) that can deploy to [itch.io](https://itch.io).
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
 
 > [!Note]
 > [Play this template on itch.io!](https://the-bevy-flock.itch.io/bevy-quickstart)
@@ -9,7 +9,7 @@ This template is a great way to get started on a new [Bevy](https://bevyengine.o
 
 Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
 
-```sh    
+```sh
 cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
 ```
 
@@ -23,9 +23,11 @@ Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/
 ![example](TODO)
 
 Next, clone your new Github repository to a local repository and create an `Initial commit` with the following changes:
-- Delete `LICENSE` and `README` files.
+
+- Delete `LICENSE`, `README`, and `docs/` files.
 - Search for and replace instances of `bevy_quickstart` with the name of your project.
 - Adjust the `env` variables in [`.github/workflows/release.yaml`](.github/workflows/release.yaml).
+
 </details>
 
 ## Write your game
@@ -43,7 +45,7 @@ This template comes with a basic project structure that you may find useful:
 Feel free to move things around however you want, though.
 
 > [!Tip]
-> Be sure to check out the amazing [3rd-party tools](README-TOOLS.md) in the Bevy ecosystem!
+> Be sure to check out the amazing [3rd-party tools](docs/tooling.md) in the Bevy ecosystem!
 
 ## Run your game
 
@@ -56,9 +58,9 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 
 ## Release your game
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases. See [CI / CD](README-CI-CD.md) for more information.
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases. See [Workflows](docs/workflows.md) for more information.
 
-# License
+## License
 
 The source code in this repository is licensed under any of the following at your option:
 
