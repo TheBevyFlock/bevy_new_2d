@@ -62,7 +62,6 @@ env:
 ```
 
 Update the values for your project and push a commit.
-If you used `cargo generate`, they should already be set up correctly.
 
 ### Set up permissions
 
