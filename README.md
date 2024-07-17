@@ -55,7 +55,7 @@ If you are new to Bevy, the patterns used throughout the template may look a bit
 See our [Design Document](./docs/design.md) for more information about how and why we structure our code the way we do.
 
 > [!Tip]
-> Be sure to check out our [recommended 3rd-party tools](./docs/tooling.md)!
+> Be sure to check out the [3rd-party tools](./docs/tooling.md) we recommend!
 
 ## Run your game
 
