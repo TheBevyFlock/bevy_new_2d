@@ -25,7 +25,7 @@ env:
   {%- if itch_username != "" -%}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- else -%}
-  # ITCH_TARGET: {{itch_username}}/{{project-name}}
+  # ITCH_TARGET: your-itch-username/{{project-name}}
   {%- endif -%}
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
@@ -153,56 +153,6 @@ jobs:
 
       - name: Add app metadata to package (MacOS)
         if: ${{ matrix.platform == 'macos' }}
-        run: |
-          Compress-Archive -Path "${{ env.PACKAGE_NAME }}" -DestinationPath "../${{ env.PACKAGE }}.zip"
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/${{ env.PACKAGE }}.zip
-          name: ${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.zip
-          asset_name: ${{ env.PACKAGE }}.zip
-          release_name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
-          overwrite: true
-
-  # Build for MacOS x86_64 and Apple Silicon.
-  build-for-macos:
-    runs-on: macos-latest
-    needs: get-version
-    env:
-        # macOS 11.0 Big Sur is the first version to support universal binaries
-        MACOSX_DEPLOYMENT_TARGET: 11.0
-        PROFILE: release-native
-        PLATFORM: macos
-        VERSION: ${{ needs.get-version.outputs.version }}
-    steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            targets: aarch64-apple-darwin
-
-      - name: Cache target directory
-        uses: Leafwing-Studios/cargo-cache@v1
-
-      - name: Build binary for Apple Silicon
         run: |
           cat > '${{ env.OUT_DIR }}/../Info.plist' << EOF
             <?xml version="1.0" encoding="UTF-8"?>
