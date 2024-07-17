@@ -66,15 +66,18 @@ Running your game locally is very simple:
 
 If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](./.vscode/tasks.json) file.
 
+<details>
+    <summary>(Optional) Improve your compile times</summary>
+
+[`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
+After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
+
+</details>
+
 ## Release your game
 
 This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases.
 See [Workflows](./docs/workflows.md) for more information.
-
-## (Optional) Improve your compile times
-
-[`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
-After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
 
 ## License
 
