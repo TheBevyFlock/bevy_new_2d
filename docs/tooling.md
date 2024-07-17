@@ -41,3 +41,9 @@ If you're using [VS Code](https://code.visualstudio.com/), the following extensi
 | [vscode-ron](https://marketplace.visualstudio.com/items?itemName=a5huynh.vscode-ron)                      | RON support                       |
 | [Dependi](https://marketplace.visualstudio.com/items?itemName=fill-labs.dependi)                          | `crates.io` dependency resolution |
 | [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) | `.editorconfig` support           |
+
+## Other templates
+
+There are many other Bevy templates out there.
+Check out the [templates category](https://bevyengine.org/assets/#templates) on Bevy Assets for more options.
+Even if you don't end up using them, they are a great way to learn how to implement certain features you might be interested in.
