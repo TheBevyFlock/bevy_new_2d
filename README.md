@@ -1,6 +1,16 @@
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io). You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
+The template brought to you by the Bevy Jam working group.
+
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game — especially for a game jam!
+Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
+You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
+
+## Prerequisites
+
+We assume that you know how to use Bevy already and have at least gone through the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
+If you are new to Bevy, the patterns used throughout the template may look a bit weird at first glance.
+See our [Design Document](./docs/design.md) for more information about how and why we structure our code the way we do.
 
 ## Create a new game
 
@@ -40,9 +50,10 @@ This template comes with a basic project structure that you may find useful:
 | [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                              |
 
 Feel free to move things around however you want, though.
+The best way to get started is to just play around with what you find in [`src/game/`](./src/game).
 
 > [!Tip]
-> Be sure to check out the amazing [3rd-party tools](./docs/tooling.md) in the Bevy ecosystem!
+> Be sure to check out our [recommended 3rd-party tools](./docs/tooling.md)!
 
 ## Run your game
 
@@ -55,7 +66,8 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 
 ## Release your game
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases. See [Workflows](./docs/workflows.md) for more information.
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases.
+See [Workflows](./docs/workflows.md) for more information.
 
 ## License
 

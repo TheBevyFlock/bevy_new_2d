@@ -1,10 +1,11 @@
-# Bevy Quickstart CI / CD
+# Bevy Quickstart Workflows
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd) (defined in [`.github/workflows/`](../.github/workflows)).
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd).
+They are defined in [`.github/workflows/`](../.github/workflows).
 
 ## CI (testing)
 
-The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit to `main`, and:
+The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR to `main`, and does the following.
 
 - Run tests.
 - Run Clippy lints.
@@ -12,28 +13,29 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit to `ma
 - Check documentation.
 
 > [!Tip]
-> You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.
+> You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI. The following picture shows how such a setup would look like:
+> ![A screenshot showing a GitHub ruleset with status checks enabled](workflow-ruleset.png)
 
 ## CD (releasing)
 
 The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and:
 
-- Create a release build for Windows, MacOS, Linux, and web.
+- Create a release build for Windows, macOS, Linux, and web.
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
 - (Optional) Upload to [itch.io](https://itch.io).
 
 <details>
   <summary>This workflow can also be triggered manually.</summary>
-    
+
 In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
-![UI demonstration](./release-workflow-dispatch.png)
+![A screenshot showing a manually triggered workflow on GitHub Actions](./workflow-dispatch-release.png)
 
 Enter a version number in the format `v1.2.3`, then hit the green `Run workflow` button.
 </details>
 
 > [!Important]
-> Read on for setup instructions to enable this workflow.
+> Using this workflow requires some setup. We will go through this now.
 
 ### Set up variables
 
@@ -60,24 +62,25 @@ env:
 ```
 
 Update the values for your project and push a commit.
+If you used `cargo generate`, they should already be set up correctly.
 
 ### Set up permissions
 
 In your GitHub repository, navigate to `Settings > Actions > General`:
 
-![UI demonstration](./workflow-settings.png)
+![A screenshot showing how to navigate to the general GitHub Actions settings](./workflow-settings.png)
 
 Set `Workflow permissions` to `Read and write permissions`, then hit `Save`:
 
-![UI demonstration](./workflow-settings-permissions.png)
+![A screenshot showing where to change workflow permissions](./workflow-settings-permissions.png)
 
 ### Set up itch.io upload
 
-Create your itch.io page with `Kind of project = HTML`, and double-check [`ITCH_TARGET`](#set-up-variables).
+Create your itch.io page with `Kind of project = HTML`, and double-check that the [`ITCH_TARGET` variable](#set-up-variables) you've set up earlier matches your itch.io page.
 
 In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`:
 
-![UI demonstration](./workflow-secrets.png)
+![A screenshot showing where to add secrets in the GitHub Actions settings](./workflow-secrets.png)
 
 Hit `New repository secret` and enter the following, then hit `Add secret`:
 
