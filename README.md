@@ -37,7 +37,7 @@ Clone your new Github repository to a local repository and push a commit with th
 
 ## Write your game
 
-The best way to get started is to just play around with what you find in [`src/game/`](./src/game).
+The best way to get started is to play around with what you find in [`src/game/`](./src/game).
 
 This template comes with a basic project structure that you may find useful:
 
