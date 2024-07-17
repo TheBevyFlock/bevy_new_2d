@@ -27,7 +27,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
     
 In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
-![UI demonstration](./release-workflow-dispatch.png)
+![UI demonstration](./workflow-dispatch-release.png)
 
 Enter a version number in the format `v1.2.3`, then hit the green `Run workflow` button.
 </details>
