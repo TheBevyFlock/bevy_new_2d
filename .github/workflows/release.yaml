@@ -25,7 +25,7 @@ env:
   {%- if itch_username != "" -%}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- else -%}
-  # ITCH_TARGET: {{itch_username}}/{{project-name}}
+  # ITCH_TARGET: your-itch-username/{{project-name}}
   {%- endif -%}
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
@@ -111,7 +111,7 @@ jobs:
           targets: ${{ matrix.targets }}
 
       - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v1
+        uses: Leafwing-Studios/cargo-cache@v2
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
@@ -142,9 +142,9 @@ jobs:
         if: ${{ matrix.platform != 'web' }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
-            lipo tmp/binary/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+            lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           else
-            mv tmp/binary/* '${{ env.OUT_DIR }}'
+            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           fi
 
       - name: Add assets to package (non-Web)

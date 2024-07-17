@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::{game::audio::soundtrack::Soundtrack, ui_tools::prelude::*};
+use crate::{game::audio::soundtrack::Soundtrack, ui::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), enter_credits);
