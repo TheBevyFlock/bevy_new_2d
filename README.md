@@ -1,9 +1,6 @@
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
-
-> [!Note]
-> [Play this template on itch.io!](https://the-bevy-flock.itch.io/bevy-quickstart)
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://the-bevy-flock.itch.io/bevy-quickstart).
 
 ## Create a new game
 
@@ -22,7 +19,7 @@ Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/
 
 ![example](TODO)
 
-Next, clone your new Github repository to a local repository and create an `Initial commit` with the following changes:
+Clone your new Github repository to a local repository and push a commit with the following changes:
 
 - Delete `LICENSE`, `README`, and `docs/` files.
 - Search for and replace instances of `bevy_quickstart` with the name of your project.
@@ -34,13 +31,13 @@ Next, clone your new Github repository to a local repository and create an `Init
 
 This template comes with a basic project structure that you may find useful:
 
-| Path                                   | Description                                            |
-|----------------------------------------|--------------------------------------------------------|
-| [`src/lib.rs`](src/lib.rs)             | App setup.                                             |
-| [`src/screen/`](src/screen)            | Splash screen, title screen, playing screen, etc.      |
-| [`src/game/`](src/game)                | Game mechanics & content (replace with your own code). |
-| [`src/ui/`](src/ui)                    | Reusable UI widgets & theming.                         |
-| [`src/dev_tools.rs`](src/dev_tools.rs) | Dev tools for dev builds.                              |
+| Path                                   | Description                                           |
+|----------------------------------------|-------------------------------------------------------|
+| [`src/lib.rs`](src/lib.rs)             | App setup                                             |
+| [`src/screen/`](src/screen)            | Splash screen, title screen, playing screen, etc.     |
+| [`src/game/`](src/game)                | Game mechanics & content (replace with your own code) |
+| [`src/ui/`](src/ui)                    | Reusable UI widgets & theming                         |
+| [`src/dev_tools.rs`](src/dev_tools.rs) | Dev tools for dev builds                              |
 
 Feel free to move things around however you want, though.
 
@@ -64,9 +61,9 @@ This template uses [GitHub workflows](https://docs.github.com/en/actions/using-w
 
 The source code in this repository is licensed under any of the following at your option:
 
-- [CC0-1.0 License](LICENSE-CC0-1.0)
-- [MIT License](LICENSE-MIT)
-- [Apache License, Version 2.0](LICENSE-Apache-2.0)
+- [CC0-1.0 License](LICENSE-CC0-1.0.txt)
+- [MIT License](LICENSE-MIT.txt)
+- [Apache License, Version 2.0](LICENSE-Apache-2.0.txt)
 
 We hold no patent rights to anything presented in this repository.
 
