@@ -51,6 +51,10 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
+# Remove expensive debug assertions due to <https://github.com/bevyengine/bevy/issues/14291>
+[profile.dev.package.wgpu-types]
+debug-assertions = false
+
 # The default profile is optimized for Wasm builds because
 # that's what [Trunk reads](https://github.com/trunk-rs/trunk/issues/605).
 # Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
