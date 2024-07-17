@@ -1,4 +1,4 @@
-# Recommended 3rd-Party Tools
+# Recommended 3rd-party tools
 
 Check out the [Bevy Assets](https://bevyengine.org/assets/) page for more great options.
 
