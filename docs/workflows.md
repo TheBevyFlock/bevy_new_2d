@@ -13,8 +13,11 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 - Check documentation.
 
 > [!Tip]
-> You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI. The following picture shows how such a setup would look like:
+> You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.
+> <details>
+> <summary>This picture shows how such a setup would look like</summary>
 > ![A screenshot showing a GitHub ruleset with status checks enabled](workflow-ruleset.png)
+> </details>
 
 ## CD (releasing)
 
