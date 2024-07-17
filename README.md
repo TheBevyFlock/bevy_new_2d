@@ -24,10 +24,7 @@ Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/
 
 Next, clone your new Github repository to a local repository and create an `Initial commit` with the following changes:
 
-- Delete the following.
-  - `README.md`
-  - All `LICENSE-*.txt` files
-  - the `docs` directory
+- Delete `LICENSE`, `README`, and `docs/` files.
 - Search for and replace instances of `bevy_quickstart` with the name of your project.
 - Adjust the `env` variables in [`.github/workflows/release.yaml`](.github/workflows/release.yaml).
 
