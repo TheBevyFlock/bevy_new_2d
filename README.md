@@ -9,8 +9,6 @@ You can [try this template in your web browser!](https://the-bevy-flock.itch.io/
 ## Prerequisites
 
 We assume that you know how to use Bevy already and have at least gone through the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
-If you are new to Bevy, the patterns used throughout the template may look a bit weird at first glance.
-See our [Design Document](./docs/design.md) for more information about how and why we structure our code the way we do.
 
 ## Create a new game
 
@@ -39,6 +37,8 @@ Clone your new Github repository to a local repository and push a commit with th
 
 ## Write your game
 
+The best way to get started is to just play around with what you find in [`src/game/`](./src/game).
+
 This template comes with a basic project structure that you may find useful:
 
 | Path                                     | Description                                           |
@@ -50,7 +50,9 @@ This template comes with a basic project structure that you may find useful:
 | [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                              |
 
 Feel free to move things around however you want, though.
-The best way to get started is to just play around with what you find in [`src/game/`](./src/game).
+
+If you are new to Bevy, the patterns used throughout the template may look a bit weird at first glance.
+See our [Design Document](./docs/design.md) for more information about how and why we structure our code the way we do.
 
 > [!Tip]
 > Be sure to check out our [recommended 3rd-party tools](./docs/tooling.md)!
