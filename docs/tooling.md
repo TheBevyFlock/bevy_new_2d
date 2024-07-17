@@ -1,4 +1,4 @@
-# Bevy Quickstart Recommended 3rd-Party Tools
+# Recommended 3rd-Party Tools
 
 Check out the [Bevy Assets](https://bevyengine.org/assets/) page for more great options.
 

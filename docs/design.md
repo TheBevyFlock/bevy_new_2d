@@ -1,3 +1,3 @@
-# Bevy Quickstart Design Philosophy
+# Design philosophy
 
 TODO

@@ -1,6 +1,6 @@
 _Brought to you by the Bevy Jam working group._
 
-# Bevy Quickstart
+# Bevy quickstart
 
 This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game — especially for a game jam!
 Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
