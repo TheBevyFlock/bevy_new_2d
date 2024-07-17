@@ -111,7 +111,7 @@ jobs:
           targets: ${{ matrix.targets }}
 
       - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v1
+        uses: Leafwing-Studios/cargo-cache@v2
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
@@ -142,9 +142,9 @@ jobs:
         if: ${{ matrix.platform != 'web' }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
-            lipo tmp/binary/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+            lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           else
-            mv tmp/binary/* '${{ env.OUT_DIR }}'
+            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           fi
 
       - name: Add assets to package (non-Web)
@@ -153,6 +153,56 @@ jobs:
 
       - name: Add app metadata to package (MacOS)
         if: ${{ matrix.platform == 'macos' }}
+        run: |
+          Compress-Archive -Path "${{ env.PACKAGE_NAME }}" -DestinationPath "../${{ env.PACKAGE }}.zip"
+
+      - name: Upload package to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: build/${{ env.PACKAGE }}.zip
+          name: ${{ env.PLATFORM }}
+          retention-days: 1
+
+      - name: Upload package to Github release
+        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/${{ env.PACKAGE }}.zip
+          asset_name: ${{ env.PACKAGE }}.zip
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+  # Build for MacOS x86_64 and Apple Silicon.
+  build-for-macos:
+    runs-on: macos-latest
+    needs: get-version
+    env:
+        # macOS 11.0 Big Sur is the first version to support universal binaries
+        MACOSX_DEPLOYMENT_TARGET: 11.0
+        PROFILE: release-native
+        PLATFORM: macos
+        VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Set PACKAGE environment variable
+        run: |
+          echo "PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}" >> "${GITHUB_ENV}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+            targets: aarch64-apple-darwin
+
+      - name: Cache target directory
+        uses: Leafwing-Studios/cargo-cache@v1
+
+      - name: Build binary for Apple Silicon
         run: |
           cat > '${{ env.OUT_DIR }}/../Info.plist' << EOF
             <?xml version="1.0" encoding="UTF-8"?>

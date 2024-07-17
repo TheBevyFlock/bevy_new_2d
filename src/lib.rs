@@ -1,9 +1,8 @@
-mod camera;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod game;
 mod screen;
-mod ui_tools;
+mod ui;
 
 use bevy::{
     asset::AssetMetaCheck,
@@ -20,6 +19,9 @@ impl Plugin for AppPlugin {
             Update,
             (AppSet::TickTimers, AppSet::RecordInput, AppSet::Update).chain(),
         );
+
+        // Spawn the main camera.
+        app.add_systems(Startup, spawn_camera);
 
         // Add Bevy plugins.
         app.add_plugins(
@@ -51,12 +53,7 @@ impl Plugin for AppPlugin {
         );
 
         // Add other plugins.
-        app.add_plugins((
-            game::plugin,
-            screen::plugin,
-            ui_tools::plugin,
-            camera::plugin,
-        ));
+        app.add_plugins((game::plugin, screen::plugin, ui::plugin));
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]
@@ -75,4 +72,12 @@ enum AppSet {
     RecordInput,
     /// Do everything else (consider splitting this into further variants).
     Update,
+}
+
+fn spawn_camera(mut commands: Commands) {
+    commands.spawn((
+        Name::new("Camera"),
+        Camera2dBundle::default(),
+        IsDefaultUiCamera,
+    ));
 }
