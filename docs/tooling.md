@@ -13,7 +13,7 @@ A few libraries that the authors of this template have vetted and think you migh
 | [`bevy-inspector-egui`](https://github.com/jakobhellermann/bevy-inspector-egui)        | Debugging      | Live entity inspector                 |
 | [`bevy_mod_debugdump`](https://github.com/jakobhellermann/bevy_mod_debugdump)          | Debugging      | Schedule inspector                    |
 | [`avian`](https://github.com/Jondolf/avian)                                            | Physics        | Physics engine                        |
-| [`bevy_rapier`](https://github.com/dimforge/bevy_rapier)                               | Physics        | Physics engine (not ECS driven)       |
+| [`bevy_rapier`](https://github.com/dimforge/bevy_rapier)                               | Physics        | Physics engine (not ECS-driven)       |
 | [`bevy_common_assets`](https://github.com/NiklasEi/bevy_common_assets)                 | Asset loading  | Asset loaders for common file formats |
 | [`bevy_asset_loader`](https://github.com/NiklasEi/bevy_asset_loader)                   | Asset loading  | Asset management tools                |
 | [`iyes_progress`](https://github.com/IyesGames/iyes_progress)                          | Asset loading  | Progress tracking                     |
