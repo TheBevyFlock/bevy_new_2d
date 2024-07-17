@@ -1,6 +1,6 @@
 # Bevy Quickstart CI / CD
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd) (defined in [`.github/workflows/`](.github/workflows)).
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd) (defined in [`.github/workflows/`](../.github/workflows)).
 
 ## CI (testing)
 
@@ -16,7 +16,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit to `ma
 
 ## CD (releasing)
 
-The [CD workflow](.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and:
+The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and:
 
 - Create a release build for Windows, MacOS, Linux, and web.
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
@@ -27,7 +27,7 @@ The [CD workflow](.github/workflows/release.yaml) will trigger on every pushed t
     
 In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
-![UI demonstration](TODO)
+![UI demonstration](./release-workflow-dispatch.png)
 
 Enter a version number in the format `v1.2.3`, then hit the green `Run workflow` button.
 </details>
@@ -37,7 +37,7 @@ Enter a version number in the format `v1.2.3`, then hit the green `Run workflow`
 
 ### Set up variables
 
-Open [`.github/workflows/release.yaml`](.github/workflows/release.yaml) and navigate to this section:
+Open [`.github/workflows/release.yaml`](../.github/workflows/release.yaml) and navigate to this section:
 
 ```yaml
 env:
@@ -65,21 +65,21 @@ Update the values for your project and push a commit.
 
 In your GitHub repository, navigate to `Settings > Actions > General`:
 
-![UI demonstration](TODO)
+![UI demonstration](./workflow-settings.png)
 
 Set `Workflow permissions` to `Read and write permissions`, then hit `Save`:
 
-![UI demonstration](TODO)
+![UI demonstration](./workflow-settings-permissions.png)
 
 ### Set up itch.io upload
 
-Create your itch.io page with `Kind of project = HTML`, and double-check [`ITCH_TARGET`](#Set-up-variables).
+Create your itch.io page with `Kind of project = HTML`, and double-check [`ITCH_TARGET`](#set-up-variables).
 
 In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`:
 
-![UI demonstration](TODO)
+![UI demonstration](./workflow-secrets.png)
 
 Hit `New repository secret` and enter the following, then hit `Add secret`:
 
 - **Name:** `BUTLER_CREDENTIALS`
-- **Secret:** Your [itch.io API key](https://ithch.io/user/settings/api-keys) (create a new one if necessary)
+- **Secret:** Your [itch.io API key](https://itch.io/user/settings/api-keys) (create a new one if necessary)
