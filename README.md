@@ -1,6 +1,6 @@
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://the-bevy-flock.itch.io/bevy-quickstart).
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io). You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart).
 
 ## Create a new game
 
