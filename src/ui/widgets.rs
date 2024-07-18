@@ -144,7 +144,7 @@ impl Containers for Commands<'_, '_> {
 }
 
 /// An internal trait for types that can spawn entities.
-/// This is just here so that [`Widgets`] can be implemented on all types that
+/// This is here so that [`Widgets`] can be implemented on all types that
 /// are able to spawn entities.
 /// Ideally, this trait should be [part of Bevy itself](https://github.com/bevyengine/bevy/issues/14231).
 trait Spawn {
