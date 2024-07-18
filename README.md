@@ -7,8 +7,7 @@ Start with a [basic project structure](#write-your-game) and [CI / CD](#release-
 You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
 
 Don't want to read through the whole README? [@ChristopherBiscardi](https://github.com/ChristopherBiscardi) made a video tutorial explaining how to use the template from start to finish.
-
-[![A video tutorial for bevy_quickstart](https://img.youtube.com/vi/ESBRyXClaYc/hqdefault.jpg)](https://www.youtube.com/watch?v=ESBRyXClaYc)
+[![A video tutorial for bevy_quickstart](./docs/thumbnail.png)](https://www.youtube.com/watch?v=ESBRyXClaYc)
 
 ## Prerequisites
 
