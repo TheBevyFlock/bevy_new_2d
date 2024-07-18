@@ -13,11 +13,11 @@ The Bevy Jam working group has agreed on the following guiding design principles
 - Show how to do things in pure Bevy. This means using no 3rd-party dependencies.
 - Have some basic game code written out already.
 - Have everything outside of code already set up.
-  - Nice IDE support
-  - `cargo-generate` support
+  - Nice IDE support.
+  - `cargo-generate` support.
   - Workflows that provide CI and CD with an auto-publish to itch.io.
-  - Builds configured for perfomance by default
-- Answer questions that will quickly come up when creating an actual game
+  - Builds configured for perfomance by default.
+- Answer questions that will quickly come up when creating an actual game.
   - How do I structure my code?
   - How do I preload assets?
   - What are best practices for creating UI?
