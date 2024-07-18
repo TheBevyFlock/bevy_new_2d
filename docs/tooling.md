@@ -44,7 +44,7 @@ If you're using [VS Code](https://code.visualstudio.com/), the following extensi
 
 > [!Note]
 > <details>
-> <summary>Note on `rust-analyzer` settings</summary>
+> <summary>About the included `rust-analyzer` settings</summary>
 >
 > This template sets [`rust-analyzer.cargo.targetDir`](https://rust-analyzer.github.io/generated_config.html#rust-analyzer.cargo.targetDir)
 > to `true` in [`.vscode/settings.json`](../.vscode/settings.json).
