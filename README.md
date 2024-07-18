@@ -84,6 +84,13 @@ After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
 This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases.
 See [Workflows](./docs/workflows.md) for more information.
 
+## Known Issues
+
+There are some known issues in Bevy that require some arcane workarounds.
+If you run into them, their fix is often not obvious.
+To keep this template simple, we have opted not to include those workarounds.
+You can read about them in the [Known Issues](./docs/known-issues.md) document.
+
 ## License
 
 The source code in this repository is licensed under any of the following at your option:
