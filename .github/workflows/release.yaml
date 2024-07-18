@@ -26,7 +26,7 @@ env:
   ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- else -%}
   # ITCH_TARGET: your-itch-username/{{project-name}}
-  {%- endif -%}
+  {%- endif %}
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
   # The path to the assets directory.
