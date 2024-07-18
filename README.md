@@ -83,7 +83,7 @@ See [Workflows](./docs/workflows.md) for more information.
 ## Known Issues
 
 There are some known issues in Bevy that require some arcane workarounds.
-None of these should be hindering simple projects like entries for a game jam, but if you run into them, their fix is often not obvious.
+If you run into them, their fix is often not obvious.
 To keep this template simple, we have opted not to include those workarounds.
 You can read about them in the [Known Issues](./docs/known-issues.md) document.
 
