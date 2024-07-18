@@ -17,14 +17,13 @@ fn play_soundtrack(
         commands.entity(entity).despawn_recursive();
     }
 
+    let soundtrack_key = match trigger.event() {
+        PlaySoundtrack::Key(key) => *key,
+        PlaySoundtrack::Disable => return,
+    };
     commands.spawn((
         AudioSourceBundle {
-            source: soundtrack_handles[&match trigger.event() {
-                PlaySoundtrack::Disable => return,
-                PlaySoundtrack::Credits => SoundtrackKey::Credits,
-                PlaySoundtrack::Gameplay => SoundtrackKey::Gameplay,
-            }]
-                .clone_weak(),
+            source: soundtrack_handles[&soundtrack_key].clone_weak(),
             settings: PlaybackSettings {
                 mode: PlaybackMode::Loop,
                 ..default()
@@ -39,9 +38,8 @@ fn play_soundtrack(
 /// Soundtracks will loop.
 #[derive(Event)]
 pub enum PlaySoundtrack {
+    Key(SoundtrackKey),
     Disable,
-    Credits,
-    Gameplay,
 }
 
 /// Marker component for the soundtrack entity so we can find it later.

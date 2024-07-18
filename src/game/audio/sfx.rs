@@ -12,13 +12,12 @@ fn play_sfx(
     mut commands: Commands,
     sfx_handles: Res<HandleMap<SfxKey>>,
 ) {
+    let sfx_key = match trigger.event() {
+        PlaySfx::Key(key) => *key,
+        PlaySfx::RandomStep => random_step(),
+    };
     commands.spawn(AudioSourceBundle {
-        source: sfx_handles[&match trigger.event() {
-            PlaySfx::ButtonHover => SfxKey::ButtonHover,
-            PlaySfx::ButtonPress => SfxKey::ButtonPress,
-            PlaySfx::Step => random_step(),
-        }]
-            .clone_weak(),
+        source: sfx_handles[&sfx_key].clone_weak(),
         settings: PlaybackSettings {
             mode: PlaybackMode::Despawn,
             ..default()
@@ -29,9 +28,8 @@ fn play_sfx(
 /// Trigger this event to play a single sound effect.
 #[derive(Event)]
 pub enum PlaySfx {
-    ButtonHover,
-    ButtonPress,
-    Step,
+    Key(SfxKey),
+    RandomStep,
 }
 
 fn random_step() -> SfxKey {

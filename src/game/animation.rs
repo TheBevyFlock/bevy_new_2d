@@ -71,7 +71,7 @@ fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimati
             && animation.changed()
             && (animation.frame == 2 || animation.frame == 5)
         {
-            commands.trigger(PlaySfx::Step);
+            commands.trigger(PlaySfx::RandomStep);
         }
     }
 }

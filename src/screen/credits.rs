@@ -3,7 +3,10 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::{game::audio::soundtrack::PlaySoundtrack, ui::prelude::*};
+use crate::{
+    game::{assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack},
+    ui::prelude::*,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), enter_credits);
@@ -39,7 +42,7 @@ fn enter_credits(mut commands: Commands) {
             children.button("Back").insert(CreditsAction::Back);
         });
 
-    commands.trigger(PlaySoundtrack::Credits);
+    commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));
 }
 
 fn exit_credits(mut commands: Commands) {
