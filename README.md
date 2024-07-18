@@ -6,6 +6,10 @@ This template is a great way to get started on a new [Bevy](https://bevyengine.o
 Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
 You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
 
+Don't want to read through the whole README? [@ChristopherBiscardi](https://github.com/ChristopherBiscardi) made a video on how to use the template from start to finish:
+
+[<img src="./docs/thumbnail.png" width=40% height=40% alt="A video tutorial for bevy_quickstart"/>](https://www.youtube.com/watch?v=ESBRyXClaYc)
+
 ## Prerequisites
 
 We assume that you know how to use Bevy already and have seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
@@ -79,6 +83,12 @@ After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
 
 This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases.
 See [Workflows](./docs/workflows.md) for more information.
+
+## Known Issues
+
+There are some known issues in Bevy that require some arcane workarounds.
+To keep this template simple, we have opted not to include those workarounds.
+You can read about them in the [Known Issues](./docs/known-issues.md) document.
 
 ## Credits
 
