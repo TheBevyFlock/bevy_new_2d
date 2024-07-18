@@ -90,7 +90,6 @@ impl<T: Spawn> Widgets for T {
             NodeBundle {
                 style: Style {
                     width: Px(500.0),
-                    height: Px(30.0),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     ..default()
