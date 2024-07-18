@@ -4,7 +4,7 @@
 
 The game window is created before the GPU is ready to render everything.
 This means that it will start with a white screen for a little bit.
-The workaround is to [start the Window invisible](https://github.com/bevyengine/bevy/blob/release-0.14.0/examples/window/window_settings.rs#L29-L32)
+The workaround is to [spawn the Window hidden](https://github.com/bevyengine/bevy/blob/release-0.14.0/examples/window/window_settings.rs#L29-L32)
 and then [make it visible after a few frames](https://github.com/bevyengine/bevy/blob/release-0.14.0/examples/window/window_settings.rs#L56-L64).
 
 ## My character or camera is not moving smoothly
