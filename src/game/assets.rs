@@ -22,10 +22,13 @@ pub enum ImageKey {
 
 impl AssetKey for ImageKey {
     type Asset = Image;
+}
 
-    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>> {
+impl FromWorld for AssetMap<ImageKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
         [(
-            Self::Ducky,
+            ImageKey::Ducky,
             asset_server.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
@@ -33,6 +36,7 @@ impl AssetKey for ImageKey {
                 },
             ),
         )]
+        .into()
     }
 }
 
@@ -48,22 +52,26 @@ pub enum SfxKey {
 
 impl AssetKey for SfxKey {
     type Asset = AudioSource;
+}
 
-    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>> {
+impl FromWorld for AssetMap<SfxKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
         [
             (
-                Self::ButtonHover,
+                SfxKey::ButtonHover,
                 asset_server.load("audio/sfx/button_hover.ogg"),
             ),
             (
-                Self::ButtonPress,
+                SfxKey::ButtonPress,
                 asset_server.load("audio/sfx/button_press.ogg"),
             ),
-            (Self::Step1, asset_server.load("audio/sfx/step1.ogg")),
-            (Self::Step2, asset_server.load("audio/sfx/step2.ogg")),
-            (Self::Step3, asset_server.load("audio/sfx/step3.ogg")),
-            (Self::Step4, asset_server.load("audio/sfx/step4.ogg")),
+            (SfxKey::Step1, asset_server.load("audio/sfx/step1.ogg")),
+            (SfxKey::Step2, asset_server.load("audio/sfx/step2.ogg")),
+            (SfxKey::Step3, asset_server.load("audio/sfx/step3.ogg")),
+            (SfxKey::Step4, asset_server.load("audio/sfx/step4.ogg")),
         ]
+        .into()
     }
 }
 
@@ -75,25 +83,27 @@ pub enum SoundtrackKey {
 
 impl AssetKey for SoundtrackKey {
     type Asset = AudioSource;
+}
 
-    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>> {
+impl FromWorld for AssetMap<SoundtrackKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
         [
             (
-                Self::Credits,
+                SoundtrackKey::Credits,
                 asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
             ),
             (
-                Self::Gameplay,
+                SoundtrackKey::Gameplay,
                 asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
             ),
         ]
+        .into()
     }
 }
 
 pub trait AssetKey: Sized {
     type Asset: Asset;
-
-    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>>;
 }
 
 #[derive(Resource, Reflect, Deref, DerefMut)]
@@ -106,12 +116,6 @@ where
 {
     fn from(value: T) -> Self {
         Self(value.into())
-    }
-}
-
-impl<K: AssetKey> FromWorld for AssetMap<K> {
-    fn from_world(world: &mut World) -> Self {
-        K::load(world.resource::<AssetServer>()).into()
     }
 }
 
