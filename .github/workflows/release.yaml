@@ -17,7 +17,7 @@ on:
 # Configure constants for this workflow.
 env:
   # The base filename of the binary produced by `cargo build`.
-  BINARY: {{crate_name}}
+  BINARY: {{project-name}}
   # The name to use for the packaged application produced by this workflow.
   PACKAGE_NAME: {{project-name}}
   # The itch.io page to upload to, in the format: `user-name/project-name`.
