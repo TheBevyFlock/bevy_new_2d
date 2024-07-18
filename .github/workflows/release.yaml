@@ -24,7 +24,7 @@ env:
   # Comment this out to disable.
   {%- if itch_username != "" %}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
-  {%- else -%}
+  {%- else %}
   # ITCH_TARGET: your-itch-username/{{project-name}}
   {%- endif %}
   # The organization or author that owns the rights to the game.
@@ -37,7 +37,7 @@ env:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
 
-{%- raw -%}
+{% raw %}
 jobs:
   # Determine the version number for this workflow.
   get-version:
@@ -265,4 +265,4 @@ jobs:
               tmp/"${channel}"/* \
               '${{ env.ITCH_TARGET }}':"${channel#package-}"
           done
-{%- endraw -%}
+{% endraw -%}
