@@ -37,7 +37,7 @@ env:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   USE_GIT_LFS: false
 
-{% raw %}
+{%- raw %}
 jobs:
   # Determine the version number for this workflow.
   get-version:
