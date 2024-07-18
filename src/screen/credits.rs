@@ -32,7 +32,7 @@ fn enter_credits(mut commands: Commands) {
             children.label("Bob - Bar");
 
             children.header("Assets");
-            children.label("Bevy logo - CC0 by the Bevy Foundation");
+            children.label("Bevy logo - All rights reserved by the Bevy Foundation");
             children.label("Ducky sprite - CC0 by Caz Creates Games");
             children.label("Music - CC BY 3.0 by Kevin MacLeod");
 

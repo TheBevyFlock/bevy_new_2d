@@ -2,7 +2,7 @@ _Brought to you by the Bevy Jam working group._
 
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game — especially for a game jam!
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game—especially for a game jam!
 Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
 You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
 
@@ -82,7 +82,7 @@ See [Workflows](./docs/workflows.md) for more information.
 
 ## License
 
-The source code in this repository is licensed under any of the following at your option:
+The source code—but not the assets—in this repository is licensed under any of the following at your option:
 
 - [CC0-1.0 License](./LICENSE-CC0-1.0.txt)
 - [MIT License](./LICENSE-MIT.txt)
