@@ -90,7 +90,6 @@ impl<T: Spawn> Widgets for T {
             NodeBundle {
                 style: Style {
                     width: Px(500.0),
-                    height: Px(30.0),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     ..default()
@@ -144,6 +143,9 @@ impl Containers for Commands<'_, '_> {
 }
 
 /// An internal trait for types that can spawn entities.
+/// This is here so that [`Widgets`] can be implemented on all types that
+/// are able to spawn entities.
+/// Ideally, this trait should be [part of Bevy itself](https://github.com/bevyengine/bevy/issues/14231).
 trait Spawn {
     fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands;
 }

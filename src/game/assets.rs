@@ -4,38 +4,44 @@ use bevy::{
     utils::HashMap,
 };
 
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<HandleMap<ImageKey>>();
+    app.init_resource::<HandleMap<ImageKey>>();
+
+    app.register_type::<HandleMap<SfxKey>>();
+    app.init_resource::<HandleMap<SfxKey>>();
+
+    app.register_type::<HandleMap<SoundtrackKey>>();
+    app.init_resource::<HandleMap<SoundtrackKey>>();
+}
+
 #[derive(PartialEq, Eq, Hash, Reflect)]
-pub enum ImageAsset {
+pub enum ImageKey {
     Ducky,
 }
 
-#[derive(Resource, Reflect, Deref, DerefMut)]
-pub struct ImageAssets(HashMap<ImageAsset, Handle<Image>>);
+impl AssetKey for ImageKey {
+    type Asset = Image;
+}
 
-impl ImageAssets {
-    pub fn new(asset_server: &AssetServer) -> Self {
-        let mut assets = HashMap::new();
-
-        assets.insert(
-            ImageAsset::Ducky,
+impl FromWorld for HandleMap<ImageKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+        [(
+            ImageKey::Ducky,
             asset_server.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
                     settings.sampler = ImageSampler::nearest();
                 },
             ),
-        );
-
-        Self(assets)
-    }
-
-    pub fn all_loaded(&self, assets: &Assets<Image>) -> bool {
-        self.0.iter().all(|(_, handle)| assets.contains(handle))
+        )]
+        .into()
     }
 }
 
 #[derive(PartialEq, Eq, Hash, Reflect)]
-pub enum SfxAsset {
+pub enum SfxKey {
     ButtonHover,
     ButtonPress,
     Step1,
@@ -44,58 +50,78 @@ pub enum SfxAsset {
     Step4,
 }
 
-#[derive(Resource, Reflect, Deref, DerefMut)]
-pub struct SfxAssets(HashMap<SfxAsset, Handle<AudioSource>>);
+impl AssetKey for SfxKey {
+    type Asset = AudioSource;
+}
 
-impl SfxAssets {
-    pub fn new(asset_server: &AssetServer) -> Self {
-        let mut assets = HashMap::new();
-
-        assets.insert(
-            SfxAsset::ButtonHover,
-            asset_server.load("audio/sfx/button_hover.ogg"),
-        );
-        assets.insert(
-            SfxAsset::ButtonPress,
-            asset_server.load("audio/sfx/button_press.ogg"),
-        );
-        assets.insert(SfxAsset::Step1, asset_server.load("audio/sfx/step1.ogg"));
-        assets.insert(SfxAsset::Step2, asset_server.load("audio/sfx/step2.ogg"));
-        assets.insert(SfxAsset::Step3, asset_server.load("audio/sfx/step3.ogg"));
-        assets.insert(SfxAsset::Step4, asset_server.load("audio/sfx/step4.ogg"));
-
-        Self(assets)
-    }
-
-    pub fn all_loaded(&self, assets: &Assets<AudioSource>) -> bool {
-        self.0.iter().all(|(_, handle)| assets.contains(handle))
+impl FromWorld for HandleMap<SfxKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+        [
+            (
+                SfxKey::ButtonHover,
+                asset_server.load("audio/sfx/button_hover.ogg"),
+            ),
+            (
+                SfxKey::ButtonPress,
+                asset_server.load("audio/sfx/button_press.ogg"),
+            ),
+            (SfxKey::Step1, asset_server.load("audio/sfx/step1.ogg")),
+            (SfxKey::Step2, asset_server.load("audio/sfx/step2.ogg")),
+            (SfxKey::Step3, asset_server.load("audio/sfx/step3.ogg")),
+            (SfxKey::Step4, asset_server.load("audio/sfx/step4.ogg")),
+        ]
+        .into()
     }
 }
 
 #[derive(PartialEq, Eq, Hash, Reflect)]
-pub enum SoundtrackAsset {
+pub enum SoundtrackKey {
     Credits,
     Gameplay,
 }
 
-#[derive(Resource, Reflect, Deref, DerefMut)]
-pub struct SoundtrackAssets(HashMap<SoundtrackAsset, Handle<AudioSource>>);
+impl AssetKey for SoundtrackKey {
+    type Asset = AudioSource;
+}
 
-impl SoundtrackAssets {
-    pub fn new(asset_server: &AssetServer) -> Self {
-        let mut assets = HashMap::new();
-        assets.insert(
-            SoundtrackAsset::Credits,
-            asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
-        );
-        assets.insert(
-            SoundtrackAsset::Gameplay,
-            asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
-        );
-        Self(assets)
+impl FromWorld for HandleMap<SoundtrackKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+        [
+            (
+                SoundtrackKey::Credits,
+                asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
+            ),
+            (
+                SoundtrackKey::Gameplay,
+                asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
+            ),
+        ]
+        .into()
     }
+}
 
-    pub fn all_loaded(&self, assets: &Assets<AudioSource>) -> bool {
-        self.0.iter().all(|(_, handle)| assets.contains(handle))
+pub trait AssetKey: Sized {
+    type Asset: Asset;
+}
+
+#[derive(Resource, Reflect, Deref, DerefMut)]
+#[reflect(Resource)]
+pub struct HandleMap<K: AssetKey>(HashMap<K, Handle<K::Asset>>);
+
+impl<K: AssetKey, T> From<T> for HandleMap<K>
+where
+    T: Into<HashMap<K, Handle<K::Asset>>>,
+{
+    fn from(value: T) -> Self {
+        Self(value.into())
+    }
+}
+
+impl<K: AssetKey> HandleMap<K> {
+    pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
+        self.values()
+            .all(|x| asset_server.is_loaded_with_dependencies(x))
     }
 }
