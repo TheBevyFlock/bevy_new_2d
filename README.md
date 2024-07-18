@@ -16,7 +16,7 @@ Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and
 
 ```sh
 cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
-git switch --create main
+git branch --move main
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
