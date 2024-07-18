@@ -8,7 +8,7 @@ You can [try this template in your web browser!](https://the-bevy-flock.itch.io/
 
 ## Prerequisites
 
-We assume that you know how to use Bevy already and have at least gone through the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
+We assume that you know how to use Bevy already and have seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
 
 ## Create a new game
 
@@ -51,8 +51,8 @@ This template comes with a basic project structure that you may find useful:
 
 Feel free to move things around however you want, though.
 
-If you are new to Bevy, the patterns used throughout the template may look a bit weird at first glance.
-See our [Design Document](./docs/design.md) for more information about how and why we structure our code the way we do.
+If you are new to Bevy, the patterns used in this template may look a bit weird at first glance.
+See our [Design Document](./docs/design.md) for more information on how we structured the code and why.
 
 > [!Tip]
 > Be sure to check out the [3rd-party tools](./docs/tooling.md) we recommend!
