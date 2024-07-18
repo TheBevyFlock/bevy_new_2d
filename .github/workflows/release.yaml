@@ -22,11 +22,13 @@ env:
   PACKAGE_NAME: {{project-name}}
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
+
   {%- if itch_username != "" -%}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
   {%- else -%}
   # ITCH_TARGET: your-itch-username/{{project-name}}
   {%- endif -%}
+  
   # The organization or author that owns the rights to the game.
   OWNER: {{itch_username}}
   # The path to the assets directory.
