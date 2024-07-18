@@ -42,7 +42,11 @@ Enter a version number in the format `v1.2.3`, then hit the green `Run workflow`
 
 ### Set up variables
 
-Open [`.github/workflows/release.yaml`](../.github/workflows/release.yaml) and navigate to this section:
+[`.github/workflows/release.yaml`](../.github/workflows/release.yaml) contains a list of environment variables that are setup automatically for you if you use `cargo generate`.
+Otherwise, you will have to fill them in manually and push a commit.
+
+<details>
+<summary>Relevant section of the release workflow</summary>
 
 ```yaml
 env:
@@ -64,7 +68,9 @@ env:
   USE_GIT_LFS: false
 ```
 
-Update the values for your project and push a commit.
+</details>
+
+In any case, make note of the value used for `ITCH_TARGET`, as you will need it later.
 
 ### Set up permissions
 
@@ -78,7 +84,8 @@ Set `Workflow permissions` to `Read and write permissions`, then hit `Save`:
 
 ### Set up itch.io upload
 
-Create your itch.io page with `Kind of project = HTML`, and double-check that the [`ITCH_TARGET` variable](#set-up-variables) you've set up earlier matches your itch.io page.
+Create your itch.io page with the same name as is used in the `ITCH_TARGET` variable in [release.yaml](../.github/workflows/release.yaml).
+By default, this is the same as the project name.
 
 In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`:
 
