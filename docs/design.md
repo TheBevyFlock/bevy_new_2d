@@ -239,8 +239,6 @@ fn exit_game_over(mut next_screen: ResMut<NextState<Screen>>) {
 }
 ```
 
-Further, constrain entities that should only be present in a certain screen to that screen by adding a `StateScoped` component to them.
-
 ### Reasoning
 
 "Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now".
