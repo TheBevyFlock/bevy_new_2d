@@ -8,7 +8,7 @@ You can [try this template in your web browser!](https://the-bevy-flock.itch.io/
 
 Don't want to read through the whole README? [@ChristopherBiscardi](https://github.com/ChristopherBiscardi) made a video tutorial explaining how to use the template from start to finish.
 
-[![A video tutorial for bevy_quickstart](https://img.youtube.com/vi/ESBRyXClaYc/hqdefault.jpg)](https://www.youtube.com/embed/ESBRyXClaYc)
+[![A video tutorial for bevy_quickstart](https://img.youtube.com/vi/ESBRyXClaYc/hqdefault.jpg)](https://www.youtube.com/watch?v=ESBRyXClaYc)
 
 ## Prerequisites
 
