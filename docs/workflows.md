@@ -90,7 +90,7 @@ Create your itch.io page with the same name as is used in the `ITCH_TARGET` vari
 By default, this is the same as the project name.
 Also set `Kind of project` to `HTML`.
 
-After creation, you'll see a warning saying "There was a problem loading your project: No file provided to embed". Don't worry about it, we will fix that in a moment.
+On your project page, you'll see a warning saying "There was a problem loading your project: No file provided to embed". This is because we haven't uploaded a release yet. Don't worry about it, we will fix that in a moment.
 
 #### Add butler credentials
 
