@@ -126,3 +126,125 @@ Then add them to the [loading screen](../src/screen/loading.rs) functions `enter
 This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
 In general, by preloading your assets, you can avoid hitches during gameplay.
 By using an enum to represent your assets, you don't leak details like file paths into your game code and can easily change the asset that is loaded at a single point.
+
+## Spawning
+
+### Pattern
+
+Spawn a game object by using an observer:
+
+```rust
+// monster.rs
+use bevy::prelude::*;
+
+pub(super) fn plugin(app: &mut App) {
+    app.observe(on_spawn_monster);
+}
+
+#[derive(Event, Debug)]
+pub struct SpawnMonster;
+
+fn on_spawn_monster(
+    _trigger: Trigger<SpawnPlayer>,
+    mut commands: Commands,
+) {
+    commands.spawn((
+        Name::new("Monster"),
+        // other components
+    ));
+}
+```
+
+And then, somewhere else in your code, trigger the observer:
+
+```rust
+fn spawn_monster(mut commands: Commands) {
+    commands.trigger(SpawnMonster);
+}
+```
+
+### Reasoning
+
+By encapsulating the spawning of a game object in a function,
+you save on boilerplate code and can easily change the behavior of spawning.
+An observer is an elegant way to then trigger this function from anywhere in your code.
+A limitation of this approach is that calling code cannot extend the spawn call with additional components or children.
+If you know about a better pattern, please let us know!
+
+## Dev tools
+
+### Pattern
+
+Add all systems that are only relevant while developing the game to the [`dev_tools` plugin](../src/dev_tools.rs):
+
+```rust
+// dev_tools.rs
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(Update, (draw_debug_lines, show_debug_console, show_fps_counter));
+}
+```
+
+### Reasoning
+
+The `dev_tools` plugin is only included in dev builds.
+By adding your dev tools here, you automatically guarantee that they are not included in release builds.
+
+## Screens
+
+### Pattern
+
+Use the [`Screen`](../src/screen/mod.rs) enum to represent your game's screens as states:
+
+```rust
+#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
+pub enum Screen {
+    #[default]
+    Splash,
+    Loading,
+    Title,
+    Credits,
+    Playing,
+    GameOver,
+    Leaderboard,
+    MultiplayerLobby,
+    SecretMinigame
+}
+```
+
+Constrain entities that should only be present in a certain screen to that screen by adding a
+[`StateScoped`](https://docs.rs/bevy/latest/bevy/prelude/struct.StateScoped.html) component to them.
+Transition between screens by setting the [`NextState<Screen>`](https://docs.rs/bevy/latest/bevy/prelude/enum.NextState.html) resource.
+
+For each screen, create a plugin that handles the setup and the teardown of the screen in form on `OnEnter` and `OnExit`:
+
+```rust
+// game_over.rs
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(OnEnter(Screen::GameOver), enter_game_over);
+    app.add_systems(OnExit(Screen::GameOver), exit_game_over);
+}
+
+fn enter_game_over(mut commands: Commands) {
+    commands.
+        .ui_root()
+        .insert(StateScoped(Screen::GameOver))
+        .with_children(|parent| {
+            // Add UI elements
+        });
+}
+
+fn exit_game_over(mut next_screen: ResMut<NextState<Screen>>) {
+    // Go back to the title screen
+    next_screen.set(Screen::Title);
+}
+```
+
+Further, constrain entities that should only be present in a certain screen to that screen by adding a `StateScoped` component to them.
+
+### Reasoning
+
+"Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now".
+These screens usually correspond to different logical states of your game that have different systems running.
+
+By using dedicated `State`s for each screen, you can easily manage systems and entities that are only relevant for a certain screen.
+This allows you to flexibly transition between screens whenever your game logic requires it.
