@@ -1,11 +1,11 @@
 use bevy::{audio::PlaybackMode, prelude::*};
 
-use crate::game::assets::{AssetMap, SoundtrackKey};
+use crate::game::assets::{HandleMap, SoundtrackKey};
 
 pub(super) fn play_soundtrack(
     trigger: Trigger<Soundtrack>,
     mut commands: Commands,
-    soundtrack_map: Res<AssetMap<SoundtrackKey>>,
+    soundtrack_handles: Res<HandleMap<SoundtrackKey>>,
     query: Query<Entity, With<SoundtrackMarker>>,
 ) {
     let event = trigger.event();
@@ -17,8 +17,8 @@ pub(super) fn play_soundtrack(
         Soundtrack::Disable => {
             return;
         }
-        Soundtrack::Credits => &soundtrack_map[&SoundtrackKey::Credits],
-        Soundtrack::Gameplay => &soundtrack_map[&SoundtrackKey::Gameplay],
+        Soundtrack::Credits => &soundtrack_handles[&SoundtrackKey::Credits],
+        Soundtrack::Gameplay => &soundtrack_handles[&SoundtrackKey::Gameplay],
     }
     .clone_weak();
 

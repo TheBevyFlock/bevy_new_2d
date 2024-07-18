@@ -1,18 +1,18 @@
 use bevy::{audio::PlaybackMode, prelude::*};
 use rand::seq::SliceRandom;
 
-use crate::game::assets::{AssetMap, SfxKey};
+use crate::game::assets::{HandleMap, SfxKey};
 
 pub(super) fn play_sfx(
     trigger: Trigger<Sfx>,
     mut commands: Commands,
-    sfx_map: Res<AssetMap<SfxKey>>,
+    sfx_handles: Res<HandleMap<SfxKey>>,
 ) {
     let event = trigger.event();
     let source = match event {
-        Sfx::ButtonHover => &sfx_map[&SfxKey::ButtonHover],
-        Sfx::ButtonPress => &sfx_map[&SfxKey::ButtonPress],
-        Sfx::Step => random_step(&sfx_map),
+        Sfx::ButtonHover => &sfx_handles[&SfxKey::ButtonHover],
+        Sfx::ButtonPress => &sfx_handles[&SfxKey::ButtonPress],
+        Sfx::Step => random_step(&sfx_handles),
     }
     .clone_weak();
     let settings = PlaybackSettings {
@@ -30,12 +30,12 @@ pub enum Sfx {
     Step,
 }
 
-fn random_step(sfx_map: &AssetMap<SfxKey>) -> &Handle<AudioSource> {
+fn random_step(sfx_handles: &HandleMap<SfxKey>) -> &Handle<AudioSource> {
     [
-        &sfx_map[&SfxKey::Step1],
-        &sfx_map[&SfxKey::Step2],
-        &sfx_map[&SfxKey::Step3],
-        &sfx_map[&SfxKey::Step4],
+        &sfx_handles[&SfxKey::Step1],
+        &sfx_handles[&SfxKey::Step2],
+        &sfx_handles[&SfxKey::Step3],
+        &sfx_handles[&SfxKey::Step4],
     ]
     .choose(&mut rand::thread_rng())
     .unwrap()

@@ -5,7 +5,7 @@ use bevy::prelude::*;
 
 use super::Screen;
 use crate::{
-    game::assets::{AssetMap, ImageKey, SfxKey, SoundtrackKey},
+    game::assets::{HandleMap, ImageKey, SfxKey, SoundtrackKey},
     ui::prelude::*,
 };
 
@@ -28,13 +28,13 @@ fn enter_loading(mut commands: Commands) {
 
 fn all_assets_loaded(
     asset_server: Res<AssetServer>,
-    image_map: Res<AssetMap<ImageKey>>,
-    sfx_map: Res<AssetMap<SfxKey>>,
-    soundtrack_map: Res<AssetMap<SoundtrackKey>>,
+    image_handles: Res<HandleMap<ImageKey>>,
+    sfx_handles: Res<HandleMap<SfxKey>>,
+    soundtrack_handles: Res<HandleMap<SoundtrackKey>>,
 ) -> bool {
-    image_map.all_loaded(&asset_server)
-        && sfx_map.all_loaded(&asset_server)
-        && soundtrack_map.all_loaded(&asset_server)
+    image_handles.all_loaded(&asset_server)
+        && sfx_handles.all_loaded(&asset_server)
+        && soundtrack_handles.all_loaded(&asset_server)
 }
 
 fn continue_to_title(mut next_screen: ResMut<NextState<Screen>>) {

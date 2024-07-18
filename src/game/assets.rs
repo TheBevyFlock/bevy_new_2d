@@ -5,14 +5,14 @@ use bevy::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<AssetMap<ImageKey>>();
-    app.init_resource::<AssetMap<ImageKey>>();
+    app.register_type::<HandleMap<ImageKey>>();
+    app.init_resource::<HandleMap<ImageKey>>();
 
-    app.register_type::<AssetMap<SfxKey>>();
-    app.init_resource::<AssetMap<SfxKey>>();
+    app.register_type::<HandleMap<SfxKey>>();
+    app.init_resource::<HandleMap<SfxKey>>();
 
-    app.register_type::<AssetMap<SoundtrackKey>>();
-    app.init_resource::<AssetMap<SoundtrackKey>>();
+    app.register_type::<HandleMap<SoundtrackKey>>();
+    app.init_resource::<HandleMap<SoundtrackKey>>();
 }
 
 #[derive(PartialEq, Eq, Hash, Reflect)]
@@ -24,7 +24,7 @@ impl AssetKey for ImageKey {
     type Asset = Image;
 }
 
-impl FromWorld for AssetMap<ImageKey> {
+impl FromWorld for HandleMap<ImageKey> {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
         [(
@@ -54,7 +54,7 @@ impl AssetKey for SfxKey {
     type Asset = AudioSource;
 }
 
-impl FromWorld for AssetMap<SfxKey> {
+impl FromWorld for HandleMap<SfxKey> {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
         [
@@ -85,7 +85,7 @@ impl AssetKey for SoundtrackKey {
     type Asset = AudioSource;
 }
 
-impl FromWorld for AssetMap<SoundtrackKey> {
+impl FromWorld for HandleMap<SoundtrackKey> {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
         [
@@ -108,9 +108,9 @@ pub trait AssetKey: Sized {
 
 #[derive(Resource, Reflect, Deref, DerefMut)]
 #[reflect(Resource)]
-pub struct AssetMap<K: AssetKey>(HashMap<K, Handle<K::Asset>>);
+pub struct HandleMap<K: AssetKey>(HashMap<K, Handle<K::Asset>>);
 
-impl<K: AssetKey, T> From<T> for AssetMap<K>
+impl<K: AssetKey, T> From<T> for HandleMap<K>
 where
     T: Into<HashMap<K, Handle<K::Asset>>>,
 {
@@ -119,7 +119,7 @@ where
     }
 }
 
-impl<K: AssetKey> AssetMap<K> {
+impl<K: AssetKey> HandleMap<K> {
     pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
         self.values()
             .all(|x| asset_server.is_loaded_with_dependencies(x))
