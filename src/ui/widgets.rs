@@ -4,51 +4,6 @@ use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
 
 use super::{interaction::InteractionPalette, palette::*};
 
-/// An internal trait for types that can spawn entities.
-trait Spawn {
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands;
-}
-
-impl Spawn for Commands<'_, '_> {
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
-        self.spawn(bundle)
-    }
-}
-
-impl Spawn for ChildBuilder<'_> {
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
-        self.spawn(bundle)
-    }
-}
-
-/// An extension trait for spawning UI containers.
-pub trait Containers {
-    /// Spawns a root node that covers the full screen
-    /// and centers its content horizontally and vertically.
-    fn ui_root(&mut self) -> EntityCommands;
-}
-
-impl Containers for Commands<'_, '_> {
-    fn ui_root(&mut self) -> EntityCommands {
-        self.spawn((
-            Name::new("UI Root"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Px(10.0),
-                    position_type: PositionType::Absolute,
-                    ..default()
-                },
-                ..default()
-            },
-        ))
-    }
-}
-
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {
     /// Spawn a simple button with text.
@@ -157,5 +112,50 @@ impl<T: Spawn> Widgets for T {
             ));
         });
         entity
+    }
+}
+
+/// An extension trait for spawning UI containers.
+pub trait Containers {
+    /// Spawns a root node that covers the full screen
+    /// and centers its content horizontally and vertically.
+    fn ui_root(&mut self) -> EntityCommands;
+}
+
+impl Containers for Commands<'_, '_> {
+    fn ui_root(&mut self) -> EntityCommands {
+        self.spawn((
+            Name::new("UI Root"),
+            NodeBundle {
+                style: Style {
+                    width: Percent(100.0),
+                    height: Percent(100.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    flex_direction: FlexDirection::Column,
+                    row_gap: Px(10.0),
+                    position_type: PositionType::Absolute,
+                    ..default()
+                },
+                ..default()
+            },
+        ))
+    }
+}
+
+/// An internal trait for types that can spawn entities.
+trait Spawn {
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands;
+}
+
+impl Spawn for Commands<'_, '_> {
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
+        self.spawn(bundle)
+    }
+}
+
+impl Spawn for ChildBuilder<'_> {
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
+        self.spawn(bundle)
     }
 }
