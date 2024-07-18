@@ -1,8 +1,9 @@
 # Design philosophy
 
 The high-level goal of this template is to feel like the official template that is currently missing from Bevy.
-The exists an [official CI template](https://github.com/bevyengine/bevy_github_ci_template), but that is currently more
-of an extension to the [Bevy examples](https://bevyengine.org/examples/) than an actual template.
+The exists an [official CI template](https://github.com/bevyengine/bevy_github_ci_template), but, in our opinion,
+that one is currently more of an extension to the [Bevy examples](https://bevyengine.org/examples/) than an actual template.
+We say this because it is extremely bare-bones and as such does not provide things that in practice are necessary for game development.
 
 ## Principles
 
@@ -89,3 +90,39 @@ This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_
 `Widgets` is implemented for `Commands` and similar, so you can easily spawn UI elements in your systems.
 By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
 By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
+
+## Assets
+
+### Pattern
+
+Preload your assets by encapsulating them in a struct:
+
+```rust
+#[derive(PartialEq, Eq, Hash, Reflect)]
+pub enum SomeAsset {
+    Player,
+    Enemy,
+    Powerup,
+}
+
+#[derive(Resource, Reflect, Deref, DerefMut)]
+pub struct SomeAssets(HashMap<SomeAsset, Handle<Something>>);
+
+impl SomeAssets {
+    pub fn new(asset_server: &AssetServer) -> Self {
+        // load them from disk via the asset server
+    }
+
+    pub fn all_loaded(&self, assets: &Assets<Something>) -> bool {
+        self.0.iter().all(|(_, handle)| assets.contains(handle))
+    }
+}
+```
+
+Then add them to the [loading screen](../src/screen/loading.rs) functions `enter_loading` and `check_all_loaded`.
+
+### Reasoning
+
+This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
+In general, by preloading your assets, you can avoid hitches during gameplay.
+By using an enum to represent your assets, you don't leak details like file paths into your game code and can easily change the asset that is loaded at a single point.

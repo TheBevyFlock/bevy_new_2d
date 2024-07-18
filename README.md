@@ -12,10 +12,11 @@ We assume that you know how to use Bevy already and have seen the [official Quic
 
 ## Create a new game
 
-Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
+Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following commands:
 
 ```sh
 cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
+git switch -c main
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
