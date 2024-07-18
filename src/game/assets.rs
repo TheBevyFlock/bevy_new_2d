@@ -111,7 +111,7 @@ where
 
 impl<K: AssetKey> FromWorld for AssetMap<K> {
     fn from_world(world: &mut World) -> Self {
-        K::load(&world.resource::<AssetServer>()).into()
+        K::load(world.resource::<AssetServer>()).into()
     }
 }
 
