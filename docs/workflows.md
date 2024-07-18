@@ -84,11 +84,15 @@ Set `Workflow permissions` to `Read and write permissions`, then hit `Save`:
 
 ### Set up itch.io upload
 
+#### Create page
+
 Create your itch.io page with the same name as is used in the `ITCH_TARGET` variable in [release.yaml](../.github/workflows/release.yaml).
 By default, this is the same as the project name.
 Also set `Kind of project` to `HTML`.
 
 After creation, you'll see a warning saying "There was a problem loading your project: No file provided to embed". Don't worry about it, we will fix that in a moment.
+
+#### Add butler credentials
 
 In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`:
 
@@ -98,3 +102,10 @@ Hit `New repository secret` and enter the following, then hit `Add secret`:
 
 - **Name:** `BUTLER_CREDENTIALS`
 - **Secret:** Your [itch.io API key](https://itch.io/user/settings/api-keys) (create a new one if necessary)
+
+#### Select the web build
+
+[Run your workflow](#cd-releasing) once. When it's done, go back to itch.io and edit your project.
+Scroll to `Uploads`, where you should now see a bunch of files. Find the one tagged `web` and tick the box that says "This file will be played in the browser". You only have to do this once on your first release.
+
+![A screenshot showing a web build selected in the itch.io uploads](workflow-itch-release.png)
