@@ -2,7 +2,7 @@ _Brought to you by the Bevy Jam working group._
 
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game — especially for a game jam!
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game—especially for a game jam!
 Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
 You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
 
@@ -87,7 +87,6 @@ See [Workflows](./docs/workflows.md) for more information.
 ## Known Issues
 
 There are some known issues in Bevy that require some arcane workarounds.
-If you run into them, their fix is often not obvious.
 To keep this template simple, we have opted not to include those workarounds.
 You can read about them in the [Known Issues](./docs/known-issues.md) document.
 
