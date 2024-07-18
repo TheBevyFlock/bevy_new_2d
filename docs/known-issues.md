@@ -1,6 +1,6 @@
 # Known Issues
 
-## My game window is flickering white for a split second on native when I start the game
+## My game window is flashing white for a split second when I start the game on native
 
 The game window is created before the GPU is ready to render everything.
 This means that it will start with a white screen for a little bit.
