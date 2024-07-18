@@ -5,7 +5,7 @@ use bevy::prelude::*;
 
 use super::Screen;
 use crate::{
-    game::assets::{AssetKey as _, AssetMap, ImageKey, SfxKey, SoundtrackKey},
+    game::assets::{AssetMap, ImageKey, SfxKey, SoundtrackKey},
     ui::prelude::*,
 };
 
@@ -17,18 +17,13 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn enter_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn enter_loading(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Loading))
         .with_children(|children| {
             children.label("Loading...");
         });
-
-    // Preload assets so the game runs smoothly.
-    commands.insert_resource(ImageKey::load(&asset_server));
-    commands.insert_resource(SfxKey::load(&asset_server));
-    commands.insert_resource(SoundtrackKey::load(&asset_server));
 }
 
 fn all_assets_loaded(

@@ -4,6 +4,21 @@ use bevy::{
     utils::HashMap,
 };
 
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<(
+        AssetMap<ImageKey>,
+        AssetMap<SfxKey>,
+        AssetMap<SoundtrackKey>,
+    )>();
+    app.add_systems(Startup, preload_assets);
+}
+
+fn preload_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.insert_resource(ImageKey::load(&asset_server));
+    commands.insert_resource(SfxKey::load(&asset_server));
+    commands.insert_resource(SoundtrackKey::load(&asset_server));
+}
+
 #[derive(PartialEq, Eq, Hash, Reflect)]
 pub enum ImageKey {
     Ducky,
