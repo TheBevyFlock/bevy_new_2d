@@ -7,6 +7,7 @@ There are a number of issues with audio on web, so this is not an exhaustive lis
 - If you use materials, make sure to force render pipelines to [load at the start of the game](https://github.com/rparrett/bevy_pipelines_ready/blob/main/src/lib.rs).
 - Keep the FPS high.
 - Advise your users to play on Chromium-based browsers.
+- Apply the suggestions from the blog post [Workaround for the Choppy Music in Bevy Web Builds](https://necrashter.github.io/bevy-choppy-music-workaround).
 
 ## My game window is flashing white for a split second when I start the game on native
 
