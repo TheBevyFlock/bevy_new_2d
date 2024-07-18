@@ -6,7 +6,7 @@ There are a number of issues with audio on web, so this is not an exhaustive lis
 
 - If you use materials, make sure to force render pipelines to [load at the start of the game](https://github.com/rparrett/bevy_pipelines_ready/blob/main/src/lib.rs).
 - Keep the FPS high.
-- Don't play on Firefox.
+- Advise your users to play on Chromium-based browsers.
 
 ## My game window is flashing white for a split second when I start the game on native
 
