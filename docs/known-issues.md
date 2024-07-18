@@ -1,5 +1,13 @@
 # Known Issues
 
+## My audio is stuttering on web
+
+There are a number of issues with audio on web, so this is not an exhaustive list. The short version is that you can try the following:
+
+- If you use materials, make sure to force render pipelines to [load at the start of the game](https://github.com/rparrett/bevy_pipelines_ready/blob/main/src/lib.rs).
+- Keep the FPS high.
+- Don't play on Firefox.
+
 ## My game window is flashing white for a split second when I start the game on native
 
 The game window is created before the GPU is ready to render everything.
@@ -16,11 +24,3 @@ for how to fix this.
 A camera not moving smoothly is pretty much always caused by the camera position being tied too tightly to the character's position.
 To give the camera some inertia, use the [`smooth_nudge`](https://github.com/bevyengine/bevy/blob/main/examples/movement/smooth_follow.rs#L127-L142)
 to interpolate the camera position towards its target position.
-
-## My audio is stuttering on web
-
-There are a number of issues with audio on web, so this is not an exhaustive list. The short version is that you can try the following:
-
-- If you use materials, make sure to force render pipelines to [load at the start of the game](https://github.com/rparrett/bevy_pipelines_ready/blob/main/src/lib.rs).
-- Keep the FPS high.
-- Don't play on Firefox.
