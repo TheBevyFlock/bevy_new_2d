@@ -95,37 +95,47 @@ By returning `EntityCommands`, you can easily chain multiple widgets together an
 
 ### Pattern
 
-Preload your assets by encapsulating them in a struct:
+Define your assets in an enum so each variant maps to a `Handle`:
 
 ```rust
 #[derive(PartialEq, Eq, Hash, Reflect)]
-pub enum SomeAsset {
+pub enum SpriteKey {
     Player,
     Enemy,
     Powerup,
 }
 
-#[derive(Resource, Reflect, Deref, DerefMut)]
-pub struct SomeAssets(HashMap<SomeAsset, Handle<Something>>);
+impl AssetKey for SpriteKey {
+    type Asset = Image;
+}
 
-impl SomeAssets {
-    pub fn new(asset_server: &AssetServer) -> Self {
-        // load them from disk via the asset server
-    }
-
-    pub fn all_loaded(&self, assets: &Assets<Something>) -> bool {
-        self.0.iter().all(|(_, handle)| assets.contains(handle))
+impl FromWorld for HandleMap<SpriteKey> {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+        [
+            (SpriteKey::Player, asset_server.load("player.png")),
+            (SpriteKey::Enemy, asset_server.load("enemy.png")),
+            (SpriteKey::Powerup, asset_server.load("powerup.png")),
+        ]
+        .into()
     }
 }
 ```
 
-Then add them to the [loading screen](../src/screen/loading.rs) functions `enter_loading` and `check_all_loaded`.
+Then set up preloading in a plugin:
+
+```rust
+app.register_type::<HandleMap<SpriteKey>>();
+app.init_resource::<HandleMap<SpriteKey>>();
+```
 
 ### Reasoning
 
 This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
-In general, by preloading your assets, you can avoid hitches during gameplay.
-By using an enum to represent your assets, you don't leak details like file paths into your game code and can easily change the asset that is loaded at a single point.
+By preloading your assets, you can avoid hitches during gameplay.
+
+Using an enum to represent your assets encapsulates their file path from the rest of the game code,
+and gives you access to static tooling like renaming in an IDE, and compile errors for an invalid name.
 
 ## Spawning
 
