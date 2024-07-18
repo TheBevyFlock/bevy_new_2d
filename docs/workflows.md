@@ -42,11 +42,11 @@ Enter a version number in the format `v1.2.3`, then hit the green `Run workflow`
 
 ### Set up variables
 
-[`.github/workflows/release.yaml`](../.github/workflows/release.yaml) contains a list of environment variables that are setup automatically for you if you use `cargo generate`.
+[`.github/workflows/release.yaml`](../.github/workflows/release.yaml) contains a list of environment variables that are set automatically by `cargo generate`.
 Otherwise, you will have to fill them in manually and push a commit.
 
 <details>
-<summary>Relevant section of the release workflow</summary>
+<summary>Environment variables section of the release workflow</summary>
 
 ```yaml
 env:
