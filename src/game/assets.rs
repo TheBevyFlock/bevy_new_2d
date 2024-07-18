@@ -5,18 +5,14 @@ use bevy::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<(
-        AssetMap<ImageKey>,
-        AssetMap<SfxKey>,
-        AssetMap<SoundtrackKey>,
-    )>();
-    app.add_systems(Startup, preload_assets);
-}
+    app.register_type::<AssetMap<ImageKey>>();
+    app.init_resource::<AssetMap<ImageKey>>();
 
-fn preload_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.insert_resource(ImageKey::load(&asset_server));
-    commands.insert_resource(SfxKey::load(&asset_server));
-    commands.insert_resource(SoundtrackKey::load(&asset_server));
+    app.register_type::<AssetMap<SfxKey>>();
+    app.init_resource::<AssetMap<SfxKey>>();
+
+    app.register_type::<AssetMap<SoundtrackKey>>();
+    app.init_resource::<AssetMap<SoundtrackKey>>();
 }
 
 #[derive(PartialEq, Eq, Hash, Reflect)]
@@ -27,16 +23,16 @@ pub enum ImageKey {
 impl AssetKey for ImageKey {
     type Asset = Image;
 
-    fn load(asset_server: &AssetServer) -> AssetMap<Self> {
-        AssetMap(HashMap::from([(
-            ImageKey::Ducky,
+    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>> {
+        [(
+            Self::Ducky,
             asset_server.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
                     settings.sampler = ImageSampler::nearest();
                 },
             ),
-        )]))
+        )]
     }
 }
 
@@ -53,21 +49,21 @@ pub enum SfxKey {
 impl AssetKey for SfxKey {
     type Asset = AudioSource;
 
-    fn load(asset_server: &AssetServer) -> AssetMap<Self> {
-        AssetMap(HashMap::from([
+    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>> {
+        [
             (
-                SfxKey::ButtonHover,
+                Self::ButtonHover,
                 asset_server.load("audio/sfx/button_hover.ogg"),
             ),
             (
-                SfxKey::ButtonPress,
+                Self::ButtonPress,
                 asset_server.load("audio/sfx/button_press.ogg"),
             ),
-            (SfxKey::Step1, asset_server.load("audio/sfx/step1.ogg")),
-            (SfxKey::Step2, asset_server.load("audio/sfx/step2.ogg")),
-            (SfxKey::Step3, asset_server.load("audio/sfx/step3.ogg")),
-            (SfxKey::Step4, asset_server.load("audio/sfx/step4.ogg")),
-        ]))
+            (Self::Step1, asset_server.load("audio/sfx/step1.ogg")),
+            (Self::Step2, asset_server.load("audio/sfx/step2.ogg")),
+            (Self::Step3, asset_server.load("audio/sfx/step3.ogg")),
+            (Self::Step4, asset_server.load("audio/sfx/step4.ogg")),
+        ]
     }
 }
 
@@ -80,34 +76,48 @@ pub enum SoundtrackKey {
 impl AssetKey for SoundtrackKey {
     type Asset = AudioSource;
 
-    fn load(asset_server: &AssetServer) -> AssetMap<Self> {
-        AssetMap(HashMap::from([
+    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>> {
+        [
             (
-                SoundtrackKey::Credits,
+                Self::Credits,
                 asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
             ),
             (
-                SoundtrackKey::Gameplay,
+                Self::Gameplay,
                 asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
             ),
-        ]))
+        ]
     }
 }
 
 pub trait AssetKey: Sized {
     type Asset: Asset;
 
-    fn load(asset_server: &AssetServer) -> AssetMap<Self>;
+    fn load(asset_server: &AssetServer) -> impl Into<AssetMap<Self>>;
 }
 
 #[derive(Resource, Reflect, Deref, DerefMut)]
 #[reflect(Resource)]
 pub struct AssetMap<K: AssetKey>(HashMap<K, Handle<K::Asset>>);
 
+impl<K: AssetKey, T> From<T> for AssetMap<K>
+where
+    T: Into<HashMap<K, Handle<K::Asset>>>,
+{
+    fn from(value: T) -> Self {
+        Self(value.into())
+    }
+}
+
+impl<K: AssetKey> FromWorld for AssetMap<K> {
+    fn from_world(world: &mut World) -> Self {
+        K::load(&world.resource::<AssetServer>()).into()
+    }
+}
+
 impl<K: AssetKey> AssetMap<K> {
     pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
-        self.0
-            .values()
+        self.values()
             .all(|x| asset_server.is_loaded_with_dependencies(x))
     }
 }
