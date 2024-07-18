@@ -1,6 +1,14 @@
+_Brought to you by the Bevy Jam working group._
+
 # Bevy Quickstart
 
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game -- especially for a game jam! Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io). You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
+This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game — especially for a game jam!
+Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
+You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
+
+## Prerequisites
+
+We assume that you know how to use Bevy already and have seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
 
 ## Create a new game
 
@@ -29,6 +37,8 @@ Clone your new Github repository to a local repository and push a commit with th
 
 ## Write your game
 
+The best way to get started is to play around with what you find in [`src/game/`](./src/game).
+
 This template comes with a basic project structure that you may find useful:
 
 | Path                                     | Description                                           |
@@ -41,8 +51,11 @@ This template comes with a basic project structure that you may find useful:
 
 Feel free to move things around however you want, though.
 
+If you are new to Bevy, the patterns used in this template may look a bit weird at first glance.
+See our [Design Document](./docs/design.md) for more information on how we structured the code and why.
+
 > [!Tip]
-> Be sure to check out the amazing [3rd-party tools](./docs/tooling.md) in the Bevy ecosystem!
+> Be sure to check out the [3rd-party tools](./docs/tooling.md) we recommend!
 
 ## Run your game
 
@@ -53,9 +66,18 @@ Running your game locally is very simple:
 
 If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](./.vscode/tasks.json) file.
 
+<details>
+    <summary>(Optional) Improve your compile times</summary>
+
+[`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
+After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
+
+</details>
+
 ## Release your game
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases. See [Workflows](./docs/workflows.md) for more information.
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases.
+See [Workflows](./docs/workflows.md) for more information.
 
 ## License
 
