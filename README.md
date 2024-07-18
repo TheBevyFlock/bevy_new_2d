@@ -80,6 +80,10 @@ After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
 This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) to run tests and build releases.
 See [Workflows](./docs/workflows.md) for more information.
 
+## Credits
+
+The [assets](./assets) in this repository are all 3rd-party. See the [credits screen](./src/screen/credits.rs) for more information.
+
 ## License
 
 The source code—but not the assets—in this repository is licensed under any of the following at your option:
@@ -89,7 +93,3 @@ The source code—but not the assets—in this repository is licensed under any 
 - [Apache License, Version 2.0](./LICENSE-Apache-2.0.txt)
 
 We hold no patent rights to anything presented in this repository.
-
-## Credits
-
-The [assets](./assets) in this repository are all 3rd-party. See the [credits screen](./src/screen/credits.rs) for more information.
