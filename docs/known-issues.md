@@ -9,7 +9,7 @@ and then [make it visible after an arbitrary amount of frames](https://github.co
 
 ## My character or camera is not moving smoothly
 
-A character not moving smoothly is often caused by the movement updates being tied to the frame rate.
+Choppy movement is often caused by movement updates being tied to the frame rate.
 See the [physics_in_fixed_timestep](https://github.com/bevyengine/bevy/blob/main/examples/movement/physics_in_fixed_timestep.rs) example
 for how to fix this.
 
