@@ -25,13 +25,13 @@ The Bevy Jam working group has agreed on the following guiding design principles
 The last point means that in order to make this template useful for real-life projects,
 we have to make some decisions that are necessarily opinionated.
 
-## Design decisions
-
 These opinions are based on the experience of the Bevy Jam working group and
 what we have found to be useful in our own projects.
 If you disagree with any of these, it should be easy to change them.
 
-Bevy is still young, and many design patterns are still being discovered and refined. Most do not even have an agreed name yet. For some prior work in this area that inspired us, see [bevy-design-patterns](https://github.com/tbillington/bevy_best_practices) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
+Bevy is still young, and many design patterns are still being discovered and refined.
+Most do not even have an agreed name yet. For some prior work in this area that inspired us,
+see [bevy-design-patterns](https://github.com/tbillington/bevy_best_practices) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
 
 ## Code structure
 
@@ -65,3 +65,7 @@ pub(super) fn plugin(app: &mut App) {
 
 Bevy is great at organizing code into plugins. The most lightweight way to do this is by using simple functions as plugins.
 By splitting your code like this, you can easily keep all your systems and resources locally grouped. Everything that belongs to the `player` is only in `player.rs`, and so on.
+
+## UI
+
+### Pattern
