@@ -42,11 +42,11 @@ Structure your code into plugins like so:
 
 ```rust
 // game.rs
-use bevy::prelude::*;
-
 mod player;
 mod enemy;
 mod powerup;
+
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((player::plugin, enemy::plugin, powerup::plugin));
@@ -207,7 +207,7 @@ pub enum Screen {
     GameOver,
     Leaderboard,
     MultiplayerLobby,
-    SecretMinigame
+    SecretMinigame,
 }
 ```
 
@@ -215,7 +215,7 @@ Constrain entities that should only be present in a certain screen to that scree
 [`StateScoped`](https://docs.rs/bevy/latest/bevy/prelude/struct.StateScoped.html) component to them.
 Transition between screens by setting the [`NextState<Screen>`](https://docs.rs/bevy/latest/bevy/prelude/enum.NextState.html) resource.
 
-For each screen, create a plugin that handles the setup and the teardown of the screen in form on `OnEnter` and `OnExit`:
+For each screen, create a plugin that handles the setup and teardown of the screen with `OnEnter` and `OnExit`:
 
 ```rust
 // game_over.rs
