@@ -241,7 +241,7 @@ fn exit_game_over(mut next_screen: ResMut<NextState<Screen>>) {
 
 ### Reasoning
 
-"Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now".
+"Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the playing screen, the game over screen, etc.
 These screens usually correspond to different logical states of your game that have different systems running.
 
 By using dedicated `State`s for each screen, you can easily manage systems and entities that are only relevant for a certain screen.
