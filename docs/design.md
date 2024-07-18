@@ -69,3 +69,23 @@ By splitting your code like this, you can easily keep all your systems and resou
 ## UI
 
 ### Pattern
+
+Spawn your UI elements by extending the [`Widgets` trait](../src/ui/widgets.rs):
+
+```rust
+pub trait Widgets {
+    fn button(&mut self, text: impl Into<String>) -> EntityCommands;
+    fn header(&mut self, text: impl Into<String>) -> EntityCommands;
+    fn label(&mut self, text: impl Into<String>) -> EntityCommands;
+    fn text_input(&mut self, text: impl Into<String>) -> EntityCommands;
+    fn image(&mut self, texture: Handle<Texture>) -> EntityCommands;
+    fn progress_bar(&mut self, progress: f32) -> EntityCommands;
+}
+```
+
+### Reasoning
+
+This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_ui).
+`Widgets` is implemented for `Commands` and similar, so you can easily spawn UI elements in your systems.
+By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
+By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
