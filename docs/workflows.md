@@ -86,6 +86,9 @@ Set `Workflow permissions` to `Read and write permissions`, then hit `Save`:
 
 Create your itch.io page with the same name as is used in the `ITCH_TARGET` variable in [release.yaml](../.github/workflows/release.yaml).
 By default, this is the same as the project name.
+Also set `Kind of project` to `HTML`.
+
+After creation, you'll see a warning saying "There was a problem loading your project: No file provided to embed". Don't worry about it, we will fix that in a moment.
 
 In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`:
 
