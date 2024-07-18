@@ -98,7 +98,7 @@ By returning `EntityCommands`, you can easily chain multiple widgets together an
 Define your assets in an enum so each variant maps to a `Handle`:
 
 ```rust
-#[derive(PartialEq, Eq, Hash, Reflect)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
 pub enum SpriteKey {
     Player,
     Enemy,

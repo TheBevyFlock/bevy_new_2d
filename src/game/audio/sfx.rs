@@ -3,40 +3,40 @@ use rand::seq::SliceRandom;
 
 use crate::game::assets::{HandleMap, SfxKey};
 
-pub(super) fn play_sfx(
-    trigger: Trigger<Sfx>,
+pub(super) fn plugin(app: &mut App) {
+    app.observe(play_sfx);
+}
+
+fn play_sfx(
+    trigger: Trigger<PlaySfx>,
     mut commands: Commands,
     sfx_handles: Res<HandleMap<SfxKey>>,
 ) {
-    let event = trigger.event();
-    let source = match event {
-        Sfx::ButtonHover => &sfx_handles[&SfxKey::ButtonHover],
-        Sfx::ButtonPress => &sfx_handles[&SfxKey::ButtonPress],
-        Sfx::Step => random_step(&sfx_handles),
-    }
-    .clone_weak();
-    let settings = PlaybackSettings {
-        mode: PlaybackMode::Despawn,
-        ..default()
-    };
-    commands.spawn(AudioSourceBundle { source, settings });
+    commands.spawn(AudioSourceBundle {
+        source: sfx_handles[&match trigger.event() {
+            PlaySfx::ButtonHover => SfxKey::ButtonHover,
+            PlaySfx::ButtonPress => SfxKey::ButtonPress,
+            PlaySfx::Step => random_step(),
+        }]
+            .clone_weak(),
+        settings: PlaybackSettings {
+            mode: PlaybackMode::Despawn,
+            ..default()
+        },
+    });
 }
 
-/// Play a single sound effect.
+/// Trigger this event to play a single sound effect.
 #[derive(Event)]
-pub enum Sfx {
+pub enum PlaySfx {
     ButtonHover,
     ButtonPress,
     Step,
 }
 
-fn random_step(sfx_handles: &HandleMap<SfxKey>) -> &Handle<AudioSource> {
-    [
-        &sfx_handles[&SfxKey::Step1],
-        &sfx_handles[&SfxKey::Step2],
-        &sfx_handles[&SfxKey::Step3],
-        &sfx_handles[&SfxKey::Step4],
-    ]
-    .choose(&mut rand::thread_rng())
-    .unwrap()
+fn random_step() -> SfxKey {
+    [SfxKey::Step1, SfxKey::Step2, SfxKey::Step3, SfxKey::Step4]
+        .choose(&mut rand::thread_rng())
+        .copied()
+        .unwrap()
 }
