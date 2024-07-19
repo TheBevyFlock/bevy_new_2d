@@ -75,7 +75,7 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
   <summary>Run release builds</summary>
 
 - Use `cargo run --profile release-native --no-default-features` to run a native release build.
-- Use `trunk serve --no-default-features` to run a web release build.
+- Use `trunk serve --release --no-default-features` to run a web release build.
 
 </details>
 
