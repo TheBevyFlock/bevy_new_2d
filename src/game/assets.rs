@@ -15,7 +15,7 @@ pub(super) fn plugin(app: &mut App) {
     app.init_resource::<HandleMap<SoundtrackKey>>();
 }
 
-#[derive(PartialEq, Eq, Hash, Reflect)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
 pub enum ImageKey {
     Ducky,
 }
@@ -40,7 +40,7 @@ impl FromWorld for HandleMap<ImageKey> {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Reflect)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
 pub enum SfxKey {
     ButtonHover,
     ButtonPress,
@@ -75,7 +75,7 @@ impl FromWorld for HandleMap<SfxKey> {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Reflect)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
 pub enum SoundtrackKey {
     Credits,
     Gameplay,
