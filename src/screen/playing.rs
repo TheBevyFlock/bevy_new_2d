@@ -3,7 +3,9 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
-use crate::game::{audio::soundtrack::Soundtrack, spawn::level::SpawnLevel};
+use crate::game::{
+    assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack, spawn::level::SpawnLevel,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Playing), enter_playing);
@@ -18,12 +20,12 @@ pub(super) fn plugin(app: &mut App) {
 
 fn enter_playing(mut commands: Commands) {
     commands.trigger(SpawnLevel);
-    commands.trigger(Soundtrack::Gameplay);
+    commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Gameplay));
 }
 
 fn exit_playing(mut commands: Commands) {
     // We could use [`StateScoped`] on the sound playing entites instead.
-    commands.trigger(Soundtrack::Disable);
+    commands.trigger(PlaySoundtrack::Disable);
 }
 
 fn return_to_title_screen(mut next_screen: ResMut<NextState<Screen>>) {
