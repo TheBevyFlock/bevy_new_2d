@@ -75,7 +75,6 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
   <summary>Run release builds</summary>
 
 - Use `cargo run --profile release-native --no-default-features` to run a native release build.
-    - On Linux + Wayland, make sure to add `--features bevy/wayland` to this command.
 - Use `trunk serve --release --no-default-features` to run a web release build.
 
 </details>
