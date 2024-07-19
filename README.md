@@ -72,6 +72,14 @@ Running your game locally is very simple:
 If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](./.vscode/tasks.json) file.
 
 <details>
+  <summary>Run release builds</summary>
+
+- Use `cargo run --profile release-native --no-default-features` to run a native release build.
+- Use `trunk serve --no-default-features` to run a web release build.
+
+</details>
+
+<details>
     <summary>(Optional) Improve your compile times</summary>
 
 [`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
