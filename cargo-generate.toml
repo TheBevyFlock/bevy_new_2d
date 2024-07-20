@@ -5,3 +5,6 @@ include = ["Cargo.toml", "Cargo.lock", ".github/workflows/*", "*.rs"]
 prompt = "Enter your itch.io username. Leave blank to disable itch.io upload."
 type = "string"
 default = ""
+
+[conditional.'itch_username != ""'.placeholders]
+itch_project = { type = "string", prompt = "Enter the itch.io project name. Leave blank to use the project-name.", default="" }

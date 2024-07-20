@@ -23,7 +23,11 @@ env:
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
   {%- if itch_username != "" %}
+  {%- if itch_project != "" %}
+  ITCH_TARGET: {{itch_username}}/{{itch_project}}
+  {%- else %}
   ITCH_TARGET: {{itch_username}}/{{project-name}}
+  {%- endif %}
   {%- else %}
   # ITCH_TARGET: your-itch-username/{{project-name}}
   {%- endif %}
