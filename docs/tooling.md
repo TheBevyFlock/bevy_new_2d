@@ -4,7 +4,7 @@ Check out the [Bevy Assets](https://bevyengine.org/assets/) page for more great 
 
 ## Libraries
 
-A few libraries that the authors of this template have vetted and think you might find useful.
+A few libraries that the authors of this template have vetted and think you might find useful:
 
 | Name                                                                                   | Category       | Description                           |
 | -------------------------------------------------------------------------------------- | -------------- | ------------------------------------- |
@@ -20,6 +20,7 @@ A few libraries that the authors of this template have vetted and think you migh
 | [`bevy_kira_audio`](https://github.com/NiklasEi/bevy_kira_audio)                       | Audio          | Advanced audio                        |
 | [`sickle_ui`](https://github.com/UmbraLuminosa/sickle_ui)                              | UI             | UI widgets                            |
 | [`bevy_egui`](https://github.com/mvlabat/bevy_egui)                                    | UI / Debugging | UI framework (great for debug UI)     |
+| [`tiny_bail`](https://github.com/benfrankel/tiny_bail)                                 | Error handling | Error handling macros                 |
 
 In particular:
 
