@@ -2,7 +2,7 @@
 
 use bevy::{dev_tools::states::log_transitions, prelude::*};
 
-use crate::screen::Screen;
+use crate::screens::Screen;
 
 pub(super) fn plugin(app: &mut App) {
     // Print state transitions in dev builds

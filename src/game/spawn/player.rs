@@ -8,7 +8,7 @@ use crate::{
         assets::{HandleMap, ImageKey},
         movement::{Movement, MovementController, WrapWithinWindow},
     },
-    screen::Screen,
+    screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {

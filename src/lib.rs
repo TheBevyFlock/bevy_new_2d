@@ -1,7 +1,7 @@
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod game;
-mod screen;
+mod screens;
 mod ui;
 
 use bevy::{
@@ -53,7 +53,7 @@ impl Plugin for AppPlugin {
         );
 
         // Add other plugins.
-        app.add_plugins((game::plugin, screen::plugin, ui::plugin));
+        app.add_plugins((game::plugin, screens::plugin, ui::plugin));
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]
