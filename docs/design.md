@@ -243,7 +243,7 @@ fn show_game_over_screen(mut commands: Commands) {
         });
 }
 
-fn reset_game_state(mut highscore: ResMut<Highscore>) {
+fn reset_highscore(mut highscore: ResMut<Highscore>) {
     *highscore = default();
 }
 ```
