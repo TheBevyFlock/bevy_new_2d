@@ -16,7 +16,7 @@ The Bevy Jam working group has agreed on the following guiding design principles
   - Nice IDE support.
   - `cargo-generate` support.
   - Workflows that provide CI and CD with an auto-publish to itch.io.
-  - Builds configured for perfomance by default.
+  - Builds configured for performance by default.
 - Answer questions that will quickly come up when creating an actual game.
   - How do I structure my code?
   - How do I preload assets?
@@ -32,7 +32,7 @@ If you disagree with any of these, it should be easy to change them.
 
 Bevy is still young, and many design patterns are still being discovered and refined.
 Most do not even have an agreed name yet. For some prior work in this area that inspired us,
-see [bevy-design-patterns](https://github.com/tbillington/bevy_best_practices) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
+see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
 
 ## Code structure
 

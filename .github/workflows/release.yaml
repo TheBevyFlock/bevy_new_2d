@@ -122,7 +122,7 @@ jobs:
       - name: Install and run trunk (Web)
         if: ${{ matrix.platform == 'web' }}
         run: |
-          cargo binstall trunk --no-confirm
+          cargo binstall --no-confirm trunk wasm-bindgen-cli wasm-opt
           trunk build --release --dist '${{ env.OUT_DIR }}'
 
       - name: Build binaries (non-Web)
