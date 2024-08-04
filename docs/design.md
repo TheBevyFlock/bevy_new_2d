@@ -16,7 +16,7 @@ The Bevy Jam working group has agreed on the following guiding design principles
   - Nice IDE support.
   - `cargo-generate` support.
   - Workflows that provide CI and CD with an auto-publish to itch.io.
-  - Builds configured for perfomance by default.
+  - Builds configured for performance by default.
 - Answer questions that will quickly come up when creating an actual game.
   - How do I structure my code?
   - How do I preload assets?
