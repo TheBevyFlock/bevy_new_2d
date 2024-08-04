@@ -1,7 +1,7 @@
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod game;
-mod screen;
+mod screens;
 mod ui;
 
 use bevy::{
@@ -53,7 +53,7 @@ impl Plugin for AppPlugin {
         );
 
         // Add other plugins.
-        app.add_plugins((game::plugin, screen::plugin, ui::plugin));
+        app.add_plugins((game::plugin, screens::plugin, ui::plugin));
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]
@@ -64,7 +64,7 @@ impl Plugin for AppPlugin {
 /// High-level groupings of systems for the app in the `Update` schedule.
 /// When adding a new variant, make sure to order it in the `configure_sets`
 /// call above.
-#[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash)]
+#[derive(SystemSet, Debug, Clone, Copy, Eq, PartialEq, Hash, PartialOrd, Ord)]
 enum AppSet {
     /// Tick timers.
     TickTimers,

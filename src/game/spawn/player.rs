@@ -6,9 +6,9 @@ use crate::{
     game::{
         animation::PlayerAnimation,
         assets::{HandleMap, ImageKey},
-        movement::{Movement, MovementController, WrapWithinWindow},
+        movement::{Movement, MovementController, ScreenWrap},
     },
-    screen::Screen,
+    screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -51,7 +51,7 @@ fn spawn_player(
         },
         MovementController::default(),
         Movement { speed: 420.0 },
-        WrapWithinWindow,
+        ScreenWrap,
         player_animation,
         StateScoped(Screen::Playing),
     ));

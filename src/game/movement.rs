@@ -16,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     // Apply movement based on controls.
-    app.register_type::<(Movement, WrapWithinWindow)>();
+    app.register_type::<(Movement, ScreenWrap)>();
     app.add_systems(
         Update,
         (apply_movement, wrap_within_window)
@@ -80,11 +80,11 @@ fn apply_movement(
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-pub struct WrapWithinWindow;
+pub struct ScreenWrap;
 
 fn wrap_within_window(
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut wrap_query: Query<&mut Transform, With<WrapWithinWindow>>,
+    mut wrap_query: Query<&mut Transform, With<ScreenWrap>>,
 ) {
     let size = window_query.single().size() + 256.0;
     let half_size = size / 2.0;
