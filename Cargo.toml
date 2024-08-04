@@ -12,6 +12,11 @@ log = { version = "0.4", features = [
     "release_max_level_warn",
 ] }
 rand = "0.8"
+# Disable low-severity logs at compile time for performance.
+tracing = { version = "0.1", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
 
 [features]
 default = [
