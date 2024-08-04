@@ -106,7 +106,7 @@ The source code in this repository is licensed under any of the following at you
 - [MIT License](./LICENSE-MIT.txt)
 - [Apache License, Version 2.0](./LICENSE-Apache-2.0.txt)
 
-Since the CC0 license does not waived patent rights, we confirm that we hold no patent rights to anything presented in this repository.
+The CC0 license explicitly does not waive patent rights, but we confirm that we hold no patent rights to anything presented in this repository.
 
 ## Credits
 
