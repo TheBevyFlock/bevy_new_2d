@@ -7,4 +7,4 @@ type = "string"
 default = ""
 
 [conditional.'itch_username != ""'.placeholders]
-itch_project = { type = "string", prompt = "Enter the itch.io project name. Leave blank to use the project-name.", default="" }
+itch_project = { type = "string", prompt = "Enter the project name used in the itch.io URL. Leave blank to use this crate's `project-name`.", default = "" }
