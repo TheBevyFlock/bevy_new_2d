@@ -6,7 +6,7 @@ use super::Screen;
 use crate::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Title), enter_title);
+    app.add_systems(OnEnter(Screen::Title), show_title_menu);
 
     app.register_type::<TitleAction>();
     app.add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
@@ -22,7 +22,7 @@ enum TitleAction {
     Exit,
 }
 
-fn enter_title(mut commands: Commands) {
+fn show_title_menu(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Title))

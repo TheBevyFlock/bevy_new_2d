@@ -230,11 +230,11 @@ For each screen, create a plugin that handles the setup and teardown of the scre
 ```rust
 // game_over.rs
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::GameOver), enter_game_over);
-    app.add_systems(OnExit(Screen::GameOver), exit_game_over);
+    app.add_systems(OnEnter(Screen::GameOver), show_game_over_screen);
+    app.add_systems(OnExit(Screen::GameOver), reset_highscore);
 }
 
-fn enter_game_over(mut commands: Commands) {
+fn show_game_over_screen(mut commands: Commands) {
     commands.
         .ui_root()
         .insert(StateScoped(Screen::GameOver))
@@ -243,9 +243,8 @@ fn enter_game_over(mut commands: Commands) {
         });
 }
 
-fn exit_game_over(mut next_screen: ResMut<NextState<Screen>>) {
-    // Go back to the title screen
-    next_screen.set(Screen::Title);
+fn reset_game_state(mut highscore: ResMut<Highscore>) {
+    *highscore = default();
 }
 ```
 
