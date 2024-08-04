@@ -6,13 +6,13 @@ license = "MIT OR Apache-2.0 OR CC0-1.0"
 
 [dependencies]
 bevy = { version = "0.14", features = ["wayland"] }
-# Disable low-severity logs at compile time for performance.
+rand = "0.8"
+# Compile low-severity logs out of native release for performance.
 log = { version = "0.4", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
-rand = "0.8"
-# Disable low-severity logs at compile time for performance.
+# Compile low-severity logs out of web release for performance.
 tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
