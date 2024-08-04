@@ -37,7 +37,7 @@ fn enter_title(mut commands: Commands) {
 
 fn handle_title_action(
     mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: InteractionQuery<&TitleAction>,
+    mut button_query: Query<(&Interaction, &TitleAction), Changed<Interaction>>,
     #[cfg(not(target_family = "wasm"))] mut app_exit: EventWriter<AppExit>,
 ) {
     for (interaction, action) in &mut button_query {
