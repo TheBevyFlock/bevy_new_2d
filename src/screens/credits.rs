@@ -9,8 +9,8 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Credits), enter_credits);
-    app.add_systems(OnExit(Screen::Credits), exit_credits);
+    app.add_systems(OnEnter(Screen::Credits), show_credits_screen);
+    app.add_systems(OnExit(Screen::Credits), disable_soundtrack);
 
     app.add_systems(
         Update,
@@ -25,7 +25,7 @@ enum CreditsAction {
     Back,
 }
 
-fn enter_credits(mut commands: Commands) {
+fn show_credits_screen(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Credits))
@@ -45,7 +45,7 @@ fn enter_credits(mut commands: Commands) {
     commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));
 }
 
-fn exit_credits(mut commands: Commands) {
+fn disable_soundtrack(mut commands: Commands) {
     commands.trigger(PlaySoundtrack::Disable);
 }
 

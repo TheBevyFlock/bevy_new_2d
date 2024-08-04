@@ -8,8 +8,8 @@ use crate::game::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Playing), enter_playing);
-    app.add_systems(OnExit(Screen::Playing), exit_playing);
+    app.add_systems(OnEnter(Screen::Playing), spawn_level);
+    app.add_systems(OnExit(Screen::Playing), disable_soundtrack);
 
     app.add_systems(
         Update,
@@ -18,12 +18,12 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn enter_playing(mut commands: Commands) {
+fn spawn_level(mut commands: Commands) {
     commands.trigger(SpawnLevel);
     commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Gameplay));
 }
 
-fn exit_playing(mut commands: Commands) {
+fn disable_soundtrack(mut commands: Commands) {
     // We could use [`StateScoped`] on the sound playing entities instead.
     commands.trigger(PlaySoundtrack::Disable);
 }
