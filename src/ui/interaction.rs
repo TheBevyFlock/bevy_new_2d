@@ -1,10 +1,18 @@
-use bevy::prelude::*;
+use bevy::{ecs::system::SystemId, prelude::*};
 
 use crate::game::{assets::SoundEffectHandles, audio::sound_effects::SfxCommands as _};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
-    app.add_systems(Update, (apply_interaction_palette, trigger_interaction_sfx));
+    app.register_type::<OnPress>();
+    app.add_systems(
+        Update,
+        (
+            apply_on_press,
+            apply_interaction_palette,
+            trigger_interaction_sfx,
+        ),
+    );
 }
 
 /// Palette for widget interactions. Add this to an entity that supports [`Interaction`]s, such as a button,
@@ -15,6 +23,24 @@ pub struct InteractionPalette {
     pub none: Color,
     pub hovered: Color,
     pub pressed: Color,
+}
+
+/// Component that calls a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems)
+/// when the [`Interaction`] component on the same entity changes to [`Interaction::Pressed`].
+/// Use this in conjuction with [`Commands::register_one_shot_system`] to create a callback for e.g. a button press.
+#[derive(Component, Debug, Reflect, Deref, DerefMut)]
+#[reflect(Component, from_reflect = false)]
+pub struct OnPress(#[reflect(ignore)] pub SystemId);
+
+fn apply_on_press(
+    interactions: Query<(&Interaction, &OnPress), Changed<Interaction>>,
+    mut commands: Commands,
+) {
+    for (interaction, &OnPress(system_id)) in &interactions {
+        if matches!(interaction, Interaction::Pressed) {
+            commands.run_system(system_id);
+        }
+    }
 }
 
 fn apply_interaction_palette(
@@ -34,10 +60,10 @@ fn apply_interaction_palette(
 }
 
 fn trigger_interaction_sfx(
-    mut interactions: Query<&Interaction, Changed<Interaction>>,
+    interactions: Query<&Interaction, Changed<Interaction>>,
     mut commands: Commands,
 ) {
-    for interaction in &mut interactions {
+    for interaction in &interactions {
         match interaction {
             Interaction::Hovered => commands.play_sound_effect(SoundEffectHandles::BUTTON_HOVER),
             Interaction::Pressed => commands.play_sound_effect(SoundEffectHandles::BUTTON_PRESS),
