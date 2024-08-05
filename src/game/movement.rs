@@ -25,9 +25,23 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
+/// This is the input for the player's character controller,
+/// which in this case is only the direction the player wants to move in.
+///
+/// A character controller is the collection of systems that govern movement of characters.
+/// In our case, the character controller has the following logic:
+/// - Set the movement intent based on directional input.
+/// - Apply movement based on the intent.
+/// - Wrap the character within the window.
+///
+/// We are using a [`Dir2`] here instead of a [`Vec2`] to ensure that the direction is always normalized.
+/// This is important because otherwise the player could move faster diagonally.
+/// If the player does not want to move, the direction is `None`.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-pub struct MovementController(pub Vec2);
+pub struct MovementController {
+    pub intent: Option<Dir2>,
+}
 
 fn record_movement_controller(
     input: Res<ButtonInput<KeyCode>>,
@@ -48,13 +62,9 @@ fn record_movement_controller(
         intent.x += 1.0;
     }
 
-    // Normalize so that diagonal movement has the same speed as
-    // horizontal and vertical movement.
-    let intent = intent.normalize_or_zero();
-
     // Apply movement intent to controllers.
     for mut controller in &mut controller_query {
-        controller.0 = intent;
+        controller.intent = intent.try_into().ok();
     }
 }
 
@@ -73,8 +83,10 @@ fn apply_movement(
     mut movement_query: Query<(&MovementController, &Movement, &mut Transform)>,
 ) {
     for (controller, movement, mut transform) in &mut movement_query {
-        let velocity = movement.speed * controller.0;
-        transform.translation += velocity.extend(0.0) * time.delta_seconds();
+        if let Some(dir) = controller.intent {
+            let velocity = movement.speed * dir;
+            transform.translation += velocity.extend(0.0) * time.delta_seconds();
+        }
     }
 }
 
