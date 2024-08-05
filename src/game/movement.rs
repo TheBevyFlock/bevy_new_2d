@@ -6,7 +6,7 @@
 //! - Apply movement based on the intent.
 //! - Wrap the character within the window.
 //!
-//! Note that the implementation used here is simple for demonstration purposes.
+//! Note that the implementation used here is limited for demonstration purposes.
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/blob/main/examples/movement/physics_in_fixed_timestep.rs).
 
