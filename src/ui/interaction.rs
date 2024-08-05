@@ -8,8 +8,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
+            apply_on_press,
             apply_interaction_palette,
-            apply_interaction_callback,
             trigger_interaction_sfx,
         ),
     );
@@ -31,6 +31,17 @@ pub struct InteractionPalette {
 #[derive(Component, Debug, Reflect, Deref, DerefMut)]
 #[reflect(Component, from_reflect = false)]
 pub struct OnPress(#[reflect(ignore)] pub SystemId);
+
+fn apply_on_press(
+    interactions: Query<(&Interaction, &OnPress), Changed<Interaction>>,
+    mut commands: Commands,
+) {
+    for (interaction, OnPress(system_id)) in &interactions {
+        if matches!(interaction, Interaction::Pressed) {
+            commands.run_system(*system_id);
+        }
+    }
+}
 
 fn apply_interaction_palette(
     mut palette_query: Query<
@@ -57,17 +68,6 @@ fn trigger_interaction_sfx(
             Interaction::Hovered => commands.trigger(PlaySfx::Key(SfxKey::ButtonHover)),
             Interaction::Pressed => commands.trigger(PlaySfx::Key(SfxKey::ButtonPress)),
             _ => (),
-        }
-    }
-}
-
-fn apply_interaction_callback(
-    interactions: Query<(&Interaction, &OnPress), Changed<Interaction>>,
-    mut commands: Commands,
-) {
-    for (interaction, OnPress(system_id)) in &interactions {
-        if matches!(interaction, Interaction::Pressed) {
-            commands.run_system(*system_id);
         }
     }
 }
