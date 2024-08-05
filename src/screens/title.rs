@@ -3,39 +3,39 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::ui::{prelude::*};
+use crate::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), show_title_screen);
 }
 
 fn show_title_screen(mut commands: Commands) {
-    let on_play = commands.register_one_shot_system(on_play);
-    let on_credits = commands.register_one_shot_system(on_credits);
+    let enter_playing = commands.register_one_shot_system(enter_playing);
+    let enter_credits = commands.register_one_shot_system(enter_credits);
     #[cfg(not(target_family = "wasm"))]
-    let on_exit = commands.register_one_shot_system(on_exit);
+    let exit_app = commands.register_one_shot_system(exit_app);
 
     commands
         .ui_root()
         .insert(StateScoped(Screen::Title))
         .with_children(|children| {
-            children.button("Play").insert(OnPress(on_play));
-            children.button("Credits").insert(OnPress(on_credits));
+            children.button("Play").insert(OnPress(enter_playing));
+            children.button("Credits").insert(OnPress(enter_credits));
 
             #[cfg(not(target_family = "wasm"))]
-            children.button("Exit").insert(OnPress(on_exit));
+            children.button("Exit").insert(OnPress(exit_app));
         });
 }
 
-fn on_play(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_playing(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Playing);
 }
 
-fn on_credits(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_credits(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Credits);
 }
 
 #[cfg(not(target_family = "wasm"))]
-fn on_exit(mut app_exit: EventWriter<AppExit>) {
+fn exit_app(mut app_exit: EventWriter<AppExit>) {
     app_exit.send(AppExit::Success);
 }

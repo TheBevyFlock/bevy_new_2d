@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use super::Screen;
 use crate::{
     game::{assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack},
-    ui::{prelude::*},
+    ui::prelude::*,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn show_credits_screen(mut commands: Commands) {
-    let on_back = commands.register_one_shot_system(on_back);
+    let enter_title = commands.register_one_shot_system(enter_title);
 
     commands
         .ui_root()
@@ -29,7 +29,7 @@ fn show_credits_screen(mut commands: Commands) {
             children.label("Ducky sprite - CC0 by Caz Creates Games");
             children.label("Music - CC BY 3.0 by Kevin MacLeod");
 
-            children.button("Back").insert(OnPress(on_back));
+            children.button("Back").insert(OnPress(enter_title));
         });
 
     commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));
@@ -39,6 +39,6 @@ fn disable_soundtrack(mut commands: Commands) {
     commands.trigger(PlaySoundtrack::Disable);
 }
 
-fn on_back(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_title(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
 }
