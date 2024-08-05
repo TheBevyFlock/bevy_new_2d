@@ -1,11 +1,11 @@
 //! Handle player input and translate it into movement through a character controller.
-/// A character controller is the collection of systems that govern the movement of characters.
+//! A character controller is the collection of systems that govern the movement of characters.
 //!
-/// In our case, the character controller has the following logic:
-/// - Set the movement intent based on directional input.
-/// - Apply movement based on the intent.
-/// - Wrap the character within the window.
-///
+//! In our case, the character controller has the following logic:
+//! - Set the movement intent based on directional input.
+//! - Apply movement based on the intent.
+//! - Wrap the character within the window.
+//!
 //! Note that the implementation used here is simple for demonstration purposes.
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/blob/main/examples/movement/physics_in_fixed_timestep.rs).
