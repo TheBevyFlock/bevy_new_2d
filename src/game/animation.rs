@@ -9,7 +9,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 use super::{
-    assets::SoundEffectsKey, audio::sound_effects::SfxCommands as _, movement::MovementController,
+    assets::sound_effects_key, audio::sound_effects::SfxCommands as _, movement::MovementController,
 };
 use crate::AppSet;
 
@@ -73,7 +73,7 @@ fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimati
             && animation.changed()
             && (animation.frame == 2 || animation.frame == 5)
         {
-            commands.play_sound_effect(SoundEffectsKey::Step);
+            commands.play_sound_effect(sound_effects_key::STEP);
         }
     }
 }
