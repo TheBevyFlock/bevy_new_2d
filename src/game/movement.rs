@@ -34,6 +34,7 @@ pub(super) fn plugin(app: &mut App) {
 
 /// This is the input for our character controller,
 /// which in this case is only the direction the character wants to move in.
+/// For now, this is only used for a single player, but it could power NPCs or other players as well.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct MovementController {
