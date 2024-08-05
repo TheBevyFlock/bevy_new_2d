@@ -2,8 +2,8 @@
 //! A character controller is the collection of systems that govern the movement of characters.
 //!
 //! In our case, the character controller has the following logic:
-//! - Set the movement intent based on directional input.
-//! - Apply movement based on the intent.
+//! - Set [`MovementController`] based on directional keyboard input.
+//! - Apply movement based on [`Movement`] parameters and [`MovementController`] direction.
 //! - Wrap the character within the window.
 //!
 //! Note that the implementation used here is limited for demonstration purposes.
