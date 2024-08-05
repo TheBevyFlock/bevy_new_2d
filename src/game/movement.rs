@@ -32,7 +32,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-/// This is the input for our character controller.
+/// These are the movement parameters for our character controller.
 /// For now, this is only used for a single player, but it could power NPCs or other players as well.
 #[derive(Component, Reflect)]
 #[reflect(Component)]
