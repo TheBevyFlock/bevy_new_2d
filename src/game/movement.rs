@@ -1,5 +1,12 @@
-//! Handle player input and translate it into movement.
-//! Note that the approach used here is simple for demonstration purposes.
+//! Handle player input and translate it into movement through a character controller.
+/// A character controller is the collection of systems that govern the movement of characters.
+//!
+/// In our case, the character controller has the following logic:
+/// - Set the movement intent based on directional input.
+/// - Apply movement based on the intent.
+/// - Wrap the character within the window.
+///
+//! Note that the implementation used here is simple for demonstration purposes.
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/blob/main/examples/movement/physics_in_fixed_timestep.rs).
 
@@ -25,14 +32,8 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-/// This is the input for the player's character controller,
-/// which in this case is only the direction the player wants to move in.
-///
-/// A character controller is the collection of systems that govern movement of characters.
-/// In our case, the character controller has the following logic:
-/// - Set the movement intent based on directional input.
-/// - Apply movement based on the intent.
-/// - Wrap the character within the window.
+/// This is the input for our character controller,
+/// which in this case is only the direction the character wants to move in.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct MovementController {
