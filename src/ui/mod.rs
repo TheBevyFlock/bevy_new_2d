@@ -9,7 +9,7 @@ mod widgets;
 
 pub mod prelude {
     pub use super::{
-        interaction::InteractionPalette,
+        interaction::{InteractionPalette, OnPress},
         palette as ui_palette,
         widgets::{Containers as _, Widgets as _},
     };
