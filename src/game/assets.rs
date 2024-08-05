@@ -100,6 +100,10 @@ impl<K: AssetKey> HandleMap<K> {
 pub struct SoundEffects(HashMap<String, Vec<Handle<AudioSource>>>);
 
 impl SoundEffects {
+    pub const BUTTON_HOVER: &'static str = "ButtonHover";
+    pub const BUTTON_PRESS: &'static str = "ButtonPress";
+    pub const STEP: &'static str = "Step";
+
     pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
         self.values()
             .flatten()
@@ -120,22 +124,16 @@ impl FromWorld for SoundEffects {
             asset_server.load("audio/sfx/step3.ogg"),
             asset_server.load("audio/sfx/step4.ogg"),
         ];
-        map.insert(sound_effects_key::STEP.to_string(), step_sfx);
+        map.insert(Self::STEP.to_string(), step_sfx);
         map.insert(
-            sound_effects_key::BUTTON_HOVER.to_string(),
+            Self::BUTTON_HOVER.to_string(),
             vec![asset_server.load("audio/sfx/button_hover.ogg")],
         );
         map.insert(
-            sound_effects_key::BUTTON_PRESS.to_string(),
+            Self::BUTTON_PRESS.to_string(),
             vec![asset_server.load("audio/sfx/button_press.ogg")],
         );
 
         Self(map)
     }
-}
-
-pub mod sound_effects_key {
-    pub const BUTTON_HOVER: &str = "ButtonHover";
-    pub const BUTTON_PRESS: &str = "ButtonPress";
-    pub const STEP: &str = "Step";
 }
