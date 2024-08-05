@@ -1,5 +1,12 @@
 [template]
-include = ["Cargo.toml", "Cargo.lock", ".github/workflows/*", "*.rs"]
+include = [
+    ".github/workflows/*",
+    "Cargo.toml",
+    "Cargo.lock",
+    "src/lib.rs",
+    "src/main.rs",
+    "web/index.html",
+]
 
 [placeholders.itch_username]
 prompt = "Enter your itch.io username. Leave blank to disable itch.io upload."
