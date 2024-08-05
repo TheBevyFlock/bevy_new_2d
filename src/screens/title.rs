@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::ui::prelude::*;
+use crate::ui::{interaction::OnPress, prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), show_title_screen);
@@ -27,7 +27,11 @@ fn show_title_screen(mut commands: Commands) {
         .ui_root()
         .insert(StateScoped(Screen::Title))
         .with_children(|children| {
-            children.button("Play").insert(TitleAction::Play);
+            children
+                .button("Play")
+                .insert(OnPress(commands.register_one_shot_system(
+                    |mut next_screen: ResMut<NextState<Screen>>| next_screen.set(Screen::Playing),
+                )));
             children.button("Credits").insert(TitleAction::Credits);
 
             #[cfg(not(target_family = "wasm"))]
