@@ -11,21 +11,11 @@ use crate::{
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), show_credits_screen);
     app.add_systems(OnExit(Screen::Credits), disable_soundtrack);
-
-    app.add_systems(
-        Update,
-        handle_credits_action.run_if(in_state(Screen::Credits)),
-    );
-    app.register_type::<CreditsAction>();
-}
-
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
-#[reflect(Component)]
-enum CreditsAction {
-    Back,
 }
 
 fn show_credits_screen(mut commands: Commands) {
+    let enter_title = commands.register_one_shot_system(enter_title);
+
     commands
         .ui_root()
         .insert(StateScoped(Screen::Credits))
@@ -39,7 +29,7 @@ fn show_credits_screen(mut commands: Commands) {
             children.label("Ducky sprite - CC0 by Caz Creates Games");
             children.label("Music - CC BY 3.0 by Kevin MacLeod");
 
-            children.button("Back").insert(CreditsAction::Back);
+            children.button("Back").insert(OnPress(enter_title));
         });
 
     commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));
@@ -49,15 +39,6 @@ fn disable_soundtrack(mut commands: Commands) {
     commands.trigger(PlaySoundtrack::Disable);
 }
 
-fn handle_credits_action(
-    mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: Query<(&Interaction, &CreditsAction), Changed<Interaction>>,
-) {
-    for (interaction, action) in &mut button_query {
-        if matches!(interaction, Interaction::Pressed) {
-            match action {
-                CreditsAction::Back => next_screen.set(Screen::Title),
-            }
-        }
-    }
+fn enter_title(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Title);
 }
