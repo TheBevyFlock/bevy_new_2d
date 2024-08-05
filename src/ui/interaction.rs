@@ -36,9 +36,9 @@ fn apply_on_press(
     interactions: Query<(&Interaction, &OnPress), Changed<Interaction>>,
     mut commands: Commands,
 ) {
-    for (interaction, OnPress(system_id)) in &interactions {
+    for (interaction, OnPress(&system_id)) in &interactions {
         if matches!(interaction, Interaction::Pressed) {
-            commands.run_system(*system_id);
+            commands.run_system(system_id);
         }
     }
 }
