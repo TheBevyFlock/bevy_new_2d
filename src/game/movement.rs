@@ -15,15 +15,15 @@ use bevy::{prelude::*, window::PrimaryWindow};
 use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
+    app.register_type::<(MovementController, ScreenWrap)>();
+
     // Record directional input as movement controls.
-    app.register_type::<MovementController>();
     app.add_systems(
         Update,
         record_movement_controller.in_set(AppSet::RecordInput),
     );
 
     // Apply movement based on controls.
-    app.register_type::<(Movement, ScreenWrap)>();
     app.add_systems(
         Update,
         (apply_movement, wrap_within_window)
@@ -32,13 +32,29 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-/// This is the input for our character controller,
-/// which in this case is only the direction the character wants to move in.
+/// This is the input for our character controller.
 /// For now, this is only used for a single player, but it could power NPCs or other players as well.
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct MovementController {
+    /// The direction the character wants to move in.
     pub intent: Vec2,
+
+    /// Since Bevy's default 2D camera setup is scaled such that
+    /// one unit is one pixel, you can think of this as
+    /// "How many pixels per second should the player move?"
+    /// Note that physics engines may use different unit/pixel ratios.
+    pub max_speed: f32,
+}
+
+impl Default for MovementController {
+    fn default() -> Self {
+        Self {
+            intent: Vec2::ZERO,
+            // 400 pixels per second is a nice default, but we can still vary this per character.
+            max_speed: 400.0,
+        }
+    }
 }
 
 fn record_movement_controller(
@@ -71,22 +87,12 @@ fn record_movement_controller(
     }
 }
 
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct Movement {
-    /// Since Bevy's default 2D camera setup is scaled such that
-    /// one unit is one pixel, you can think of this as
-    /// "How many pixels per second should the player move?"
-    /// Note that physics engines may use different unit/pixel ratios.
-    pub speed: f32,
-}
-
 fn apply_movement(
     time: Res<Time>,
-    mut movement_query: Query<(&MovementController, &Movement, &mut Transform)>,
+    mut movement_query: Query<(&MovementController, &mut Transform)>,
 ) {
-    for (controller, movement, mut transform) in &mut movement_query {
-        let velocity = movement.speed * controller.intent;
+    for (controller, mut transform) in &mut movement_query {
+        let velocity = controller.max_speed * controller.intent;
         transform.translation += velocity.extend(0.0) * time.delta_seconds();
     }
 }
