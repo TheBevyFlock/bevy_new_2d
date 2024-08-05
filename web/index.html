@@ -10,6 +10,7 @@
     <link data-trunk rel="rust" data-cargo-no-default-features data-wasm-opt="s" href="../" />
 </head>
 
+
 <body>
     <div id="game" class="center">
         <div id="loading-screen" class="center">
@@ -21,6 +22,7 @@
         </canvas>
     </div>
 
+    {%- raw %}
     <script type="module">
         // Hide loading screen when the game starts.
         const loading_screen = document.getElementById('loading-screen');
@@ -33,6 +35,7 @@
         });
         observer.observe(bevy, { attributeFilter: ['height'] });
     </script>
+    {%- endraw %}
 </body>
 
 </html>
