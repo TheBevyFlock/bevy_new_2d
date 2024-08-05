@@ -7,54 +7,34 @@ use crate::ui::{interaction::OnPress, prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), show_title_screen);
-
-    app.register_type::<TitleAction>();
-    app.add_systems(Update, handle_title_action.run_if(in_state(Screen::Title)));
-}
-
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
-#[reflect(Component)]
-enum TitleAction {
-    Play,
-    Credits,
-    /// Exit doesn't work well with embedded applications.
-    #[cfg(not(target_family = "wasm"))]
-    Exit,
 }
 
 fn show_title_screen(mut commands: Commands) {
+    let on_play = commands.register_one_shot_system(on_play);
+    let on_credits = commands.register_one_shot_system(on_credits);
+    let on_exit = commands.register_one_shot_system(on_exit);
+
     commands
         .ui_root()
         .insert(StateScoped(Screen::Title))
         .with_children(|children| {
-            children
-                .button("Play")
-                .insert(OnPress(commands.register_one_shot_system(
-                    |mut next_screen: ResMut<NextState<Screen>>| next_screen.set(Screen::Playing),
-                )));
-            children.button("Credits").insert(TitleAction::Credits);
+            children.button("Play").insert(OnPress(on_play));
+            children.button("Credits").insert(OnPress(on_credits));
 
             #[cfg(not(target_family = "wasm"))]
-            children.button("Exit").insert(TitleAction::Exit);
+            children.button("Exit").insert(OnPress(on_exit));
         });
 }
 
-fn handle_title_action(
-    mut next_screen: ResMut<NextState<Screen>>,
-    mut button_query: Query<(&Interaction, &TitleAction), Changed<Interaction>>,
-    #[cfg(not(target_family = "wasm"))] mut app_exit: EventWriter<AppExit>,
-) {
-    for (interaction, action) in &mut button_query {
-        if matches!(interaction, Interaction::Pressed) {
-            match action {
-                TitleAction::Play => next_screen.set(Screen::Playing),
-                TitleAction::Credits => next_screen.set(Screen::Credits),
+fn on_play(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Playing);
+}
 
-                #[cfg(not(target_family = "wasm"))]
-                TitleAction::Exit => {
-                    app_exit.send(AppExit::Success);
-                }
-            }
-        }
-    }
+fn on_credits(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Credits);
+}
+
+#[cfg(not(target_family = "wasm"))]
+fn on_exit(mut app_exit: EventWriter<AppExit>) {
+    app_exit.send(AppExit::Success);
 }
