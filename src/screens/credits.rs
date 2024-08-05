@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use super::Screen;
 use crate::{
     game::{assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack},
-    ui::{interaction::OnPress, prelude::*},
+    ui::{prelude::*},
 };
 
 pub(super) fn plugin(app: &mut App) {
