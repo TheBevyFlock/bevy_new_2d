@@ -33,14 +33,10 @@ pub(super) fn plugin(app: &mut App) {
 /// - Set the movement intent based on directional input.
 /// - Apply movement based on the intent.
 /// - Wrap the character within the window.
-///
-/// We are using a [`Dir2`] here instead of a [`Vec2`] to ensure that the direction is always normalized.
-/// This is important because otherwise the player could move faster diagonally.
-/// If the player does not want to move, the direction is `None`.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct MovementController {
-    pub intent: Option<Dir2>,
+    pub intent: Vec2,
 }
 
 fn record_movement_controller(
@@ -62,9 +58,14 @@ fn record_movement_controller(
         intent.x += 1.0;
     }
 
+    // Normalize so that diagonal movement has the same speed as
+    // horizontal and vertical movement.
+    // Skip this if we want to support fractional input from analog sticks.
+    let intent = intent.normalize_or_zero();
+
     // Apply movement intent to controllers.
     for mut controller in &mut controller_query {
-        controller.intent = intent.try_into().ok();
+        controller.intent = intent;
     }
 }
 
@@ -83,10 +84,8 @@ fn apply_movement(
     mut movement_query: Query<(&MovementController, &Movement, &mut Transform)>,
 ) {
     for (controller, movement, mut transform) in &mut movement_query {
-        if let Some(dir) = controller.intent {
-            let velocity = movement.speed * dir;
-            transform.translation += velocity.extend(0.0) * time.delta_seconds();
-        }
+        let velocity = movement.speed * controller.intent;
+        transform.translation += velocity.extend(0.0) * time.delta_seconds();
     }
 }
 
