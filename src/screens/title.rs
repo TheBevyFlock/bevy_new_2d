@@ -12,6 +12,7 @@ pub(super) fn plugin(app: &mut App) {
 fn show_title_screen(mut commands: Commands) {
     let on_play = commands.register_one_shot_system(on_play);
     let on_credits = commands.register_one_shot_system(on_credits);
+    #[cfg(not(target_family = "wasm"))]
     let on_exit = commands.register_one_shot_system(on_exit);
 
     commands
