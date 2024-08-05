@@ -25,6 +25,9 @@ pub struct InteractionPalette {
     pub pressed: Color,
 }
 
+/// Component that calls a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems)
+/// when the [`Interaction`] component on the same entity changes to [`Interaction::Pressed`].
+/// Use this in conjuction with [`Commands::register_one_shot_system`] to create a callback for e.g. a button press.
 #[derive(Component, Debug, Reflect, Deref, DerefMut)]
 #[reflect(Component, from_reflect = false)]
 pub struct OnPress(#[reflect(ignore)] pub SystemId);
