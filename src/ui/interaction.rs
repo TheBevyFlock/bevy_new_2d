@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::{assets::SfxKey, audio::sfx::PlaySfx};
+use crate::game::{assets::SoundEffectsKey, audio::sound_effects::SfxCommands as _};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
@@ -39,8 +39,8 @@ fn trigger_interaction_sfx(
 ) {
     for interaction in &mut interactions {
         match interaction {
-            Interaction::Hovered => commands.trigger(PlaySfx::Key(SfxKey::ButtonHover)),
-            Interaction::Pressed => commands.trigger(PlaySfx::Key(SfxKey::ButtonPress)),
+            Interaction::Hovered => commands.play_sound_effect(SoundEffectsKey::ButtonHover),
+            Interaction::Pressed => commands.play_sound_effect(SoundEffectsKey::ButtonPress),
             _ => (),
         }
     }

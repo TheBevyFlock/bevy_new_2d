@@ -8,11 +8,11 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<HandleMap<ImageKey>>();
     app.init_resource::<HandleMap<ImageKey>>();
 
-    app.register_type::<HandleMap<SfxKey>>();
-    app.init_resource::<HandleMap<SfxKey>>();
-
     app.register_type::<HandleMap<SoundtrackKey>>();
     app.init_resource::<HandleMap<SoundtrackKey>>();
+
+    app.register_type::<SoundEffects>();
+    app.init_resource::<SoundEffects>();
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
@@ -36,41 +36,6 @@ impl FromWorld for HandleMap<ImageKey> {
                 },
             ),
         )]
-        .into()
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum SfxKey {
-    ButtonHover,
-    ButtonPress,
-    Step1,
-    Step2,
-    Step3,
-    Step4,
-}
-
-impl AssetKey for SfxKey {
-    type Asset = AudioSource;
-}
-
-impl FromWorld for HandleMap<SfxKey> {
-    fn from_world(world: &mut World) -> Self {
-        let asset_server = world.resource::<AssetServer>();
-        [
-            (
-                SfxKey::ButtonHover,
-                asset_server.load("audio/sfx/button_hover.ogg"),
-            ),
-            (
-                SfxKey::ButtonPress,
-                asset_server.load("audio/sfx/button_press.ogg"),
-            ),
-            (SfxKey::Step1, asset_server.load("audio/sfx/step1.ogg")),
-            (SfxKey::Step2, asset_server.load("audio/sfx/step2.ogg")),
-            (SfxKey::Step3, asset_server.load("audio/sfx/step3.ogg")),
-            (SfxKey::Step4, asset_server.load("audio/sfx/step4.ogg")),
-        ]
         .into()
     }
 }
@@ -123,5 +88,71 @@ impl<K: AssetKey> HandleMap<K> {
     pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
         self.values()
             .all(|x| asset_server.is_loaded_with_dependencies(x))
+    }
+}
+
+/// This uses a map of `String` to `Vec<Handle<AudioSource>>` to store sound effects instead
+/// of the `HandleMap` used for the other assets.
+/// The key is a `String` because sound effects are often tied closely to file paths or other strings.
+/// The value is a `Vec<Handle<AudioSource>>` because a single sound effect can have multiple variations.
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Debug, Resource)]
+pub struct SoundEffects(HashMap<String, Vec<Handle<AudioSource>>>);
+
+impl SoundEffects {
+    pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
+        self.values()
+            .flatten()
+            .all(|x| asset_server.is_loaded_with_dependencies(x))
+    }
+}
+
+impl FromWorld for SoundEffects {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.get_resource::<AssetServer>().unwrap();
+        let mut map = HashMap::default();
+
+        // Load sound effects here.
+        // Using string parsing to strip numbered suffixes + `AssetServer::load_folder` is a good way to load many sound effects at once, but is not supported on Wasm or Android.
+        let step_sfx = vec![
+            asset_server.load("audio/sfx/step1.ogg"),
+            asset_server.load("audio/sfx/step2.ogg"),
+            asset_server.load("audio/sfx/step3.ogg"),
+            asset_server.load("audio/sfx/step4.ogg"),
+        ];
+        map.insert(SoundEffectsKey::Step.to_string(), step_sfx);
+        map.insert(
+            SoundEffectsKey::ButtonHover.to_string(),
+            vec![asset_server.load("audio/sfx/button_hover.ogg")],
+        );
+        map.insert(
+            SoundEffectsKey::ButtonPress.to_string(),
+            vec![asset_server.load("audio/sfx/button_press.ogg")],
+        );
+
+        Self(map)
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
+pub enum SoundEffectsKey {
+    ButtonHover,
+    ButtonPress,
+    Step,
+}
+
+impl AsRef<str> for SoundEffectsKey {
+    fn as_ref(&self) -> &str {
+        match self {
+            SoundEffectsKey::ButtonHover => "button_hover",
+            SoundEffectsKey::ButtonPress => "button_press",
+            SoundEffectsKey::Step => "step",
+        }
+    }
+}
+
+impl ToString for SoundEffectsKey {
+    fn to_string(&self) -> String {
+        self.as_ref().to_string()
     }
 }

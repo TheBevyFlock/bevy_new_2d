@@ -8,7 +8,9 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use super::{audio::sfx::PlaySfx, movement::MovementController};
+use super::{
+    assets::SoundEffectsKey, audio::sound_effects::SfxCommands as _, movement::MovementController,
+};
 use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
@@ -71,7 +73,7 @@ fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimati
             && animation.changed()
             && (animation.frame == 2 || animation.frame == 5)
         {
-            commands.trigger(PlaySfx::RandomStep);
+            commands.play_sound_effect(SoundEffectsKey::Step);
         }
     }
 }
