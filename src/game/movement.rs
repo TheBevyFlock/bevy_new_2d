@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
     // Record directional input as movement controls.
     app.add_systems(
         Update,
-        record_movement_controller.in_set(AppSet::RecordInput),
+        record_player_directional_input.in_set(AppSet::RecordInput),
     );
 
     // Apply movement based on controls.
@@ -57,7 +57,7 @@ impl Default for MovementController {
     }
 }
 
-fn record_movement_controller(
+fn record_player_directional_input(
     input: Res<ButtonInput<KeyCode>>,
     mut controller_query: Query<&mut MovementController>,
 ) {
