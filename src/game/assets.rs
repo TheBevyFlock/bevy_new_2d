@@ -120,13 +120,13 @@ impl FromWorld for SoundEffects {
             asset_server.load("audio/sfx/step3.ogg"),
             asset_server.load("audio/sfx/step4.ogg"),
         ];
-        map.insert(SoundEffectsKey::Step.to_string(), step_sfx);
+        map.insert(SoundEffectsKey::Step.as_ref().to_string(), step_sfx);
         map.insert(
-            SoundEffectsKey::ButtonHover.to_string(),
+            SoundEffectsKey::ButtonHover.as_ref().to_string(),
             vec![asset_server.load("audio/sfx/button_hover.ogg")],
         );
         map.insert(
-            SoundEffectsKey::ButtonPress.to_string(),
+            SoundEffectsKey::ButtonPress.as_ref().to_string(),
             vec![asset_server.load("audio/sfx/button_press.ogg")],
         );
 
@@ -144,15 +144,9 @@ pub enum SoundEffectsKey {
 impl AsRef<str> for SoundEffectsKey {
     fn as_ref(&self) -> &str {
         match self {
-            SoundEffectsKey::ButtonHover => "button_hover",
-            SoundEffectsKey::ButtonPress => "button_press",
-            SoundEffectsKey::Step => "step",
+            SoundEffectsKey::ButtonHover => "ButtonHover",
+            SoundEffectsKey::ButtonPress => "ButtonPress",
+            SoundEffectsKey::Step => "Step",
         }
-    }
-}
-
-impl ToString for SoundEffectsKey {
-    fn to_string(&self) -> String {
-        self.as_ref().to_string()
     }
 }
