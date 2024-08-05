@@ -4,7 +4,7 @@ use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
 use crate::game::{
-    assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack, spawn::level::SpawnLevel,
+    assets::SoundtrackHandles, audio::soundtrack::PlaySoundtrack, spawn::level::SpawnLevel,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_level(mut commands: Commands) {
     commands.trigger(SpawnLevel);
-    commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Gameplay));
+    commands.trigger(PlaySoundtrack::Key(SoundtrackHandles::GAMEPLAY.to_string()));
 }
 
 fn disable_soundtrack(mut commands: Commands) {

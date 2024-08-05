@@ -4,7 +4,7 @@ use bevy::prelude::*;
 
 use super::Screen;
 use crate::{
-    game::{assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack},
+    game::{assets::SoundtrackHandles, audio::soundtrack::PlaySoundtrack},
     ui::prelude::*,
 };
 
@@ -42,7 +42,7 @@ fn show_credits_screen(mut commands: Commands) {
             children.button("Back").insert(CreditsAction::Back);
         });
 
-    commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));
+    commands.trigger(PlaySoundtrack::Key(SoundtrackHandles::CREDITS.to_string()));
 }
 
 fn disable_soundtrack(mut commands: Commands) {

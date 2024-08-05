@@ -5,30 +5,29 @@ use bevy::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<HandleMap<ImageKey>>();
-    app.init_resource::<HandleMap<ImageKey>>();
+    app.register_type::<ImageHandles>();
+    app.init_resource::<ImageHandles>();
 
-    app.register_type::<HandleMap<SoundtrackKey>>();
-    app.init_resource::<HandleMap<SoundtrackKey>>();
+    app.register_type::<SoundtrackHandles>();
+    app.init_resource::<SoundtrackHandles>();
 
     app.register_type::<SoundEffects>();
     app.init_resource::<SoundEffects>();
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum ImageKey {
-    Ducky,
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Resource)]
+pub struct ImageHandles(HashMap<String, Handle<Image>>);
+
+impl ImageHandles {
+    pub const DUCKY: &'static str = "Ducky";
 }
 
-impl AssetKey for ImageKey {
-    type Asset = Image;
-}
-
-impl FromWorld for HandleMap<ImageKey> {
+impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        [(
-            ImageKey::Ducky,
+        let map = [(
+            ImageHandles::DUCKY.to_string(),
             asset_server.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
@@ -36,58 +35,35 @@ impl FromWorld for HandleMap<ImageKey> {
                 },
             ),
         )]
-        .into()
+        .into();
+        Self(map)
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum SoundtrackKey {
-    Credits,
-    Gameplay,
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Resource)]
+pub struct SoundtrackHandles(HashMap<String, Handle<AudioSource>>);
+
+impl SoundtrackHandles {
+    pub const CREDITS: &'static str = "Credits";
+    pub const GAMEPLAY: &'static str = "Gameplay";
 }
 
-impl AssetKey for SoundtrackKey {
-    type Asset = AudioSource;
-}
-
-impl FromWorld for HandleMap<SoundtrackKey> {
+impl FromWorld for SoundtrackHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        [
+        let map = [
             (
-                SoundtrackKey::Credits,
+                SoundtrackHandles::CREDITS.to_string(),
                 asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
             ),
             (
-                SoundtrackKey::Gameplay,
+                SoundtrackHandles::GAMEPLAY.to_string(),
                 asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
             ),
         ]
-        .into()
-    }
-}
-
-pub trait AssetKey: Sized {
-    type Asset: Asset;
-}
-
-#[derive(Resource, Reflect, Deref, DerefMut)]
-#[reflect(Resource)]
-pub struct HandleMap<K: AssetKey>(HashMap<K, Handle<K::Asset>>);
-
-impl<K: AssetKey, T> From<T> for HandleMap<K>
-where
-    T: Into<HashMap<K, Handle<K::Asset>>>,
-{
-    fn from(value: T) -> Self {
-        Self(value.into())
-    }
-}
-
-impl<K: AssetKey> HandleMap<K> {
-    pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
-        self.values()
-            .all(|x| asset_server.is_loaded_with_dependencies(x))
+        .into();
+        Self(map)
     }
 }
 
@@ -96,19 +72,13 @@ impl<K: AssetKey> HandleMap<K> {
 /// The key is a `String` because sound effects are often tied closely to file paths or other strings.
 /// The value is a `Vec<Handle<AudioSource>>` because a single sound effect can have multiple variations.
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
-#[reflect(Debug, Resource)]
+#[reflect(Resource)]
 pub struct SoundEffects(HashMap<String, Vec<Handle<AudioSource>>>);
 
 impl SoundEffects {
     pub const BUTTON_HOVER: &'static str = "ButtonHover";
     pub const BUTTON_PRESS: &'static str = "ButtonPress";
     pub const STEP: &'static str = "Step";
-
-    pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
-        self.values()
-            .flatten()
-            .all(|x| asset_server.is_loaded_with_dependencies(x))
-    }
 }
 
 impl FromWorld for SoundEffects {
