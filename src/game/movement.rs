@@ -78,7 +78,7 @@ fn record_movement_controller(
 
     // Normalize so that diagonal movement has the same speed as
     // horizontal and vertical movement.
-    // Skip this if we want to support fractional input from analog sticks.
+    // This should be omitted if the input comes from an analog stick instead.
     let intent = intent.normalize_or_zero();
 
     // Apply movement intent to controllers.
