@@ -5,7 +5,7 @@ use bevy::{prelude::*, utils::HashMap};
 
 use super::Screen;
 use crate::{
-    game::assets::{ImageHandles, SoundEffects, SoundtrackHandles},
+    game::assets::{ImageHandles, SoundEffectHandles, SoundtrackHandles},
     ui::prelude::*,
 };
 
@@ -29,7 +29,7 @@ fn show_loading_screen(mut commands: Commands) {
 fn all_assets_loaded(
     asset_server: Res<AssetServer>,
     image_handles: Res<ImageHandles>,
-    sound_effects_handles: Res<SoundEffects>,
+    sound_effects_handles: Res<SoundEffectHandles>,
     soundtrack_handles: Res<SoundtrackHandles>,
 ) -> bool {
     image_handles.all_loaded(&asset_server)

@@ -1,14 +1,14 @@
 use bevy::{ecs::world::Command, prelude::*};
 use rand::{distributions::Uniform, Rng as _};
 
-use crate::game::assets::SoundEffects;
+use crate::game::assets::SoundEffectHandles;
 
 pub(super) fn plugin(_app: &mut App) {
     // No setup required for this plugin.
     // It's still good to have a function here so that you can add some setup later if needed.
 }
 
-impl SoundEffects {
+impl SoundEffectHandles {
     /// Plays a random sound effect matching the given name.
     ///
     /// When defining the settings for this method, you almost always want to use [`PlaybackMode::Despawn`](bevy::audio::PlaybackMode).
@@ -54,7 +54,7 @@ impl Command for PlaySoundEffect {
     fn apply(self, world: &mut World) {
         // Access both the world and the resource we need from it using resource_scope
         // which temporarily removes the SoundEffects resource from the world
-        world.resource_scope(|world, mut sound_effects: Mut<SoundEffects>| {
+        world.resource_scope(|world, mut sound_effects: Mut<SoundEffectHandles>| {
             sound_effects.play(self.name, world, self.settings);
         });
     }

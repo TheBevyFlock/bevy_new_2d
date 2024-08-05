@@ -11,8 +11,8 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<SoundtrackHandles>();
     app.init_resource::<SoundtrackHandles>();
 
-    app.register_type::<SoundEffects>();
-    app.init_resource::<SoundEffects>();
+    app.register_type::<SoundEffectHandles>();
+    app.init_resource::<SoundEffectHandles>();
 }
 
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
@@ -73,15 +73,15 @@ impl FromWorld for SoundtrackHandles {
 /// The value is a `Vec<Handle<AudioSource>>` because a single sound effect can have multiple variations.
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
 #[reflect(Resource)]
-pub struct SoundEffects(HashMap<String, Vec<Handle<AudioSource>>>);
+pub struct SoundEffectHandles(HashMap<String, Vec<Handle<AudioSource>>>);
 
-impl SoundEffects {
+impl SoundEffectHandles {
     pub const BUTTON_HOVER: &'static str = "ButtonHover";
     pub const BUTTON_PRESS: &'static str = "ButtonPress";
     pub const STEP: &'static str = "Step";
 }
 
-impl FromWorld for SoundEffects {
+impl FromWorld for SoundEffectHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.get_resource::<AssetServer>().unwrap();
         let mut map = HashMap::default();
