@@ -19,10 +19,9 @@ enum PlaySoundtrack {
 }
 
 impl Command for PlaySoundtrack {
+    /// This command will despawn the current soundtrack, then spawn a new one
+    /// if necessary.
     fn apply(self, world: &mut World) {
-        // When this command is applied, we remove all existing soundtracks.
-        // Then, if we want to play a soundtrack, we spawn a new one.
-
         let mut soundtrack_query = world.query_filtered::<Entity, With<IsSoundtrack>>();
         let soundtracks: Vec<_> = soundtrack_query.iter(world).collect();
         for entity in soundtracks {
