@@ -22,7 +22,7 @@ pub(super) fn plugin(app: &mut App) {
 
     app.add_systems(
         Update,
-        (apply_movement, wrap_within_window)
+        (apply_movement, apply_screen_wrap)
             .chain()
             .in_set(AppSet::Update),
     );
@@ -67,7 +67,7 @@ fn apply_movement(
 #[reflect(Component)]
 pub struct ScreenWrap;
 
-fn wrap_within_window(
+fn apply_screen_wrap(
     window_query: Query<&Window, With<PrimaryWindow>>,
     mut wrap_query: Query<&mut Transform, With<ScreenWrap>>,
 ) {
