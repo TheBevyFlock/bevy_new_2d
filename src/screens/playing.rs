@@ -23,13 +23,13 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_playing_screen(mut commands: Commands) {
-    commands.spawn_fn(playing_screen);
+    commands.spawn_with(playing_screen);
 }
 
-fn playing_screen(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .add_fn(widget::ui_root)
+fn playing_screen(id: Entity, world: &mut World) {
+    world
+        .entity_mut(id)
+        .add(widget::ui_root)
         .insert((Name::new("Playing screen"), StateScoped(Screen::Playing)))
         .with_children(|_children| {
             // Spawn playing screen UI here (e.g. a HUD).
@@ -38,7 +38,7 @@ fn playing_screen(In(id): In<Entity>, mut commands: Commands) {
 
 fn spawn_level(mut commands: Commands) {
     commands
-        .spawn_fn(level)
+        .spawn_with(level)
         .insert(StateScoped(Screen::Playing));
 }
 

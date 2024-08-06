@@ -12,7 +12,7 @@ pub mod prelude {
     pub use super::{
         interaction::{InteractionPalette, OnPress},
         palette as ui_palette,
-        widget::{self, Widgets as _},
+        widget::{self, Widgets as _, WorldWidgets as _},
     };
 }
 

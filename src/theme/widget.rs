@@ -10,9 +10,9 @@ use super::{
     interaction::{InteractionPalette, OnPress},
     palette::*,
 };
-use crate::spawn::SpawnExt;
+use crate::spawn::{SpawnExt, WorldSpawnExt};
 
-/// An extension trait to improve the ergonomics of spawning UI widgets.
+/// An extension trait to improve the ergonomics of deferred spawning UI widgets.
 pub trait Widgets {
     /// Spawn a [`Button`].
     fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands;
@@ -34,6 +34,32 @@ impl<T: SpawnExt> Widgets for T {
     }
 
     fn label(&mut self, text: impl Into<String>) -> EntityCommands {
+        self.spawn_with(Label::new(text))
+    }
+}
+
+/// An extension trait to improve the ergonomics of immediate spawning UI widgets.
+pub trait WorldWidgets {
+    /// Spawn a [`Button`].
+    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityWorldMut;
+
+    /// Spawn a [`Header`].
+    fn header(&mut self, text: impl Into<String>) -> EntityWorldMut;
+
+    /// Spawn a [`Label`].
+    fn label(&mut self, text: impl Into<String>) -> EntityWorldMut;
+}
+
+impl<T: WorldSpawnExt> WorldWidgets for T {
+    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityWorldMut {
+        self.spawn_with(Button::new(text, on_press))
+    }
+
+    fn header(&mut self, text: impl Into<String>) -> EntityWorldMut {
+        self.spawn_with(Header::new(text))
+    }
+
+    fn label(&mut self, text: impl Into<String>) -> EntityWorldMut {
         self.spawn_with(Label::new(text))
     }
 }
@@ -194,8 +220,8 @@ impl Label {
 }
 
 /// Construct a UI node that fills the window and centers its children.
-pub fn ui_root(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert((
+pub fn ui_root(id: Entity, world: &mut World) {
+    world.entity_mut(id).insert((
         Name::new("UI root"),
         NodeBundle {
             style: Style {

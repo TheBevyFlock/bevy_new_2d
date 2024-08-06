@@ -10,18 +10,18 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_title_screen(mut commands: Commands) {
-    commands.spawn_fn(title_screen);
+    commands.spawn_with(title_screen);
 }
 
-fn title_screen(In(id): In<Entity>, mut commands: Commands) {
-    let enter_playing = commands.register_one_shot_system(enter_playing);
-    let enter_credits = commands.register_one_shot_system(enter_credits);
+fn title_screen(id: Entity, world: &mut World) {
+    let enter_playing = world.register_system(enter_playing);
+    let enter_credits = world.register_system(enter_credits);
     #[cfg(not(target_family = "wasm"))]
-    let exit_app = commands.register_one_shot_system(exit_app);
+    let exit_app = world.register_system(exit_app);
 
-    commands
-        .entity(id)
-        .add_fn(widget::ui_root)
+    world
+        .entity_mut(id)
+        .add(widget::ui_root)
         .insert((Name::new("Title screen"), StateScoped(Screen::Title)))
         .with_children(|children| {
             children.button("Play", enter_playing);

@@ -19,13 +19,13 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_loading_screen(mut commands: Commands) {
-    commands.spawn_fn(loading_screen);
+    commands.spawn_with(loading_screen);
 }
 
-fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .add_fn(widget::ui_root)
+fn loading_screen(id: Entity, world: &mut World) {
+    world
+        .entity_mut(id)
+        .add(widget::ui_root)
         .insert((Name::new("Loading screen"), StateScoped(Screen::Loading)))
         .with_children(|children| {
             children.label("Loading...");

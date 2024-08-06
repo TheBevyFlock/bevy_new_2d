@@ -13,11 +13,11 @@ pub(super) fn plugin(app: &mut App) {
 pub struct Level;
 
 /// Construct a level entity.
-pub fn level(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
+pub fn level(id: Entity, world: &mut World) {
+    world
+        .entity_mut(id)
         .insert((Name::new("Level"), Level, SpatialBundle::default()))
         .with_children(|children| {
-            children.spawn_fn(player);
+            children.spawn_with(player);
         });
 }

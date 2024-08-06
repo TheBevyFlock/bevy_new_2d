@@ -17,13 +17,13 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_credits_screen(mut commands: Commands) {
-    commands.spawn_fn(credits_screen);
+    commands.spawn_with(credits_screen);
 }
 
-fn credits_screen(In(id): In<Entity>, mut commands: Commands) {
-    let enter_title = commands.register_one_shot_system(enter_title);
+fn credits_screen(id: Entity, world: &mut World) {
+    let enter_title = world.register_system(enter_title);
 
-    commands.entity(id).add_fn(widget::ui_root)
+    world.entity_mut(id).add(widget::ui_root)
         .insert((Name::new("Credits screen"), StateScoped(Screen::Credits)))
         .with_children(|children| {
             children.header("Made by");
