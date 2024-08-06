@@ -5,7 +5,7 @@
 //! This pattern is adapted from the [Bevy example for sound effects](https://github.com/bevyengine/bevy/pull/14554).
 
 use bevy::{ecs::world::Command, prelude::*};
-use rand::{distributions::Uniform, Rng as _};
+use rand::seq::SliceRandom;
 
 use crate::game::assets::SoundEffectHandles;
 
@@ -33,19 +33,15 @@ impl SoundEffectHandles {
             // If you need precise control over the randomization order of your sound effects,
             // store the RNG as a resource and modify these functions to take it as an argument.
             let rng = &mut rand::thread_rng();
+            let random_sfx = sfx_list.choose(rng).unwrap();
 
-            let index = rng.sample(Uniform::from(0..sfx_list.len()));
             // We don't need a (slightly) more expensive strong handle here (which are used to keep assets loaded in memory)
             // because a copy is always stored in the SoundEffects resource.
-            let source = sfx_list[index].clone_weak();
+            let source = random_sfx.clone_weak();
 
-            world.spawn(AudioBundle {
-                source,
-                // We want the sound effect to play once and then despawn.
-                settings,
-            });
+            world.spawn(AudioBundle { source, settings });
         } else {
-            warn!("Sound effect not found: {}", name);
+            warn!("Sound effect not found: {name}");
         }
     }
 }
