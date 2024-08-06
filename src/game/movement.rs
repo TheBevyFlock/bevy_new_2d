@@ -1,5 +1,12 @@
-//! Handle player input and translate it into movement.
-//! Note that the approach used here is simple for demonstration purposes.
+//! Handle player input and translate it into movement through a character controller.
+//! A character controller is the collection of systems that govern the movement of characters.
+//!
+//! In our case, the character controller has the following logic:
+//! - Set [`MovementController`] intent based on directional keyboard input.
+//! - Apply movement based on [`MovementController`] intent and maximum speed.
+//! - Wrap the character within the window.
+//!
+//! Note that the implementation used here is limited for demonstration purposes.
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/blob/main/examples/movement/physics_in_fixed_timestep.rs).
 
@@ -8,15 +15,15 @@ use bevy::{prelude::*, window::PrimaryWindow};
 use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
+    app.register_type::<(MovementController, ScreenWrap)>();
+
     // Record directional input as movement controls.
-    app.register_type::<MovementController>();
     app.add_systems(
         Update,
-        record_movement_controller.in_set(AppSet::RecordInput),
+        record_player_directional_input.in_set(AppSet::RecordInput),
     );
 
     // Apply movement based on controls.
-    app.register_type::<(Movement, ScreenWrap)>();
     app.add_systems(
         Update,
         (apply_movement, wrap_within_window)
@@ -25,11 +32,30 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Component, Reflect, Default)]
+/// These are the movement parameters for our character controller.
+/// For now, this is only used for a single player, but it could power NPCs or other players as well.
+#[derive(Component, Reflect)]
 #[reflect(Component)]
-pub struct MovementController(pub Vec2);
+pub struct MovementController {
+    /// The direction the character wants to move in.
+    pub intent: Vec2,
 
-fn record_movement_controller(
+    /// Maximum speed in world units per second.
+    /// 1 world unit = 1 pixel when using the default 2D camera and no physics engine.
+    pub max_speed: f32,
+}
+
+impl Default for MovementController {
+    fn default() -> Self {
+        Self {
+            intent: Vec2::ZERO,
+            // 400 pixels per second is a nice default, but we can still vary this per character.
+            max_speed: 400.0,
+        }
+    }
+}
+
+fn record_player_directional_input(
     input: Res<ButtonInput<KeyCode>>,
     mut controller_query: Query<&mut MovementController>,
 ) {
@@ -50,30 +76,21 @@ fn record_movement_controller(
 
     // Normalize so that diagonal movement has the same speed as
     // horizontal and vertical movement.
+    // This should be omitted if the input comes from an analog stick instead.
     let intent = intent.normalize_or_zero();
 
     // Apply movement intent to controllers.
     for mut controller in &mut controller_query {
-        controller.0 = intent;
+        controller.intent = intent;
     }
-}
-
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct Movement {
-    /// Since Bevy's default 2D camera setup is scaled such that
-    /// one unit is one pixel, you can think of this as
-    /// "How many pixels per second should the player move?"
-    /// Note that physics engines may use different unit/pixel ratios.
-    pub speed: f32,
 }
 
 fn apply_movement(
     time: Res<Time>,
-    mut movement_query: Query<(&MovementController, &Movement, &mut Transform)>,
+    mut movement_query: Query<(&MovementController, &mut Transform)>,
 ) {
-    for (controller, movement, mut transform) in &mut movement_query {
-        let velocity = movement.speed * controller.0;
+    for (controller, mut transform) in &mut movement_query {
+        let velocity = controller.max_speed * controller.intent;
         transform.translation += velocity.extend(0.0) * time.delta_seconds();
     }
 }
