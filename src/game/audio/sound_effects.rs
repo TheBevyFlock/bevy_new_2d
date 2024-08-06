@@ -35,7 +35,7 @@ impl SoundEffectHandles {
             let rng = &mut rand::thread_rng();
             let random_sfx = sfx_list.choose(rng).unwrap();
 
-            // We don't need a (slightly) more expensive strong handle here (which are used to keep assets loaded in memory)
+            // We don't need a (slightly) more expensive strong handle here (which is used to keep an asset loaded in memory),
             // because a copy is always stored in the SoundEffects resource.
             let source = random_sfx.clone_weak();
 
