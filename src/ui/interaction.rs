@@ -13,6 +13,7 @@ pub(super) fn plugin(app: &mut App) {
             trigger_interaction_sfx,
         ),
     );
+    app.observe(despawn_one_shot_system);
 }
 
 /// Palette for widget interactions. Add this to an entity that supports
@@ -77,4 +78,17 @@ fn trigger_interaction_sfx(
             _ => (),
         }
     }
+}
+
+/// Remove the one-shot system entity when the [`OnPress`] component is removed.
+/// This is necessary as otherwise, the system would still exist after the button
+/// is removed, causing a memory leak.
+fn despawn_one_shot_system(
+    trigger: Trigger<OnRemove, OnPress>,
+    mut commands: Commands,
+    on_press_query: Query<&OnPress>,
+) {
+    let on_press = on_press_query.get(trigger.entity()).unwrap();
+    let one_shot_system_entity = on_press.entity();
+    commands.entity(one_shot_system_entity).despawn_recursive();
 }
