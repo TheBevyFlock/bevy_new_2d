@@ -40,8 +40,8 @@ impl<T: SpawnExt> Widgets for T {
 
 /// A simple button with text.
 pub struct Button {
-    text: String,
-    on_press: SystemId,
+    pub text: String,
+    pub on_press: SystemId,
 }
 
 impl EntityCommand for Button {
@@ -99,7 +99,7 @@ impl Button {
 
 /// A simple header label. Bigger than [`Label`].
 pub struct Header {
-    text: String,
+    pub text: String,
 }
 
 impl EntityCommand for Header {
@@ -148,7 +148,7 @@ impl Header {
 
 /// A simple text label.
 pub struct Label {
-    text: String,
+    pub text: String,
 }
 
 impl EntityCommand for Label {
