@@ -4,8 +4,9 @@ use bevy::prelude::*;
 
 use super::Screen;
 use crate::{
+    assets::SoundtrackHandles,
+    audio::soundtrack::SoundtrackCommands as _,
     ui::prelude::*,
-    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _,
 };
 
 pub(super) fn plugin(app: &mut App) {

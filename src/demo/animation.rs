@@ -64,7 +64,8 @@ fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)
     }
 }
 
-/// If the player is moving, play a step sound effect synchronized with the animation.
+/// If the player is moving, play a step sound effect synchronized with the
+/// animation.
 fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimation>) {
     for animation in &mut step_query {
         if animation.state == PlayerAnimationState::Walking
@@ -97,6 +98,10 @@ impl PlayerAnimation {
     const IDLE_FRAMES: usize = 2;
     /// The duration of each idle frame.
     const IDLE_INTERVAL: Duration = Duration::from_millis(500);
+    /// The number of walking frames.
+    const WALKING_FRAMES: usize = 6;
+    /// The duration of each walking frame.
+    const WALKING_INTERVAL: Duration = Duration::from_millis(50);
 
     fn idling() -> Self {
         Self {
@@ -105,11 +110,6 @@ impl PlayerAnimation {
             state: PlayerAnimationState::Idling,
         }
     }
-
-    /// The number of walking frames.
-    const WALKING_FRAMES: usize = 6;
-    /// The duration of each walking frame.
-    const WALKING_INTERVAL: Duration = Duration::from_millis(50);
 
     fn walking() -> Self {
         Self {

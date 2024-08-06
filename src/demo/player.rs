@@ -1,5 +1,6 @@
 //! Plugin handling the player character in particular.
-//! Note that this is separate from the `movement` module as that could be used for other characters as well.
+//! Note that this is separate from the `movement` module as that could be used
+//! for other characters as well.
 
 use bevy::prelude::*;
 
@@ -37,10 +38,11 @@ fn spawn_player(
     image_handles: Res<ImageHandles>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    // A texture atlas is a way to split one image with a grid into multiple sprites.
-    // By attaching it to a [`SpriteBundle`] and providing an index, we can specify which section of the image we want to see.
-    // We will use this to animate our player character. You can learn more about texture atlases in this example:
-    // https://github.com/bevyengine/bevy/blob/latest/examples/2d/texture_atlas.rs
+    // A texture atlas is a way to split one image with a grid into multiple
+    // sprites. By attaching it to a [`SpriteBundle`] and providing an index, we
+    // can specify which section of the image we want to see. We will use this
+    // to animate our player character. You can learn more about texture atlases in
+    // this example: https://github.com/bevyengine/bevy/blob/latest/examples/2d/texture_atlas.rs
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(32), 6, 2, Some(UVec2::splat(1)), None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let player_animation = PlayerAnimation::new();
