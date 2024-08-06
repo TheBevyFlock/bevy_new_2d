@@ -19,11 +19,11 @@ fn show_title_screen(mut commands: Commands) {
         .ui_root()
         .insert(StateScoped(Screen::Title))
         .with_children(|children| {
-            children.button("Play").insert(OnPress(enter_playing));
-            children.button("Credits").insert(OnPress(enter_credits));
+            children.button("Play", enter_playing);
+            children.button("Credits", enter_credits);
 
             #[cfg(not(target_family = "wasm"))]
-            children.button("Exit").insert(OnPress(exit_app));
+            children.button("Exit", exit_app);
         });
 }
 
