@@ -3,8 +3,8 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
-use crate::game::{
-    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, spawn::level::SpawnLevel,
+use crate::{
+    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, demo::level::SpawnLevel,
 };
 
 pub(super) fn plugin(app: &mut App) {

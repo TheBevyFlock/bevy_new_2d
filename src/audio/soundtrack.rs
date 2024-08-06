@@ -1,6 +1,6 @@
 use bevy::{audio::PlaybackMode, ecs::world::Command, prelude::*};
 
-use crate::game::assets::SoundtrackHandles;
+use crate::assets::SoundtrackHandles;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<IsSoundtrack>();

@@ -1,6 +1,6 @@
 use bevy::{ecs::system::SystemId, prelude::*};
 
-use crate::game::{assets::SoundEffectHandles, audio::sound_effects::SoundEffectCommands as _};
+use crate::{assets::SoundEffectHandles, audio::sound_effects::SoundEffectCommands as _};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
@@ -13,10 +13,12 @@ pub(super) fn plugin(app: &mut App) {
             trigger_interaction_sfx,
         ),
     );
+    app.observe(despawn_one_shot_system);
 }
 
-/// Palette for widget interactions. Add this to an entity that supports [`Interaction`]s, such as a button,
-/// to change its [`BackgroundColor`] based on the current interaction state.
+/// Palette for widget interactions. Add this to an entity that supports
+/// [`Interaction`]s, such as a button, to change its [`BackgroundColor`] based
+/// on the current interaction state.
 #[derive(Component, Debug, Reflect)]
 #[reflect(Component)]
 pub struct InteractionPalette {
@@ -26,8 +28,10 @@ pub struct InteractionPalette {
 }
 
 /// Component that calls a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems)
-/// when the [`Interaction`] component on the same entity changes to [`Interaction::Pressed`].
-/// Use this in conjuction with [`Commands::register_one_shot_system`] to create a callback for e.g. a button press.
+/// when the [`Interaction`] component on the same entity changes to
+/// [`Interaction::Pressed`]. Use this in conjuction with
+/// [`Commands::register_one_shot_system`] to create a callback for e.g. a
+/// button press.
 #[derive(Component, Debug, Reflect, Deref, DerefMut)]
 #[reflect(Component, from_reflect = false)]
 pub struct OnPress(#[reflect(ignore)] pub SystemId);
@@ -74,4 +78,17 @@ fn trigger_interaction_sfx(
             _ => (),
         }
     }
+}
+
+/// Remove the one-shot system entity when the [`OnPress`] component is removed.
+/// This is necessary as otherwise, the system would still exist after the button
+/// is removed, causing a memory leak.
+fn despawn_one_shot_system(
+    trigger: Trigger<OnRemove, OnPress>,
+    mut commands: Commands,
+    on_press_query: Query<&OnPress>,
+) {
+    let on_press = on_press_query.get(trigger.entity()).unwrap();
+    let one_shot_system_entity = on_press.entity();
+    commands.entity(one_shot_system_entity).despawn_recursive();
 }

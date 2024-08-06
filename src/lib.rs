@@ -1,6 +1,8 @@
+mod assets;
+mod audio;
+mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
-mod game;
 mod screens;
 mod ui;
 
@@ -53,7 +55,13 @@ impl Plugin for AppPlugin {
         );
 
         // Add other plugins.
-        app.add_plugins((game::plugin, screens::plugin, ui::plugin));
+        app.add_plugins((
+            demo::plugin,
+            screens::plugin,
+            ui::plugin,
+            assets::plugin,
+            audio::plugin,
+        ));
 
         // Enable dev tools for dev builds.
         #[cfg(feature = "dev")]

@@ -1,6 +1,7 @@
 //! This module contains the asset handles used throughout the game.
 //! During `Screen::Loading`, the game will load the assets specified here.
-//! Your systems can then request the resources defined here to access the loaded assets.
+//! Your systems can then request the resources defined here to access the
+//! loaded assets.
 
 use bevy::{
     prelude::*,
@@ -89,7 +90,9 @@ impl FromWorld for SoundEffectHandles {
         let mut map = HashMap::default();
 
         // Load sound effects here.
-        // Using string parsing to strip numbered suffixes + `AssetServer::load_folder` is a good way to load many sound effects at once, but is not supported on Wasm or Android.
+        // Using string parsing to strip numbered suffixes + `AssetServer::load_folder`
+        // is a good way to load many sound effects at once, but is not supported on
+        // Wasm or Android.
         let step_sfx = vec![
             asset_server.load("audio/sfx/step1.ogg"),
             asset_server.load("audio/sfx/step2.ogg"),

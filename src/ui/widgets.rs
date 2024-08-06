@@ -6,7 +6,10 @@ use bevy::{
     ui::Val::*,
 };
 
-use super::{interaction::InteractionPalette, palette::*};
+use super::{
+    interaction::{InteractionPalette, OnPress},
+    palette::*,
+};
 
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {
@@ -40,6 +43,7 @@ impl<T: Spawn> Widgets for T {
                 hovered: BUTTON_HOVERED_BACKGROUND,
                 pressed: BUTTON_PRESSED_BACKGROUND,
             },
+            OnPress(on_press),
         ));
         entity.with_children(|children| {
             children.spawn((
@@ -54,8 +58,6 @@ impl<T: Spawn> Widgets for T {
                 ),
             ));
         });
-        // Add the one-shot system as a child so that it can be despawned when the button despawns.
-        entity.add_child(on_press.entity());
 
         entity
     }
