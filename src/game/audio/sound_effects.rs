@@ -60,7 +60,7 @@ impl Command for PlaySoundEffect {
     }
 }
 
-/// An extension trait used to make it convenient to play sound effects via [`Commands`].
+/// An extension trait with convenience methods for sound effect commands.
 pub trait SoundEffectCommands {
     fn play_sound_effect_with_settings(
         &mut self,
