@@ -1,5 +1,5 @@
 //! Functions and types for playing sound effects in the game.
-//! The main thing of interest here is the extension trait `SoundEffectCommands`
+//! The main point of interest here is the extension trait `SoundEffectCommands`
 //! and its `play_sound_effect` method.
 //!
 //! This pattern is taken from the [Bevy example for sound effects](https://github.com/bevyengine/bevy/pull/14554).
