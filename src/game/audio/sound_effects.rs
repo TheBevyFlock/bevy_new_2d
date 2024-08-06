@@ -64,14 +64,14 @@ impl Command for PlaySoundEffect {
 ///
 /// This technique allows us to implement methods for types that we don't own,
 /// which can be used as long as the trait is in scope.
-pub trait SfxCommands {
+pub trait SoundEffectCommands {
     fn play_sound_effect_with_settings(
         &mut self,
-        name: impl AsRef<str>,
+        name: impl Into<String>,
         settings: PlaybackSettings,
     );
 
-    fn play_sound_effect(&mut self, name: impl AsRef<str>) {
+    fn play_sound_effect(&mut self, name: impl Into<String>) {
         // This default method implementation saves work for types implementing this trait;
         // if not overwritten, the trait's default method will be used here, forwarding to the
         // more customizable method
@@ -79,16 +79,16 @@ pub trait SfxCommands {
     }
 }
 
-impl<'w, 's> SfxCommands for Commands<'w, 's> {
-    // By accepting an `AsRef<str>` here, we can be flexible about what we want to accept:
+impl<'w, 's> SoundEffectCommands for Commands<'w, 's> {
+    // By accepting an `Into<String>` here, we can be flexible about what we want to accept:
     // &str literals are better for prototyping and data-driven sound effects,
     // but enums are nicer for special-cased effects
     fn play_sound_effect_with_settings(
         &mut self,
-        name: impl AsRef<str>,
+        name: impl Into<String>,
         settings: PlaybackSettings,
     ) {
-        let name = name.as_ref().to_string();
+        let name = name.into();
         self.add(PlaySoundEffect { name, settings });
     }
 }

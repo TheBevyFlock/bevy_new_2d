@@ -9,7 +9,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 use super::{
-    assets::SoundEffectHandles, audio::sound_effects::SfxCommands as _,
+    assets::SoundEffectHandles, audio::sound_effects::SoundEffectCommands as _,
     movement::MovementController,
 };
 use crate::AppSet;
