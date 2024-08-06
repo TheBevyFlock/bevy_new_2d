@@ -14,7 +14,7 @@
 use bevy::{ecs::world::Command, prelude::*};
 use rand::seq::SliceRandom;
 
-use crate::game::assets::SoundEffectHandles;
+use crate::assets::SoundEffectHandles;
 
 pub(super) fn plugin(_app: &mut App) {
     // No setup required for this plugin.

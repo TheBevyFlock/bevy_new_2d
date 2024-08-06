@@ -5,9 +5,9 @@ use bevy::prelude::*;
 use crate::{
     game::{
         animation::PlayerAnimation,
-        assets::ImageHandles,
         movement::{MovementController, ScreenWrap},
     },
+    assets::ImageHandles,
     screens::Screen,
 };
 

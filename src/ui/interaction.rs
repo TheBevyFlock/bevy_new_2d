@@ -1,6 +1,6 @@
 use bevy::{ecs::system::SystemId, prelude::*};
 
-use crate::game::{assets::SoundEffectHandles, audio::sound_effects::SoundEffectCommands as _};
+use crate::{assets::SoundEffectHandles, audio::sound_effects::SoundEffectCommands as _};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();

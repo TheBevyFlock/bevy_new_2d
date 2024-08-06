@@ -5,7 +5,7 @@ use bevy::{prelude::*, utils::HashMap};
 
 use super::Screen;
 use crate::{
-    game::assets::{ImageHandles, SoundEffectHandles, SoundtrackHandles},
+    assets::{ImageHandles, SoundEffectHandles, SoundtrackHandles},
     ui::prelude::*,
 };
 
