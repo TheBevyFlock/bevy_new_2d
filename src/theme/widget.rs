@@ -46,7 +46,7 @@ pub struct Button {
 
 impl EntityCommand for Button {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), Self::spawn);
+        world.run_system_once_with((id, self), Self::construct);
     }
 }
 
@@ -58,7 +58,7 @@ impl Button {
         }
     }
 
-    fn spawn(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
+    fn construct(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
         commands
             .entity(id)
             .insert((
@@ -104,7 +104,7 @@ pub struct Header {
 
 impl EntityCommand for Header {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), Self::spawn);
+        world.run_system_once_with((id, self), Self::construct);
     }
 }
 
@@ -113,7 +113,7 @@ impl Header {
         Self { text: text.into() }
     }
 
-    fn spawn(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
+    fn construct(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
         commands
             .entity(id)
             .insert((
@@ -153,7 +153,7 @@ pub struct Label {
 
 impl EntityCommand for Label {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), Self::spawn);
+        world.run_system_once_with((id, self), Self::construct);
     }
 }
 
@@ -162,7 +162,7 @@ impl Label {
         Self { text: text.into() }
     }
 
-    fn spawn(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
+    fn construct(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
         commands
             .entity(id)
             .insert((
