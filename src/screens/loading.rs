@@ -41,6 +41,7 @@ fn continue_to_title(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
 }
 
+/// An extension trait to check if all the assets in an asset collection are loaded.
 trait AssetMap {
     fn all_loaded(&self, asset_server: &AssetServer) -> bool;
 }
