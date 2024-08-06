@@ -6,7 +6,11 @@ use super::Screen;
 use crate::{spawn::prelude::*, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Title), title_screen.spawn());
+    app.add_systems(OnEnter(Screen::Title), spawn_title_screen);
+}
+
+fn spawn_title_screen(mut commands: Commands) {
+    commands.spawn_fn(title_screen);
 }
 
 fn title_screen(In(id): In<Entity>, mut commands: Commands) {

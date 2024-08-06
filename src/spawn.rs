@@ -11,9 +11,7 @@ use bevy::prelude::*;
 /// Re-exported extension traits.
 #[allow(unused_imports)]
 pub mod prelude {
-    pub use super::{
-        AddExt as _, AddFnExt as _, SpawnExt as _, SpawnSystemExt as _, WorldSpawnExt as _,
-    };
+    pub use super::{AddExt as _, AddFnExt as _, SpawnExt as _, WorldSpawnExt as _};
 }
 
 /// An extension trait that provides helper functions for deferred entity spawning.
@@ -150,19 +148,5 @@ impl AddFnExt for EntityWorldMut<'_> {
             world.run_system_once_with(id, system);
         });
         self
-    }
-}
-
-/// An extension trait that allows entity spawning systems to be used as actual systems.
-pub trait SpawnSystemExt<M> {
-    /// Create a system that spawns an entity.
-    fn spawn(self) -> impl Fn(Commands);
-}
-
-impl<M, T: 'static + Send + Clone + IntoSystem<Entity, (), M>> SpawnSystemExt<M> for T {
-    fn spawn(self) -> impl Fn(Commands) {
-        move |mut commands: Commands| {
-            commands.spawn_fn(self.clone());
-        }
     }
 }

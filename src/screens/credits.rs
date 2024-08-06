@@ -11,9 +11,13 @@ use crate::{
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         OnEnter(Screen::Credits),
-        (credits_screen.spawn(), play_credits_soundtrack),
+        (spawn_credits_screen, play_credits_soundtrack),
     );
     app.add_systems(OnExit(Screen::Credits), stop_soundtrack);
+}
+
+fn spawn_credits_screen(mut commands: Commands) {
+    commands.spawn_fn(credits_screen);
 }
 
 fn credits_screen(In(id): In<Entity>, mut commands: Commands) {

@@ -11,11 +11,7 @@ use crate::{
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         OnEnter(Screen::Playing),
-        (
-            playing_screen.spawn(),
-            spawn_level,
-            play_gameplay_soundtrack,
-        ),
+        (spawn_playing_screen, spawn_level, play_gameplay_soundtrack),
     );
     app.add_systems(OnExit(Screen::Playing), stop_soundtrack);
 
@@ -24,6 +20,10 @@ pub(super) fn plugin(app: &mut App) {
         return_to_title_screen
             .run_if(in_state(Screen::Playing).and_then(input_just_pressed(KeyCode::Escape))),
     );
+}
+
+fn spawn_playing_screen(mut commands: Commands) {
+    commands.spawn_fn(playing_screen);
 }
 
 fn playing_screen(In(id): In<Entity>, mut commands: Commands) {

@@ -11,11 +11,15 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Loading), loading_screen.spawn());
+    app.add_systems(OnEnter(Screen::Loading), spawn_loading_screen);
     app.add_systems(
         Update,
         continue_to_title.run_if(in_state(Screen::Loading).and_then(all_assets_loaded)),
     );
+}
+
+fn spawn_loading_screen(mut commands: Commands) {
+    commands.spawn_fn(loading_screen);
 }
 
 fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
