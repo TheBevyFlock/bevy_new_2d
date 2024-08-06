@@ -68,7 +68,7 @@ fn spawn_player(
 
 fn record_player_directional_input(
     input: Res<ButtonInput<KeyCode>>,
-    mut controller_query: Query<&mut MovementController>,
+    mut controller_query: Query<&mut MovementController, With<Player>>,
 ) {
     // Collect directional input.
     let mut intent = Vec2::ZERO;
