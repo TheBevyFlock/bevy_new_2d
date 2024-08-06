@@ -48,12 +48,13 @@ impl Command for PlaySoundtrack {
     }
 }
 
+/// An extension trait with convenience methods for soundtrack commands.
 pub trait SoundtrackCommands {
-    /// Call this function to play the soundtrack.
-    /// Playing a new soundtrack will overwrite the previous one.
+    /// Play a soundtrack, replacing the current one.
     /// Soundtracks will loop.
     fn play_soundtrack(&mut self, name: impl Into<String>);
 
+    /// Stop the current soundtrack.
     fn stop_current_soundtrack(&mut self);
 }
 
