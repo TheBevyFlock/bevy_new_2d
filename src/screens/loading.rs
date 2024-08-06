@@ -24,7 +24,7 @@ fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
         .add_fn(widget::ui_root)
         .insert((Name::new("Loading screen"), StateScoped(Screen::Loading)))
         .with_children(|children| {
-            children.spawn_with(widget::Label::new("Loading..."));
+            children.label("Loading...");
         });
 }
 
