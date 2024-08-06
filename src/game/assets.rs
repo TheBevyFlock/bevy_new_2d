@@ -71,10 +71,8 @@ impl FromWorld for SoundtrackHandles {
     }
 }
 
-/// This uses a map of `String` to `Vec<Handle<AudioSource>>` to store sound effects instead
-/// of the `HandleMap` used for the other assets.
-/// The key is a `String` because sound effects are often tied closely to file paths or other strings.
-/// The value is a `Vec<Handle<AudioSource>>` because a single sound effect can have multiple variations.
+/// The values stored here are a `Vec<Handle<AudioSource>>` because
+/// a single sound effect can have multiple variations.
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
 #[reflect(Resource)]
 pub struct SoundEffectHandles(HashMap<String, Vec<Handle<AudioSource>>>);
