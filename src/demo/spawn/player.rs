@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    game::{
+    demo::{
         animation::PlayerAnimation,
         movement::{MovementController, ScreenWrap},
     },
