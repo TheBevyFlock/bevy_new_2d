@@ -193,7 +193,7 @@ impl Label {
     }
 }
 
-/// Spawn a UI node that fills the window and centers its children.
+/// Construct a UI node that fills the window and centers its children.
 pub fn ui_root(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("UI root"),

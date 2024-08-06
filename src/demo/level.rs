@@ -12,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Level;
 
-/// Spawn a level entity.
+/// Construct a level entity.
 pub fn level(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)

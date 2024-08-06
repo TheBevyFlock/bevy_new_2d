@@ -24,7 +24,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Player;
 
-/// Spawn a player entity.
+/// Construct a player entity.
 pub fn player(
     In(id): In<Entity>,
     mut commands: Commands,

@@ -113,7 +113,7 @@ impl WorldSpawnExt for WorldChildBuilder<'_> {
 /// An extension trait that supports arbitrary [`EntityCommand`]s after `world.spawn()`.
 pub trait AddExt {
     // Workaround for https://github.com/bevyengine/bevy/issues/14278.
-    /// Run an [`EntityCommand`] on the current entity.
+    /// Apply an [`EntityCommand`] to the current entity.
     fn add<M: 'static>(&mut self, command: impl EntityCommand<M>) -> &mut Self;
 }
 
@@ -130,7 +130,7 @@ impl AddExt for EntityWorldMut<'_> {
 
 /// An extension trait that enables using systems as [`EntityCommand`]s.
 pub trait AddFnExt {
-    /// Add an [`EntityCommand`] for a system that will receive the current entity ID via [`In<Entity>`].
+    /// Apply a system to the current [`Entity`].
     fn add_fn<M>(&mut self, system: impl IntoSystem<Entity, (), M> + Send + 'static) -> &mut Self;
 }
 
