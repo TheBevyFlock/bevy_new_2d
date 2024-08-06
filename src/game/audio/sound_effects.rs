@@ -2,7 +2,7 @@
 //! The main thing of interest here is the extension trait `SoundEffectCommands`
 //! and its `play_sound_effect` method.
 //!
-//! This pattern is adapted from the [Bevy example for sound effects](https://github.com/bevyengine/bevy/pull/14554).
+//! This pattern is taken from the [Bevy example for sound effects](https://github.com/bevyengine/bevy/pull/14554).
 
 use bevy::{ecs::world::Command, prelude::*};
 use rand::seq::SliceRandom;
