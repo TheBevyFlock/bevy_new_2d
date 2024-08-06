@@ -57,7 +57,7 @@ pub trait SoundtrackCommands {
     fn stop_current_soundtrack(&mut self);
 }
 
-impl<'w, 's> SoundtrackCommands for Commands<'w, 's> {
+impl SoundtrackCommands for Commands<'_, '_> {
     fn play_soundtrack(&mut self, name: impl Into<String>) {
         self.add(PlaySoundtrack::Key(name.into()));
     }
