@@ -12,14 +12,13 @@ use crate::{
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Player>();
 
-    // Record directional input as movement controls.
     app.add_systems(
         Update,
         record_player_directional_input.in_set(AppSet::RecordInput),
     );
 }
 
-/// A marker component for the player entity.
+/// A marker component for player entities.
 #[derive(Component, Reflect, Clone, Copy, PartialEq, Eq, Debug)]
 #[reflect(Component)]
 pub struct Player;
@@ -58,6 +57,7 @@ pub fn player(
     ));
 }
 
+/// Record keyboard directional input as movement intent for player entities.
 fn record_player_directional_input(
     input: Res<ButtonInput<KeyCode>>,
     mut controller_query: Query<&mut MovementController, With<Player>>,
