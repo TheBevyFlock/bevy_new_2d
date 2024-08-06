@@ -4,7 +4,7 @@ use bevy::prelude::*;
 
 use super::Screen;
 use crate::{
-    game::{assets::SoundtrackKey, audio::soundtrack::PlaySoundtrack},
+    game::{assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _},
     ui::prelude::*,
 };
 
@@ -32,11 +32,11 @@ fn show_credits_screen(mut commands: Commands) {
             children.button("Back", enter_title);
         });
 
-    commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));
+    commands.play_soundtrack(SoundtrackHandles::KEY_CREDITS);
 }
 
 fn disable_soundtrack(mut commands: Commands) {
-    commands.trigger(PlaySoundtrack::Disable);
+    commands.stop_current_soundtrack();
 }
 
 fn enter_title(mut next_screen: ResMut<NextState<Screen>>) {

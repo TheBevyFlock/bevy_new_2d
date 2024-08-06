@@ -1,3 +1,7 @@
+//! This module contains the asset handles used throughout the game.
+//! During `Screen::Loading`, the game will load the assets specified here.
+//! Your systems can then request the resources defined here to access the loaded assets.
+
 use bevy::{
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},
@@ -5,30 +9,29 @@ use bevy::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<HandleMap<ImageKey>>();
-    app.init_resource::<HandleMap<ImageKey>>();
+    app.register_type::<ImageHandles>();
+    app.init_resource::<ImageHandles>();
 
-    app.register_type::<HandleMap<SfxKey>>();
-    app.init_resource::<HandleMap<SfxKey>>();
+    app.register_type::<SoundtrackHandles>();
+    app.init_resource::<SoundtrackHandles>();
 
-    app.register_type::<HandleMap<SoundtrackKey>>();
-    app.init_resource::<HandleMap<SoundtrackKey>>();
+    app.register_type::<SoundEffectHandles>();
+    app.init_resource::<SoundEffectHandles>();
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum ImageKey {
-    Ducky,
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Resource)]
+pub struct ImageHandles(HashMap<String, Handle<Image>>);
+
+impl ImageHandles {
+    pub const KEY_DUCKY: &'static str = "Ducky";
 }
 
-impl AssetKey for ImageKey {
-    type Asset = Image;
-}
-
-impl FromWorld for HandleMap<ImageKey> {
+impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        [(
-            ImageKey::Ducky,
+        let map = [(
+            ImageHandles::KEY_DUCKY.to_string(),
             asset_server.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
@@ -36,92 +39,73 @@ impl FromWorld for HandleMap<ImageKey> {
                 },
             ),
         )]
-        .into()
+        .into();
+        Self(map)
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum SfxKey {
-    ButtonHover,
-    ButtonPress,
-    Step1,
-    Step2,
-    Step3,
-    Step4,
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Resource)]
+pub struct SoundtrackHandles(HashMap<String, Handle<AudioSource>>);
+
+impl SoundtrackHandles {
+    pub const KEY_CREDITS: &'static str = "Credits";
+    pub const KEY_GAMEPLAY: &'static str = "Gameplay";
 }
 
-impl AssetKey for SfxKey {
-    type Asset = AudioSource;
-}
-
-impl FromWorld for HandleMap<SfxKey> {
+impl FromWorld for SoundtrackHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        [
+        let map = [
             (
-                SfxKey::ButtonHover,
-                asset_server.load("audio/sfx/button_hover.ogg"),
-            ),
-            (
-                SfxKey::ButtonPress,
-                asset_server.load("audio/sfx/button_press.ogg"),
-            ),
-            (SfxKey::Step1, asset_server.load("audio/sfx/step1.ogg")),
-            (SfxKey::Step2, asset_server.load("audio/sfx/step2.ogg")),
-            (SfxKey::Step3, asset_server.load("audio/sfx/step3.ogg")),
-            (SfxKey::Step4, asset_server.load("audio/sfx/step4.ogg")),
-        ]
-        .into()
-    }
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum SoundtrackKey {
-    Credits,
-    Gameplay,
-}
-
-impl AssetKey for SoundtrackKey {
-    type Asset = AudioSource;
-}
-
-impl FromWorld for HandleMap<SoundtrackKey> {
-    fn from_world(world: &mut World) -> Self {
-        let asset_server = world.resource::<AssetServer>();
-        [
-            (
-                SoundtrackKey::Credits,
+                SoundtrackHandles::KEY_CREDITS.to_string(),
                 asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
             ),
             (
-                SoundtrackKey::Gameplay,
+                SoundtrackHandles::KEY_GAMEPLAY.to_string(),
                 asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
             ),
         ]
-        .into()
+        .into();
+        Self(map)
     }
 }
 
-pub trait AssetKey: Sized {
-    type Asset: Asset;
-}
-
-#[derive(Resource, Reflect, Deref, DerefMut)]
+/// The values stored here are a `Vec<Handle<AudioSource>>` because
+/// a single sound effect can have multiple variations.
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
 #[reflect(Resource)]
-pub struct HandleMap<K: AssetKey>(HashMap<K, Handle<K::Asset>>);
+pub struct SoundEffectHandles(HashMap<String, Vec<Handle<AudioSource>>>);
 
-impl<K: AssetKey, T> From<T> for HandleMap<K>
-where
-    T: Into<HashMap<K, Handle<K::Asset>>>,
-{
-    fn from(value: T) -> Self {
-        Self(value.into())
-    }
+impl SoundEffectHandles {
+    pub const KEY_BUTTON_HOVER: &'static str = "ButtonHover";
+    pub const KEY_BUTTON_PRESS: &'static str = "ButtonPress";
+    pub const KEY_STEP: &'static str = "Step";
 }
 
-impl<K: AssetKey> HandleMap<K> {
-    pub fn all_loaded(&self, asset_server: &AssetServer) -> bool {
-        self.values()
-            .all(|x| asset_server.is_loaded_with_dependencies(x))
+impl FromWorld for SoundEffectHandles {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.get_resource::<AssetServer>().unwrap();
+        let mut map = HashMap::default();
+
+        // Load sound effects here.
+        // Using string parsing to strip numbered suffixes + `AssetServer::load_folder` is a good way to load many sound effects at once, but is not supported on Wasm or Android.
+        let step_sfx = vec![
+            asset_server.load("audio/sfx/step1.ogg"),
+            asset_server.load("audio/sfx/step2.ogg"),
+            asset_server.load("audio/sfx/step3.ogg"),
+            asset_server.load("audio/sfx/step4.ogg"),
+        ];
+        map.insert(Self::KEY_STEP.to_string(), step_sfx);
+        map.insert(
+            Self::KEY_BUTTON_HOVER.to_string(),
+            vec![asset_server.load("audio/sfx/button_hover.ogg")],
+        );
+        map.insert(
+            Self::KEY_BUTTON_PRESS.to_string(),
+            vec![asset_server.load("audio/sfx/button_press.ogg")],
+        );
+
+        Self(map)
     }
 }

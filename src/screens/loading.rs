@@ -1,11 +1,11 @@
 //! A loading screen during which game assets are loaded.
 //! This reduces stuttering, especially for audio on WASM.
 
-use bevy::prelude::*;
+use bevy::{prelude::*, utils::HashMap};
 
 use super::Screen;
 use crate::{
-    game::assets::{HandleMap, ImageKey, SfxKey, SoundtrackKey},
+    game::assets::{ImageHandles, SoundEffectHandles, SoundtrackHandles},
     ui::prelude::*,
 };
 
@@ -28,15 +28,35 @@ fn show_loading_screen(mut commands: Commands) {
 
 fn all_assets_loaded(
     asset_server: Res<AssetServer>,
-    image_handles: Res<HandleMap<ImageKey>>,
-    sfx_handles: Res<HandleMap<SfxKey>>,
-    soundtrack_handles: Res<HandleMap<SoundtrackKey>>,
+    image_handles: Res<ImageHandles>,
+    sound_effects_handles: Res<SoundEffectHandles>,
+    soundtrack_handles: Res<SoundtrackHandles>,
 ) -> bool {
     image_handles.all_loaded(&asset_server)
-        && sfx_handles.all_loaded(&asset_server)
+        && sound_effects_handles.all_loaded(&asset_server)
         && soundtrack_handles.all_loaded(&asset_server)
 }
 
 fn continue_to_title(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
+}
+
+/// An extension trait to check if all the assets in an asset collection are loaded.
+trait AllLoaded {
+    fn all_loaded(&self, asset_server: &AssetServer) -> bool;
+}
+
+impl<T: Asset> AllLoaded for HashMap<String, Handle<T>> {
+    fn all_loaded(&self, asset_server: &AssetServer) -> bool {
+        self.values()
+            .all(|x| asset_server.is_loaded_with_dependencies(x))
+    }
+}
+
+impl<T: Asset> AllLoaded for HashMap<String, Vec<Handle<T>>> {
+    fn all_loaded(&self, asset_server: &AssetServer) -> bool {
+        self.values()
+            .flatten()
+            .all(|x| asset_server.is_loaded_with_dependencies(x))
+    }
 }

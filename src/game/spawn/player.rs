@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use crate::{
     game::{
         animation::PlayerAnimation,
-        assets::{HandleMap, ImageKey},
+        assets::ImageHandles,
         movement::{MovementController, ScreenWrap},
     },
     screens::Screen,
@@ -26,7 +26,7 @@ pub struct Player;
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
-    image_handles: Res<HandleMap<ImageKey>>,
+    image_handles: Res<ImageHandles>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     // A texture atlas is a way to split one image with a grid into multiple sprites.
@@ -41,7 +41,7 @@ fn spawn_player(
         Name::new("Player"),
         Player,
         SpriteBundle {
-            texture: image_handles[&ImageKey::Ducky].clone_weak(),
+            texture: image_handles[ImageHandles::KEY_DUCKY].clone_weak(),
             transform: Transform::from_scale(Vec2::splat(8.0).extend(1.0)),
             ..Default::default()
         },
