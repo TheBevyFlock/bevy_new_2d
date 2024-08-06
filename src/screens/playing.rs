@@ -32,7 +32,7 @@ fn playing_screen(In(id): In<Entity>, mut commands: Commands) {
         .add_fn(widget::ui_root)
         .insert((Name::new("Playing screen"), StateScoped(Screen::Playing)))
         .with_children(|_children| {
-            // TODO: Spawn playing screen UI here.
+            // Spawn playing screen UI here (e.g. a HUD).
         });
 }
 
