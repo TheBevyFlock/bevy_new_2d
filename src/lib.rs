@@ -4,6 +4,7 @@ mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod screens;
+mod spawn;
 mod theme;
 
 use bevy::{
@@ -56,11 +57,11 @@ impl Plugin for AppPlugin {
 
         // Add other plugins.
         app.add_plugins((
+            audio::plugin,
+            assets::plugin,
             demo::plugin,
             screens::plugin,
             theme::plugin,
-            assets::plugin,
-            audio::plugin,
         ));
 
         // Enable dev tools for dev builds.

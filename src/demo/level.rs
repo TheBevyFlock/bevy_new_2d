@@ -1,18 +1,23 @@
-//! Spawn the main level by triggering other observers.
-
 use bevy::prelude::*;
 
-use super::player::SpawnPlayer;
+use super::player::player;
+use crate::spawn::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.observe(spawn_level);
+    app.register_type::<Level>();
 }
 
-#[derive(Event, Debug)]
-pub struct SpawnLevel;
+/// A marker component for the level entity.
+#[derive(Component, Reflect, Clone, Copy, PartialEq, Eq, Debug)]
+#[reflect(Component)]
+pub struct Level;
 
-fn spawn_level(_trigger: Trigger<SpawnLevel>, mut commands: Commands) {
-    // The only thing we have in our level is a player,
-    // but add things like walls etc. here.
-    commands.trigger(SpawnPlayer);
+/// Spawn a level entity.
+pub fn level(In(id): In<Entity>, mut commands: Commands) {
+    commands
+        .entity(id)
+        .insert((Name::new("Level"), Level, SpatialBundle::default()))
+        .with_children(|children| {
+            children.spawn_fn(player);
+        });
 }

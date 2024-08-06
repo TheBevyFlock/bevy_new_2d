@@ -1,15 +1,23 @@
-//! The screen state for the main game loop.
+//! A playing screen where the game is actually played.
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
 use crate::{
-    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, demo::level::SpawnLevel,
+    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, demo::level::level,
+    spawn::prelude::*, theme::prelude::*,
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Playing), spawn_level);
-    app.add_systems(OnExit(Screen::Playing), disable_soundtrack);
+    app.add_systems(
+        OnEnter(Screen::Playing),
+        (
+            playing_screen.spawn(),
+            spawn_level,
+            play_gameplay_soundtrack,
+        ),
+    );
+    app.add_systems(OnExit(Screen::Playing), stop_soundtrack);
 
     app.add_systems(
         Update,
@@ -18,12 +26,28 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
+fn playing_screen(In(id): In<Entity>, mut commands: Commands) {
+    commands
+        .entity(id)
+        .add_fn(widget::ui_root)
+        .insert((Name::new("Playing screen"), StateScoped(Screen::Playing)))
+        .with_children(|_children| {
+            // TODO: Spawn playing screen UI here.
+        });
+}
+
 fn spawn_level(mut commands: Commands) {
-    commands.trigger(SpawnLevel);
+    commands
+        .spawn_fn(level)
+        .insert(StateScoped(Screen::Playing));
+}
+
+fn play_gameplay_soundtrack(mut commands: Commands) {
     commands.play_soundtrack(SoundtrackHandles::KEY_GAMEPLAY);
 }
 
-fn disable_soundtrack(mut commands: Commands) {
+fn stop_soundtrack(mut commands: Commands) {
+    // We could use [`StateScoped`] on the sound playing entities instead.
     commands.stop_current_soundtrack();
 }
 

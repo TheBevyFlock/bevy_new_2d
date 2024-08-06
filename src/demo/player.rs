@@ -1,7 +1,3 @@
-//! Plugin handling the player character in particular.
-//! Note that this is separate from the `movement` module as that could be used
-//! for other characters as well.
-
 use bevy::prelude::*;
 
 use crate::{
@@ -10,12 +6,10 @@ use crate::{
         animation::PlayerAnimation,
         movement::{MovementController, ScreenWrap},
     },
-    screens::Screen,
     AppSet,
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.observe(spawn_player);
     app.register_type::<Player>();
 
     // Record directional input as movement controls.
@@ -25,44 +19,42 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Event, Debug)]
-pub struct SpawnPlayer;
-
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
+/// A marker component for the player entity.
+#[derive(Component, Reflect, Clone, Copy, PartialEq, Eq, Debug)]
 #[reflect(Component)]
 pub struct Player;
 
-fn spawn_player(
-    _trigger: Trigger<SpawnPlayer>,
+/// Spawn a player entity.
+pub fn player(
+    In(id): In<Entity>,
     mut commands: Commands,
     image_handles: Res<ImageHandles>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    mut layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    // A texture atlas is a way to split one image with a grid into multiple
-    // sprites. By attaching it to a [`SpriteBundle`] and providing an index, we
-    // can specify which section of the image we want to see. We will use this
-    // to animate our player character. You can learn more about texture atlases in
-    // this example: https://github.com/bevyengine/bevy/blob/latest/examples/2d/texture_atlas.rs
+    // A texture atlas is a way to split one image into multiple sprites using a grid.
+    // By attaching it to a [`SpriteBundle`] and changing the index, we can change which
+    // part of the grid will be visible. This is used to animate the player character.
+    //
+    // See this example: https://github.com/bevyengine/bevy/blob/latest/examples/2d/texture_atlas.rs
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(32), 6, 2, Some(UVec2::splat(1)), None);
-    let texture_atlas_layout = texture_atlas_layouts.add(layout);
-    let player_animation = PlayerAnimation::new();
+    let layout = layouts.add(layout);
+    let animation = PlayerAnimation::new();
 
-    commands.spawn((
+    commands.entity(id).insert((
         Name::new("Player"),
         Player,
         SpriteBundle {
             texture: image_handles[ImageHandles::KEY_DUCKY].clone_weak(),
             transform: Transform::from_scale(Vec2::splat(8.0).extend(1.0)),
-            ..Default::default()
+            ..default()
         },
         TextureAtlas {
-            layout: texture_atlas_layout.clone(),
-            index: player_animation.get_atlas_index(),
+            layout: layout.clone(),
+            index: animation.get_atlas_index(),
         },
+        animation,
         MovementController::default(),
         ScreenWrap,
-        player_animation,
-        StateScoped(Screen::Playing),
     ));
 }
 

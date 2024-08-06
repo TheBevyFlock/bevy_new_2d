@@ -3,25 +3,25 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::theme::prelude::*;
+use crate::{spawn::prelude::*, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Title), show_title_screen);
+    app.add_systems(OnEnter(Screen::Title), title_screen.spawn());
 }
 
-fn show_title_screen(mut commands: Commands) {
+fn title_screen(In(id): In<Entity>, mut commands: Commands) {
     let enter_playing = commands.register_one_shot_system(enter_playing);
     let enter_credits = commands.register_one_shot_system(enter_credits);
     #[cfg(not(target_family = "wasm"))]
     let exit_app = commands.register_one_shot_system(exit_app);
 
     commands
-        .ui_root()
-        .insert(StateScoped(Screen::Title))
+        .entity(id)
+        .add_fn(widget::ui_root)
+        .insert((Name::new("Title screen"), StateScoped(Screen::Title)))
         .with_children(|children| {
             children.button("Play", enter_playing);
             children.button("Credits", enter_credits);
-
             #[cfg(not(target_family = "wasm"))]
             children.button("Exit", exit_app);
         });

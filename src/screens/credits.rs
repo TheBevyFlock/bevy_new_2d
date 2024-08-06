@@ -4,20 +4,23 @@ use bevy::prelude::*;
 
 use super::Screen;
 use crate::{
-    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, theme::prelude::*,
+    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, spawn::prelude::*,
+    theme::prelude::*,
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Credits), show_credits_screen);
-    app.add_systems(OnExit(Screen::Credits), disable_soundtrack);
+    app.add_systems(
+        OnEnter(Screen::Credits),
+        (credits_screen.spawn(), play_credits_soundtrack),
+    );
+    app.add_systems(OnExit(Screen::Credits), stop_soundtrack);
 }
 
-fn show_credits_screen(mut commands: Commands) {
+fn credits_screen(In(id): In<Entity>, mut commands: Commands) {
     let enter_title = commands.register_one_shot_system(enter_title);
 
-    commands
-        .ui_root()
-        .insert(StateScoped(Screen::Credits))
+    commands.entity(id).add_fn(widget::ui_root)
+        .insert((Name::new("Credits screen"), StateScoped(Screen::Credits)))
         .with_children(|children| {
             children.header("Made by");
             children.label("Joe Shmoe - Implemented aligator wrestling AI");
@@ -30,11 +33,13 @@ fn show_credits_screen(mut commands: Commands) {
 
             children.button("Back", enter_title);
         });
+}
 
+fn play_credits_soundtrack(mut commands: Commands) {
     commands.play_soundtrack(SoundtrackHandles::KEY_CREDITS);
 }
 
-fn disable_soundtrack(mut commands: Commands) {
+fn stop_soundtrack(mut commands: Commands) {
     commands.stop_current_soundtrack();
 }
 

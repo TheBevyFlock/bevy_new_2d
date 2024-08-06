@@ -1,28 +1,30 @@
-//! A loading screen during which game assets are loaded.
-//! This reduces stuttering, especially for audio on WASM.
+//! A loading screen that displays until all game assets are loaded.
+//! This reduces stuttering, especially for audio on Wasm.
 
 use bevy::{prelude::*, utils::HashMap};
 
 use super::Screen;
 use crate::{
     assets::{ImageHandles, SoundEffectHandles, SoundtrackHandles},
+    spawn::prelude::*,
     theme::prelude::*,
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Loading), show_loading_screen);
+    app.add_systems(OnEnter(Screen::Loading), loading_screen.spawn());
     app.add_systems(
         Update,
         continue_to_title.run_if(in_state(Screen::Loading).and_then(all_assets_loaded)),
     );
 }
 
-fn show_loading_screen(mut commands: Commands) {
+fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
     commands
-        .ui_root()
-        .insert(StateScoped(Screen::Loading))
+        .entity(id)
+        .add_fn(widget::ui_root)
+        .insert((Name::new("Loading screen"), StateScoped(Screen::Loading)))
         .with_children(|children| {
-            children.label("Loading...");
+            children.spawn_with(widget::Label::new("Loading..."));
         });
 }
 
