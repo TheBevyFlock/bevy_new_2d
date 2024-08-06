@@ -1,7 +1,7 @@
 //! Common UI widgets.
 
 use bevy::{
-    ecs::system::{EntityCommand, EntityCommands, RunSystemOnce as _, SystemId},
+    ecs::system::{EntityCommand, EntityCommands, SystemId},
     prelude::*,
     ui::Val::*,
 };
@@ -72,21 +72,8 @@ pub struct Button {
 
 impl EntityCommand for Button {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), Self::construct);
-    }
-}
-
-impl Button {
-    pub fn new(text: impl Into<String>, on_press: SystemId) -> Self {
-        Self {
-            text: text.into(),
-            on_press,
-        }
-    }
-
-    fn construct(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
-        commands
-            .entity(id)
+        world
+            .entity_mut(id)
             .insert((
                 Name::new("Button"),
                 ButtonBundle {
@@ -100,7 +87,7 @@ impl Button {
                     background_color: BackgroundColor(NODE_BACKGROUND),
                     ..default()
                 },
-                OnPress(this.on_press),
+                OnPress(self.on_press),
                 InteractionPalette {
                     none: NODE_BACKGROUND,
                     hovered: BUTTON_HOVERED_BACKGROUND,
@@ -111,7 +98,7 @@ impl Button {
                 children.spawn((
                     Name::new("Button text"),
                     TextBundle::from_section(
-                        this.text,
+                        self.text,
                         TextStyle {
                             font_size: 40.0,
                             color: BUTTON_TEXT,
@@ -123,6 +110,15 @@ impl Button {
     }
 }
 
+impl Button {
+    pub fn new(text: impl Into<String>, on_press: SystemId) -> Self {
+        Self {
+            text: text.into(),
+            on_press,
+        }
+    }
+}
+
 /// A simple header label. Bigger than [`Label`].
 pub struct Header {
     pub text: String,
@@ -130,18 +126,8 @@ pub struct Header {
 
 impl EntityCommand for Header {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), Self::construct);
-    }
-}
-
-impl Header {
-    pub fn new(text: impl Into<String>) -> Self {
-        Self { text: text.into() }
-    }
-
-    fn construct(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
-        commands
-            .entity(id)
+        world
+            .entity_mut(id)
             .insert((
                 Name::new("Header"),
                 NodeBundle {
@@ -160,7 +146,7 @@ impl Header {
                 children.spawn((
                     Name::new("Header text"),
                     TextBundle::from_section(
-                        this.text,
+                        self.text,
                         TextStyle {
                             font_size: 40.0,
                             color: HEADER_TEXT,
@@ -172,6 +158,12 @@ impl Header {
     }
 }
 
+impl Header {
+    pub fn new(text: impl Into<String>) -> Self {
+        Self { text: text.into() }
+    }
+}
+
 /// A simple text label.
 pub struct Label {
     pub text: String,
@@ -179,18 +171,8 @@ pub struct Label {
 
 impl EntityCommand for Label {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), Self::construct);
-    }
-}
-
-impl Label {
-    pub fn new(text: impl Into<String>) -> Self {
-        Self { text: text.into() }
-    }
-
-    fn construct(In((id, this)): In<(Entity, Self)>, mut commands: Commands) {
-        commands
-            .entity(id)
+        world
+            .entity_mut(id)
             .insert((
                 Name::new("Label"),
                 NodeBundle {
@@ -207,7 +189,7 @@ impl Label {
                 children.spawn((
                     Name::new("Label text"),
                     TextBundle::from_section(
-                        this.text,
+                        self.text,
                         TextStyle {
                             font_size: 24.0,
                             color: LABEL_TEXT,
@@ -216,6 +198,12 @@ impl Label {
                     ),
                 ));
             });
+    }
+}
+
+impl Label {
+    pub fn new(text: impl Into<String>) -> Self {
+        Self { text: text.into() }
     }
 }
 
