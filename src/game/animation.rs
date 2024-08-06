@@ -74,7 +74,7 @@ fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimati
             && animation.changed()
             && (animation.frame == 2 || animation.frame == 5)
         {
-            commands.play_sound_effect(SoundEffectHandles::STEP);
+            commands.play_sound_effect(SoundEffectHandles::KEY_STEP);
         }
     }
 }

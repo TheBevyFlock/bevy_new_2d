@@ -24,14 +24,14 @@ pub(super) fn plugin(app: &mut App) {
 pub struct ImageHandles(HashMap<String, Handle<Image>>);
 
 impl ImageHandles {
-    pub const DUCKY: &'static str = "Ducky";
+    pub const KEY_DUCKY: &'static str = "Ducky";
 }
 
 impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
         let map = [(
-            ImageHandles::DUCKY.to_string(),
+            ImageHandles::KEY_DUCKY.to_string(),
             asset_server.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
@@ -49,8 +49,8 @@ impl FromWorld for ImageHandles {
 pub struct SoundtrackHandles(HashMap<String, Handle<AudioSource>>);
 
 impl SoundtrackHandles {
-    pub const CREDITS: &'static str = "Credits";
-    pub const GAMEPLAY: &'static str = "Gameplay";
+    pub const KEY_CREDITS: &'static str = "Credits";
+    pub const KEY_GAMEPLAY: &'static str = "Gameplay";
 }
 
 impl FromWorld for SoundtrackHandles {
@@ -58,11 +58,11 @@ impl FromWorld for SoundtrackHandles {
         let asset_server = world.resource::<AssetServer>();
         let map = [
             (
-                SoundtrackHandles::CREDITS.to_string(),
+                SoundtrackHandles::KEY_CREDITS.to_string(),
                 asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
             ),
             (
-                SoundtrackHandles::GAMEPLAY.to_string(),
+                SoundtrackHandles::KEY_GAMEPLAY.to_string(),
                 asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
             ),
         ]
@@ -78,9 +78,9 @@ impl FromWorld for SoundtrackHandles {
 pub struct SoundEffectHandles(HashMap<String, Vec<Handle<AudioSource>>>);
 
 impl SoundEffectHandles {
-    pub const BUTTON_HOVER: &'static str = "ButtonHover";
-    pub const BUTTON_PRESS: &'static str = "ButtonPress";
-    pub const STEP: &'static str = "Step";
+    pub const KEY_BUTTON_HOVER: &'static str = "ButtonHover";
+    pub const KEY_BUTTON_PRESS: &'static str = "ButtonPress";
+    pub const KEY_STEP: &'static str = "Step";
 }
 
 impl FromWorld for SoundEffectHandles {
@@ -96,13 +96,13 @@ impl FromWorld for SoundEffectHandles {
             asset_server.load("audio/sfx/step3.ogg"),
             asset_server.load("audio/sfx/step4.ogg"),
         ];
-        map.insert(Self::STEP.to_string(), step_sfx);
+        map.insert(Self::KEY_STEP.to_string(), step_sfx);
         map.insert(
-            Self::BUTTON_HOVER.to_string(),
+            Self::KEY_BUTTON_HOVER.to_string(),
             vec![asset_server.load("audio/sfx/button_hover.ogg")],
         );
         map.insert(
-            Self::BUTTON_PRESS.to_string(),
+            Self::KEY_BUTTON_PRESS.to_string(),
             vec![asset_server.load("audio/sfx/button_press.ogg")],
         );
 

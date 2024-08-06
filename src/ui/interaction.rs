@@ -65,8 +65,12 @@ fn trigger_interaction_sfx(
 ) {
     for interaction in &interactions {
         match interaction {
-            Interaction::Hovered => commands.play_sound_effect(SoundEffectHandles::BUTTON_HOVER),
-            Interaction::Pressed => commands.play_sound_effect(SoundEffectHandles::BUTTON_PRESS),
+            Interaction::Hovered => {
+                commands.play_sound_effect(SoundEffectHandles::KEY_BUTTON_HOVER)
+            }
+            Interaction::Pressed => {
+                commands.play_sound_effect(SoundEffectHandles::KEY_BUTTON_PRESS)
+            }
             _ => (),
         }
     }

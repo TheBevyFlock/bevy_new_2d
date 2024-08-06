@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_level(mut commands: Commands) {
     commands.trigger(SpawnLevel);
-    commands.play_soundtrack(SoundtrackHandles::GAMEPLAY);
+    commands.play_soundtrack(SoundtrackHandles::KEY_GAMEPLAY);
 }
 
 fn disable_soundtrack(mut commands: Commands) {
