@@ -54,7 +54,7 @@ impl<T: Spawn> Widgets for T {
                 ),
             ));
         });
-        // Add the one-shot system as a child so that will get cleaned up when the button is destroyed.
+        // Add the one-shot system as a child so that it can be despawned when the button despawns.
         entity.add_child(on_press.entity());
 
         entity
