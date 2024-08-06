@@ -6,7 +6,7 @@ use bevy::{
     ui::Val::*,
 };
 
-use super::{interaction::InteractionPalette, palette::*};
+use super::{interaction::InteractionPalette, palette::*, prelude::OnPress};
 
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {
@@ -40,6 +40,7 @@ impl<T: Spawn> Widgets for T {
                 hovered: BUTTON_HOVERED_BACKGROUND,
                 pressed: BUTTON_PRESSED_BACKGROUND,
             },
+            OnPress(on_press),
         ));
         entity.with_children(|children| {
             children.spawn((
