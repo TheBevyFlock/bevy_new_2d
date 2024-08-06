@@ -6,7 +6,10 @@ use bevy::{
     ui::Val::*,
 };
 
-use super::{interaction::{InteractionPalette, OnPress}, palette::*};
+use super::{
+    interaction::{InteractionPalette, OnPress},
+    palette::*,
+};
 
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {
