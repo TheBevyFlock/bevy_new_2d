@@ -13,7 +13,7 @@ pub mod prelude {
     pub use super::{AddExt as _, SpawnExt as _, WorldSpawnExt as _};
 }
 
-/// An extension trait that provides helper functions for deferred entity spawning.
+/// An extension trait to support spawning an entity from an [`EntityCommand`].
 pub trait SpawnExt {
     // Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
     /// Spawn an entity with an [`EntityCommand`].
@@ -36,10 +36,10 @@ impl SpawnExt for ChildBuilder<'_> {
     }
 }
 
-/// An extension trait that provides helper functions for immediate entity spawning.
+/// An extension trait to support immediately spawning an entity from an [`EntityCommand`].
 pub trait WorldSpawnExt {
     // Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
-    /// Spawn an entity with an [`EntityCommand`].
+    /// Immediately spawn an entity with an [`EntityCommand`].
     fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityWorldMut;
 }
 
@@ -59,7 +59,7 @@ impl WorldSpawnExt for WorldChildBuilder<'_> {
     }
 }
 
-/// An extension trait that supports arbitrary [`EntityCommand`]s after `world.spawn()`.
+/// An extension trait to support adding [`EntityCommand`]s after `world.spawn()`.
 pub trait AddExt {
     // Workaround for https://github.com/bevyengine/bevy/issues/14278.
     /// Apply an [`EntityCommand`] to the current entity.
