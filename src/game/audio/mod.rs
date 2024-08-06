@@ -1,3 +1,5 @@
+//! Functionality relating to playing audio in the game.
+
 pub mod sound_effects;
 pub mod soundtrack;
 

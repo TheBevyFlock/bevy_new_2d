@@ -1,3 +1,7 @@
+//! This module contains the asset handles used throughout the game.
+//! During `Screen::Loading`, the game will load the assets specified here.
+//! Your systems can then request the resources defined here to access the loaded assets.
+
 use bevy::{
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},

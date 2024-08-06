@@ -11,9 +11,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 struct IsSoundtrack;
 
-/// Add this command to play or disable the soundtrack.
-/// Playing a new soundtrack will overwrite the previous one.
-/// Soundtracks will loop.
+/// A custom command used to play soundtracks.
 #[derive(Debug)]
 enum PlaySoundtrack {
     Key(String),
@@ -22,6 +20,9 @@ enum PlaySoundtrack {
 
 impl Command for PlaySoundtrack {
     fn apply(self, world: &mut World) {
+        // When this command is applied, we remove all existing soundtracks.
+        // Then, if we want to play a soundtrack, we spawn a new one.
+
         let mut soundtrack_query = world.query_filtered::<Entity, With<IsSoundtrack>>();
         let soundtracks: Vec<_> = soundtrack_query.iter(world).collect();
         for entity in soundtracks {
@@ -48,7 +49,7 @@ impl Command for PlaySoundtrack {
 }
 
 pub trait SoundtrackCommands {
-    /// Trigger this event to play or disable the soundtrack.
+    /// Call this function to play the soundtrack.
     /// Playing a new soundtrack will overwrite the previous one.
     /// Soundtracks will loop.
     fn play_soundtrack(&mut self, name: impl Into<String>);
