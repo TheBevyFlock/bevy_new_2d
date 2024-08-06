@@ -81,7 +81,7 @@ pub trait SoundEffectCommands {
     }
 }
 
-impl<'w, 's> SoundEffectCommands for Commands<'w, 's> {
+impl SoundEffectCommands for Commands<'_, '_> {
     // By accepting an `Into<String>` here, we can be flexible about what we want to accept:
     // &str literals are better for prototyping and data-driven sound effects,
     // but enums are nicer for special-cased effects
