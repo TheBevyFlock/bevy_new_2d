@@ -1,19 +1,27 @@
-//! Spawn the player.
+//! Plugin handling the player character in particular.
+//! Note that this is separate from the `movement` module as that could be used for other characters as well.
 
 use bevy::prelude::*;
 
 use crate::{
+    assets::ImageHandles,
     demo::{
         animation::PlayerAnimation,
         movement::{MovementController, ScreenWrap},
     },
-    assets::ImageHandles,
     screens::Screen,
+    AppSet,
 };
 
 pub(super) fn plugin(app: &mut App) {
     app.observe(spawn_player);
     app.register_type::<Player>();
+
+    // Record directional input as movement controls.
+    app.add_systems(
+        Update,
+        record_player_directional_input.in_set(AppSet::RecordInput),
+    );
 }
 
 #[derive(Event, Debug)]
@@ -54,4 +62,34 @@ fn spawn_player(
         player_animation,
         StateScoped(Screen::Playing),
     ));
+}
+
+fn record_player_directional_input(
+    input: Res<ButtonInput<KeyCode>>,
+    mut controller_query: Query<&mut MovementController>,
+) {
+    // Collect directional input.
+    let mut intent = Vec2::ZERO;
+    if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
+        intent.y += 1.0;
+    }
+    if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
+        intent.y -= 1.0;
+    }
+    if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
+        intent.x -= 1.0;
+    }
+    if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
+        intent.x += 1.0;
+    }
+
+    // Normalize so that diagonal movement has the same speed as
+    // horizontal and vertical movement.
+    // This should be omitted if the input comes from an analog stick instead.
+    let intent = intent.normalize_or_zero();
+
+    // Apply movement intent to controllers.
+    for mut controller in &mut controller_query {
+        controller.intent = intent;
+    }
 }
