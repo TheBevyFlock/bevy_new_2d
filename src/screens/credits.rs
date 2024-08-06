@@ -29,7 +29,7 @@ fn show_credits_screen(mut commands: Commands) {
             children.label("Ducky sprite - CC0 by Caz Creates Games");
             children.label("Music - CC BY 3.0 by Kevin MacLeod");
 
-            children.button("Back").insert(OnPress(enter_title));
+            children.button("Back", enter_title);
         });
 
     commands.trigger(PlaySoundtrack::Key(SoundtrackKey::Credits));

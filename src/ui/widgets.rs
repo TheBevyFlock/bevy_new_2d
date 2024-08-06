@@ -1,13 +1,17 @@
 //! Helper traits for creating common widgets.
 
-use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
+use bevy::{
+    ecs::system::{EntityCommands, SystemId},
+    prelude::*,
+    ui::Val::*,
+};
 
 use super::{interaction::InteractionPalette, palette::*};
 
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {
     /// Spawn a simple button with text.
-    fn button(&mut self, text: impl Into<String>) -> EntityCommands;
+    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands;
 
     /// Spawn a simple header label. Bigger than [`Widgets::label`].
     fn header(&mut self, text: impl Into<String>) -> EntityCommands;
@@ -17,7 +21,7 @@ pub trait Widgets {
 }
 
 impl<T: Spawn> Widgets for T {
-    fn button(&mut self, text: impl Into<String>) -> EntityCommands {
+    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands {
         let mut entity = self.spawn((
             Name::new("Button"),
             ButtonBundle {
@@ -50,6 +54,9 @@ impl<T: Spawn> Widgets for T {
                 ),
             ));
         });
+        // Add the one-shot system as a child so that will get cleaned up when the button is destroyed.
+        entity.add_child(on_press.entity());
+
         entity
     }
 
