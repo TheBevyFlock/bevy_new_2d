@@ -42,18 +42,18 @@ fn continue_to_title(mut next_screen: ResMut<NextState<Screen>>) {
 }
 
 /// An extension trait to check if all the assets in an asset collection are loaded.
-trait AssetMap {
+trait AllLoaded {
     fn all_loaded(&self, asset_server: &AssetServer) -> bool;
 }
 
-impl<T: Asset> AssetMap for HashMap<String, Handle<T>> {
+impl<T: Asset> AllLoaded for HashMap<String, Handle<T>> {
     fn all_loaded(&self, asset_server: &AssetServer) -> bool {
         self.values()
             .all(|x| asset_server.is_loaded_with_dependencies(x))
     }
 }
 
-impl<T: Asset> AssetMap for HashMap<String, Vec<Handle<T>>> {
+impl<T: Asset> AllLoaded for HashMap<String, Vec<Handle<T>>> {
     fn all_loaded(&self, asset_server: &AssetServer) -> bool {
         self.values()
             .flatten()
