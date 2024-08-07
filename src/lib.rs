@@ -4,7 +4,7 @@ mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod screens;
-mod ui;
+mod theme;
 
 use bevy::{
     asset::AssetMetaCheck,
@@ -58,7 +58,7 @@ impl Plugin for AppPlugin {
         app.add_plugins((
             demo::plugin,
             screens::plugin,
-            ui::plugin,
+            theme::plugin,
             assets::plugin,
             audio::plugin,
         ));
