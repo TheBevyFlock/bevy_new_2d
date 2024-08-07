@@ -38,7 +38,7 @@ impl SpawnExt for ChildBuilder<'_> {
 
 /// An extension trait to support immediately spawning an entity from an [`EntityCommand`].
 pub trait WorldSpawnExt {
-    // Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
+    // Workaround for <https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086>.
     /// Immediately spawn an entity with an [`EntityCommand`].
     fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityWorldMut;
 }
