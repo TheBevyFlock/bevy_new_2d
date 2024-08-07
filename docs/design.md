@@ -5,6 +5,16 @@ The exists an [official CI template](https://github.com/bevyengine/bevy_github_c
 that one is currently more of an extension to the [Bevy examples](https://bevyengine.org/examples/) than an actual template.
 We say this because it is extremely bare-bones and as such does not provide things that in practice are necessary for game development.
 
+## Table of Contents
+
+- [Principles](#principles)
+- [Code structure](#code-structure)
+- [UI](#ui)
+- [Assets](#assets)
+- [Spawning](#spawning)
+- [Dev tools](#dev-tools)
+- [Screens](#screens)
+
 ## Principles
 
 So, how would an official template that is built for real-world game development look like?
@@ -98,30 +108,36 @@ By returning `EntityCommands`, you can easily chain multiple widgets together an
 Define your assets in an enum so each variant maps to a `Handle`:
 
 ```rust
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum SpriteKey {
-    Player,
-    Enemy,
-    Powerup,
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Resource)]
+pub struct ImageHandles(HashMap<String, Handle<Image>>);
+
+impl ImageHandles {
+    pub const KEY_PLAYER: &'static str = "Player";
+    pub const KEY_ENEMY: &'static str = "Enemy";
+    pub const KEY_POWERUP: &'static str = "Powerup";
 }
 
-impl AssetKey for SpriteKey {
-    type Asset = Image;
-}
-
-impl FromWorld for HandleMap<SpriteKey> {
+impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        [
-            (SpriteKey::Player, asset_server.load("player.png")),
-            (SpriteKey::Enemy, asset_server.load("enemy.png")),
-            (SpriteKey::Powerup, asset_server.load("powerup.png")),
-        ]
-        .into()
+        let map = [(
+            ImageHandles::KEY_PLAYER,
+            asset_server.load("player.png"),
+        ), (
+            ImageHandles::KEY_ENEMY,
+            asset_server.load("enemy.png"),
+        ), (
+            ImageHandles::KEY_POWERUP,
+            asset_server.load("powerup.png"),
+        )]
+        .into();
+        Self(map)
     }
 }
 ```
 
+TODO
 Then set up preloading in a plugin:
 
 ```rust
