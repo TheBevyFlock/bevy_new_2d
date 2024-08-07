@@ -97,16 +97,13 @@ impl FromWorld for SoundEffectHandles {
         // Using string parsing to strip numbered suffixes + `AssetServer::load_folder`
         // is a good way to load many sound effects at once, but is not supported on
         // Wasm or Android.
-        let variation_files = [(Self::KEY_STEP, 4)];
-        let variations = variation_files.into_iter().map(|(key, variations)| {
-            (
-                key.to_string(),
-                (1..=variations)
-                    .map(|i| asset_server.load(&format!("{key}{i}.ogg")))
-                    .collect(),
-            )
-        });
-        map.extend(variations);
+        const STEP_VARIATIONS: u32 = 4;
+        let mut step_sfx = Vec::new();
+        for i in 1..=STEP_VARIATIONS {
+            let file = format!("{key}{i}.ogg", key = Self::KEY_STEP);
+            step_sfx.push(asset_server.load(file));
+        }
+        map.insert(Self::KEY_STEP.to_string(), step_sfx);
 
         Self(map)
     }
