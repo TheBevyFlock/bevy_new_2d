@@ -61,7 +61,7 @@ impl WorldSpawnExt for WorldChildBuilder<'_> {
 
 /// An extension trait to support adding [`EntityCommand`]s after `world.spawn()`.
 pub trait AddExt {
-    // Workaround for https://github.com/bevyengine/bevy/issues/14278.
+    // Workaround for <https://github.com/bevyengine/bevy/issues/14278>.
     /// Apply an [`EntityCommand`] to the current entity.
     fn add<M: 'static>(&mut self, command: impl EntityCommand<M>) -> &mut Self;
 }
