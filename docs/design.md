@@ -10,7 +10,7 @@ We say this because it is extremely bare-bones and as such does not provide thin
 - [Principles](#principles)
 - [Code structure](#code-structure)
 - [UI](#ui)
-- [Assets](#assets)
+- [Asset Loading](#asset-loading)
 - [Spawning](#spawning)
 - [Dev tools](#dev-tools)
 - [Screens](#screens)
@@ -101,11 +101,11 @@ This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_
 By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
 By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
 
-## Assets
+## Asset Loading
 
 ### Pattern
 
-Define your assets in an enum so each variant maps to a `Handle`:
+Define your assets in a `Handles` resource that maps their path to a `Handle`:
 
 ```rust
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
@@ -121,71 +121,95 @@ impl ImageHandles {
 impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        let map = [(
-            ImageHandles::KEY_PLAYER,
-            asset_server.load("player.png"),
-        ), (
-            ImageHandles::KEY_ENEMY,
-            asset_server.load("enemy.png"),
-        ), (
-            ImageHandles::KEY_POWERUP,
-            asset_server.load("powerup.png"),
-        )]
-        .into();
+
+        let files = [
+            SoundtrackHandles::KEY_PLAYER,
+            SoundtrackHandles::KEY_ENEMY,
+            SoundtrackHandles::KEY_POWERUP,
+        ];
+        let map = files
+            .into_iter()
+            .map(|file| (file.to_string(), asset_server.load(file)))
+            .collect();
+
         Self(map)
     }
 }
 ```
 
-TODO
-Then set up preloading in a plugin:
+Then start preloading in the `asset::plugin`:
 
 ```rust
-app.register_type::<HandleMap<SpriteKey>>();
-app.init_resource::<HandleMap<SpriteKey>>();
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<ImageHandles>();
+    app.init_resource::<ImageHandles>();
+}
+```
+
+And finally add a loading check to the `screens::loading::plugin`:
+
+```rust
+fn all_assets_loaded(
+    image_handles: Res<ImageHandles>,
+) -> bool {
+    image_handles.all_loaded(&asset_server)
+}
 ```
 
 ### Reasoning
 
 This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
 By preloading your assets, you can avoid hitches during gameplay.
+We start loading as soon as the app starts and wait for all assets to be loaded in the loading screen.
 
-Using an enum to represent your assets encapsulates their file path from the rest of the game code,
-and gives you access to static tooling like renaming in an IDE, and compile errors for an invalid name.
+By using strings as keys, you can dynamically load assets based on input data such as a level file.
+If you prefer the static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
 
 ## Spawning
 
 ### Pattern
 
-Spawn a game object by using an observer:
+Spawn a game object by using a custom command. Inside the command,
+run the spawning code with `world.run_system_once` or  `world.run_system_once_with`:
 
 ```rust
 // monster.rs
-use bevy::prelude::*;
 
-pub(super) fn plugin(app: &mut App) {
-    app.observe(on_spawn_monster);
+#[derive(Debug)]
+pub struct SpawnMonster {
+    pub health: u32,
+    pub transform: Transform,
 }
 
-#[derive(Event, Debug)]
-pub struct SpawnMonster;
+impl Command for SpawnMonster {
+    fn apply(self, world: &mut World) {
+        world.run_system_once_with(self, spawn_monster);
+    }
+}
 
-fn on_spawn_monster(
-    _trigger: Trigger<SpawnMonster>,
+fn spawn_monster(
+    spawn_monster: In<SpawnMonster>,
     mut commands: Commands,
 ) {
     commands.spawn((
         Name::new("Monster"),
+        Health::new(spawn_monster.health),
+        SpatialBundle::from_transform(spawn_monster.transform),
         // other components
     ));
 }
 ```
 
-And then, somewhere else in your code, trigger the observer:
+And then, somewhere else in your code, add the command to the command queue:
 
 ```rust
+// dangerous_forest.rs
+
 fn spawn_monster(mut commands: Commands) {
-    commands.trigger(SpawnMonster);
+    commands.add(SpawnMonster {
+        health: 100,
+        transform: Transform::from_xyz(10.0, 0.0, 0.0),
+    });
 }
 ```
 
@@ -193,9 +217,10 @@ fn spawn_monster(mut commands: Commands) {
 
 By encapsulating the spawning of a game object in a function,
 you save on boilerplate code and can easily change the behavior of spawning.
-An observer is an elegant way to then trigger this function from anywhere in your code.
-A limitation of this approach is that calling code cannot extend the spawn call with additional components or children.
-If you know about a better pattern, please let us know!
+A custom command is an elegant way to then indirectly call this function from anywhere in your code.
+
+A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
+as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
 
 ## Dev tools
 
