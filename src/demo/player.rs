@@ -2,7 +2,10 @@
 //! Note that this is separate from the `movement` module as that could be used
 //! for other characters as well.
 
-use bevy::{ecs::system::RunSystemOnce, prelude::*};
+use bevy::{
+    ecs::{system::RunSystemOnce, world::Command},
+    prelude::*,
+};
 
 use crate::{
     assets::ImageHandles,
@@ -28,13 +31,14 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Player;
 
-pub trait SpawnPlayerCommands {
-    fn spawn_player(&mut self);
-}
+/// Command to spawn the player character.
+/// We can add fields to this struct if we need data for spawning.
+#[derive(Debug)]
+pub struct SpawnPlayer;
 
-impl SpawnPlayerCommands for Commands<'_, '_> {
-    fn spawn_player(&mut self) {
-        self.add(|world: &mut World| world.run_system_once(spawn_player));
+impl Command for SpawnPlayer {
+    fn apply(self, world: &mut World) {
+        world.run_system_once(spawn_player);
     }
 }
 
