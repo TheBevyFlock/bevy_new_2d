@@ -37,10 +37,10 @@ pub struct InteractionPalette {
 pub struct OnPress(#[reflect(ignore)] pub SystemId);
 
 fn apply_on_press(
-    interactions: Query<(&Interaction, &OnPress), Changed<Interaction>>,
+    interaction_query: Query<(&Interaction, &OnPress), Changed<Interaction>>,
     mut commands: Commands,
 ) {
-    for (interaction, &OnPress(system_id)) in &interactions {
+    for (interaction, &OnPress(system_id)) in &interaction_query {
         if matches!(interaction, Interaction::Pressed) {
             commands.run_system(system_id);
         }
@@ -64,10 +64,10 @@ fn apply_interaction_palette(
 }
 
 fn trigger_interaction_sfx(
-    interactions: Query<&Interaction, Changed<Interaction>>,
+    interaction_query: Query<&Interaction, Changed<Interaction>>,
     mut commands: Commands,
 ) {
-    for interaction in &interactions {
+    for interaction in &interaction_query {
         match interaction {
             Interaction::Hovered => {
                 commands.play_sound_effect(SoundEffectHandles::KEY_BUTTON_HOVER)

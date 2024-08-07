@@ -33,10 +33,10 @@ impl Command for PlaySoundtrack {
 fn apply_play_soundstrack(
     In(play_soundtrack): In<PlaySoundtrack>,
     mut commands: Commands,
-    soundtracks: Query<Entity, With<IsSoundtrack>>,
+    soundtrack_query: Query<Entity, With<IsSoundtrack>>,
     soundtrack_handles: Res<SoundtrackHandles>,
 ) {
-    for entity in soundtracks.iter() {
+    for entity in soundtrack_query.iter() {
         commands.entity(entity).despawn_recursive();
     }
 
