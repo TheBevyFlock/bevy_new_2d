@@ -31,20 +31,17 @@ impl ImageHandles {
 impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
+
         let pixel_art_settings = |settings: &mut ImageLoaderSettings| {
             // Using nearest sampling to preserve pixel art style
             settings.sampler = ImageSampler::nearest();
         };
-        let pixel_art_files = [ImageHandles::KEY_DUCKY];
-        let map = pixel_art_files
-            .into_iter()
-            .map(|key| {
-                (
-                    key.to_string(),
-                    asset_server.load_with_settings(key, pixel_art_settings),
-                )
-            })
-            .collect();
+        let mut map = HashMap::new();
+        map.insert(
+            Self::KEY_DUCKY.to_string(),
+            asset_server.load_with_settings(Self::KEY_DUCKY, pixel_art_settings),
+        );
+
         Self(map)
     }
 }
@@ -61,6 +58,7 @@ impl SoundtrackHandles {
 impl FromWorld for SoundtrackHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
+
         let files = [
             SoundtrackHandles::KEY_CREDITS,
             SoundtrackHandles::KEY_GAMEPLAY,
@@ -69,6 +67,7 @@ impl FromWorld for SoundtrackHandles {
             .into_iter()
             .map(|file| (file.to_string(), asset_server.load(file)))
             .collect();
+
         Self(map)
     }
 }
@@ -88,6 +87,7 @@ impl SoundEffectHandles {
 impl FromWorld for SoundEffectHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.get_resource::<AssetServer>().unwrap();
+
         let files = [Self::KEY_BUTTON_HOVER, Self::KEY_BUTTON_PRESS];
         let mut map: HashMap<_, _> = files
             .into_iter()
