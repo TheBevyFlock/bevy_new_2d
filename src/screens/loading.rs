@@ -6,7 +6,7 @@ use bevy::{prelude::*, utils::HashMap};
 use super::Screen;
 use crate::{
     game::assets::{ImageHandles, SoundEffectHandles, SoundtrackHandles},
-    ui::prelude::*,
+    theme::prelude::*,
 };
 
 pub(super) fn plugin(app: &mut App) {
