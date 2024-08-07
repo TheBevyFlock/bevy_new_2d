@@ -26,7 +26,7 @@ impl Command for PlaySoundtrack {
     /// This command will despawn the current soundtrack, then spawn a new one
     /// if necessary.
     fn apply(self, world: &mut World) {
-        world.run_system_once_with(self, apply_play_soundstrack);
+        world.run_system_once_with(self, apply_play_soundtrack);
     }
 }
 
