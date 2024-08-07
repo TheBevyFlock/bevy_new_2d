@@ -25,22 +25,26 @@ pub(super) fn plugin(app: &mut App) {
 pub struct ImageHandles(HashMap<String, Handle<Image>>);
 
 impl ImageHandles {
-    pub const KEY_DUCKY: &'static str = "Ducky";
+    pub const KEY_DUCKY: &'static str = "images/ducky.png";
 }
 
 impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        let map = [(
-            ImageHandles::KEY_DUCKY.to_string(),
-            asset_server.load_with_settings(
-                "images/ducky.png",
-                |settings: &mut ImageLoaderSettings| {
-                    settings.sampler = ImageSampler::nearest();
-                },
-            ),
-        )]
-        .into();
+        let pixel_art_settings = |settings: &mut ImageLoaderSettings| {
+            // Using nearest sampling to preserve pixel art style
+            settings.sampler = ImageSampler::nearest();
+        };
+        let pixel_art_files = [ImageHandles::KEY_DUCKY];
+        let map = pixel_art_files
+            .into_iter()
+            .map(|key| {
+                (
+                    key.to_string(),
+                    asset_server.load_with_settings(key, pixel_art_settings),
+                )
+            })
+            .collect();
         Self(map)
     }
 }
@@ -50,24 +54,21 @@ impl FromWorld for ImageHandles {
 pub struct SoundtrackHandles(HashMap<String, Handle<AudioSource>>);
 
 impl SoundtrackHandles {
-    pub const KEY_CREDITS: &'static str = "Credits";
-    pub const KEY_GAMEPLAY: &'static str = "Gameplay";
+    pub const KEY_CREDITS: &'static str = "audio/soundtracks/Monkeys Spinning Monkeys.ogg";
+    pub const KEY_GAMEPLAY: &'static str = "audio/soundtracks/Fluffing A Duck.ogg";
 }
 
 impl FromWorld for SoundtrackHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        let map = [
-            (
-                SoundtrackHandles::KEY_CREDITS.to_string(),
-                asset_server.load("audio/soundtracks/Monkeys Spinning Monkeys.ogg"),
-            ),
-            (
-                SoundtrackHandles::KEY_GAMEPLAY.to_string(),
-                asset_server.load("audio/soundtracks/Fluffing A Duck.ogg"),
-            ),
-        ]
-        .into();
+        let files = [
+            SoundtrackHandles::KEY_CREDITS,
+            SoundtrackHandles::KEY_GAMEPLAY,
+        ];
+        let map = files
+            .into_iter()
+            .map(|file| (file.to_string(), asset_server.load(file)))
+            .collect();
         Self(map)
     }
 }
@@ -79,35 +80,33 @@ impl FromWorld for SoundtrackHandles {
 pub struct SoundEffectHandles(HashMap<String, Vec<Handle<AudioSource>>>);
 
 impl SoundEffectHandles {
-    pub const KEY_BUTTON_HOVER: &'static str = "ButtonHover";
-    pub const KEY_BUTTON_PRESS: &'static str = "ButtonPress";
-    pub const KEY_STEP: &'static str = "Step";
+    pub const KEY_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
+    pub const KEY_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
+    pub const KEY_STEP: &'static str = "audio/sfx/step";
 }
 
 impl FromWorld for SoundEffectHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.get_resource::<AssetServer>().unwrap();
-        let mut map = HashMap::default();
+        let files = [Self::KEY_BUTTON_HOVER, Self::KEY_BUTTON_PRESS];
+        let mut map: HashMap<_, _> = files
+            .into_iter()
+            .map(|file| (file.to_string(), vec![asset_server.load(file)]))
+            .collect();
 
-        // Load sound effects here.
         // Using string parsing to strip numbered suffixes + `AssetServer::load_folder`
         // is a good way to load many sound effects at once, but is not supported on
         // Wasm or Android.
-        let step_sfx = vec![
-            asset_server.load("audio/sfx/step1.ogg"),
-            asset_server.load("audio/sfx/step2.ogg"),
-            asset_server.load("audio/sfx/step3.ogg"),
-            asset_server.load("audio/sfx/step4.ogg"),
-        ];
-        map.insert(Self::KEY_STEP.to_string(), step_sfx);
-        map.insert(
-            Self::KEY_BUTTON_HOVER.to_string(),
-            vec![asset_server.load("audio/sfx/button_hover.ogg")],
-        );
-        map.insert(
-            Self::KEY_BUTTON_PRESS.to_string(),
-            vec![asset_server.load("audio/sfx/button_press.ogg")],
-        );
+        let variation_files = [(Self::KEY_STEP, 4)];
+        let variations = variation_files.into_iter().map(|(key, variations)| {
+            (
+                key.to_string(),
+                (1..=variations)
+                    .map(|i| asset_server.load(&format!("{key}{i}.ogg")))
+                    .collect(),
+            )
+        });
+        map.extend(variations);
 
         Self(map)
     }
