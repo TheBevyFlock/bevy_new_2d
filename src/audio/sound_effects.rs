@@ -62,7 +62,7 @@ struct PlaySoundEffect {
 impl Command for PlaySoundEffect {
     fn apply(self, world: &mut World) {
         // If you need more complex behavior, use `world.run_system_once_with`,
-        // as demonstrated for `PlaySoundtrack`.
+        // as demonstrated with `PlaySoundtrack`.
         world.resource_scope(|world, mut sound_effects: Mut<SoundEffectHandles>| {
             sound_effects.play(self.name, world, self.settings);
         });
