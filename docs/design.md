@@ -105,7 +105,9 @@ By returning `EntityCommands`, you can easily chain multiple widgets together an
 
 ### Pattern
 
-Define your assets in a `Handles` resource that maps their path to a `Handle`:
+Define your assets in a `Handles` resource that maps their path to a `Handle`.
+If you are definiting the assets in code, add them as constants to the `Handles` struct.
+Otherwise, load them dynamically from e.g. a file.
 
 ```rust
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
@@ -113,9 +115,9 @@ Define your assets in a `Handles` resource that maps their path to a `Handle`:
 pub struct ImageHandles(HashMap<String, Handle<Image>>);
 
 impl ImageHandles {
-    pub const KEY_PLAYER: &'static str = "Player";
-    pub const KEY_ENEMY: &'static str = "Enemy";
-    pub const KEY_POWERUP: &'static str = "Powerup";
+    pub const KEY_PLAYER: &'static str = "assets/images/player.png";
+    pub const KEY_ENEMY: &'static str = "assets/images/enemy.png";
+    pub const KEY_POWERUP: &'static str = "assets/images/powerup.png";
 }
 
 impl FromWorld for ImageHandles {
@@ -163,7 +165,8 @@ By preloading your assets, you can avoid hitches during gameplay.
 We start loading as soon as the app starts and wait for all assets to be loaded in the loading screen.
 
 By using strings as keys, you can dynamically load assets based on input data such as a level file.
-If you prefer the static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
+If you prefer a purely static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
+You can also mix the dynamic and static approach according to your needs.
 
 ## Spawning
 
