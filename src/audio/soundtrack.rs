@@ -30,7 +30,7 @@ impl Command for PlaySoundtrack {
     }
 }
 
-fn apply_play_soundstrack(
+fn apply_play_soundtrack(
     In(play_soundtrack): In<PlaySoundtrack>,
     mut commands: Commands,
     soundtrack_query: Query<Entity, With<IsSoundtrack>>,
