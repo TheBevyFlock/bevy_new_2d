@@ -2,7 +2,7 @@
 //! Note that this is separate from the `movement` module as that could be used
 //! for other characters as well.
 
-use bevy::prelude::*;
+use bevy::{ecs::system::RunSystemOnce, prelude::*};
 
 use crate::{
     assets::ImageHandles,
@@ -15,7 +15,6 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.observe(spawn_player);
     app.register_type::<Player>();
 
     // Record directional input as movement controls.
@@ -25,15 +24,21 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Event, Debug)]
-pub struct SpawnPlayer;
-
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
 #[reflect(Component)]
 pub struct Player;
 
+pub trait SpawnPlayerCommands {
+    fn spawn_player(&mut self);
+}
+
+impl SpawnPlayerCommands for Commands<'_, '_> {
+    fn spawn_player(&mut self) {
+        self.add(|world: &mut World| world.run_system_once(spawn_player));
+    }
+}
+
 fn spawn_player(
-    _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
     image_handles: Res<ImageHandles>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
