@@ -1,4 +1,8 @@
-use bevy::{audio::PlaybackMode, ecs::world::Command, prelude::*};
+use bevy::{
+    audio::PlaybackMode,
+    ecs::{system::RunSystemOnce as _, world::Command},
+    prelude::*,
+};
 
 use crate::assets::SoundtrackHandles;
 
@@ -22,29 +26,35 @@ impl Command for PlaySoundtrack {
     /// This command will despawn the current soundtrack, then spawn a new one
     /// if necessary.
     fn apply(self, world: &mut World) {
-        let mut soundtrack_query = world.query_filtered::<Entity, With<IsSoundtrack>>();
-        let soundtracks: Vec<_> = soundtrack_query.iter(world).collect();
-        for entity in soundtracks {
-            world.entity_mut(entity).despawn_recursive();
-        }
-
-        let soundtrack_key = match &self {
-            PlaySoundtrack::Key(key) => key.clone(),
-            PlaySoundtrack::Disable => return,
-        };
-
-        let soundtrack_handles = world.resource::<SoundtrackHandles>();
-        world.spawn((
-            AudioSourceBundle {
-                source: soundtrack_handles[&soundtrack_key].clone_weak(),
-                settings: PlaybackSettings {
-                    mode: PlaybackMode::Loop,
-                    ..default()
-                },
-            },
-            IsSoundtrack,
-        ));
+        world.run_system_once_with(self, apply_play_soundtrack);
     }
+}
+
+fn apply_play_soundtrack(
+    In(play_soundtrack): In<PlaySoundtrack>,
+    mut commands: Commands,
+    soundtrack_query: Query<Entity, With<IsSoundtrack>>,
+    soundtrack_handles: Res<SoundtrackHandles>,
+) {
+    for entity in soundtrack_query.iter() {
+        commands.entity(entity).despawn_recursive();
+    }
+
+    let soundtrack_key = match play_soundtrack {
+        PlaySoundtrack::Key(key) => key,
+        PlaySoundtrack::Disable => return,
+    };
+
+    commands.spawn((
+        AudioSourceBundle {
+            source: soundtrack_handles[&soundtrack_key].clone_weak(),
+            settings: PlaybackSettings {
+                mode: PlaybackMode::Loop,
+                ..default()
+            },
+        },
+        IsSoundtrack,
+    ));
 }
 
 /// An extension trait with convenience methods for soundtrack commands.
