@@ -53,7 +53,7 @@ This template comes with a basic project structure that you may find useful:
 | [`src/audio/`](./src/audio)              | Commands for playing SFX and music                                             |
 | [`src/demo/`](./src/demo)                | Example game mechanics & content (replace with your own code)                  |
 | [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                                                       |
-| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc                               |
+| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.                              |
 | [`src/theme/`](./src/theme)              | Reusable UI widgets & theming                                                  |
 
 Feel free to move things around however you want, though.
