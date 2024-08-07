@@ -42,17 +42,19 @@ Clone your new Github repository to a local repository and push a commit with th
 
 ## Write your game
 
-The best way to get started is to play around with what you find in [`src/game/`](./src/game).
+The best way to get started is to play around with what you find in [`src/demo/`](./src/demo).
 
 This template comes with a basic project structure that you may find useful:
 
-| Path                                     | Description                                           |
-|------------------------------------------|-------------------------------------------------------|
-| [`src/lib.rs`](./src/lib.rs)             | App setup                                             |
-| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.     |
-| [`src/game/`](./src/game)                | Game mechanics & content (replace with your own code) |
-| [`src/ui/`](./src/ui)                    | Reusable UI widgets & theming                         |
-| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                              |
+| Path                                     | Description                                                                     |
+|------------------------------------------|---------------------------------------------------------------------------------|
+| [`src/lib.rs`](./src/lib.rs)             | App setup.                                                                      |
+| [`src/assets/`](./src/assets)            | Definition of assets that will be preloaded during the loading screen.          |
+| [`src/audio/`](./src/audio)              | Commands for playing different kinds of audio.                                  |
+| [`src/demo/`](./src/demo)                | Example game mechanics & content (replace with your own code).                  |
+| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds.                                                       |
+| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.                               |
+| [`src/theme/`](./src/theme)              | Reusable UI widgets & theming.                                                  |
 
 Feel free to move things around however you want, though.
 
