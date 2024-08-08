@@ -42,17 +42,19 @@ Clone your new Github repository to a local repository and push a commit with th
 
 ## Write your game
 
-The best way to get started is to play around with what you find in [`src/game/`](./src/game).
+The best way to get started is to play around with what you find in [`src/demo/`](./src/demo).
 
 This template comes with a basic project structure that you may find useful:
 
-| Path                                     | Description                                           |
-|------------------------------------------|-------------------------------------------------------|
-| [`src/lib.rs`](./src/lib.rs)             | App setup                                             |
-| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.     |
-| [`src/game/`](./src/game)                | Game mechanics & content (replace with your own code) |
-| [`src/ui/`](./src/ui)                    | Reusable UI widgets & theming                         |
-| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                              |
+| Path                                     | Description                                                                    |
+|------------------------------------------|--------------------------------------------------------------------------------|
+| [`src/lib.rs`](./src/lib.rs)             | App setup                                                                      |
+| [`src/assets.rs`](./src/assets.rs)       | Definition of assets that will be preloaded before the game starts             |
+| [`src/audio/`](./src/audio)              | Commands for playing SFX and music                                             |
+| [`src/demo/`](./src/demo)                | Example game mechanics & content (replace with your own code)                  |
+| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                                                       |
+| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.                              |
+| [`src/theme/`](./src/theme)              | Reusable UI widgets & theming                                                  |
 
 Feel free to move things around however you want, though.
 
@@ -76,6 +78,15 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 
 - Use `cargo run --profile release-native --no-default-features` to run a native release build.
 - Use `trunk serve --release --no-default-features` to run a web release build.
+
+</details>
+
+<details>
+  <summary>Linux dependencies</summary>
+
+If you are using Linux, make sure you take a look at Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
+Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
 
 </details>
 
