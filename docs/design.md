@@ -235,7 +235,7 @@ as custom commands don't return `Entity` or `EntityCommands`. This kind of usage
 
 ### Pattern
 
-When adding a component that can have an interaction, such as a button that can be pressed,
+When spawning an entity that can be interacted with, such as a button that can be pressed,
 register a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems) to handle the interaction.
 Add the resulting `SystemId` through a newtype component to your entity:
 
