@@ -37,7 +37,7 @@ see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy
 ## Pattern Table of Contents
 
 - [Plugin Organization](#plugin-organization)
-- [Widgets](#widgets)
+- [Widget](#widget)
 - [Asset Preloading](#asset-preloading)
 - [Spawn Command](#spawn-command)
 - [Interaction Callback](#interaction-callback)
@@ -83,7 +83,7 @@ By splitting your code like this, you can easily keep all your systems and resou
 A good rule of thumb is to have one plugin per file,
 but feel free to leave out a plugin if your file does not need to do anything with the `App`.
 
-## Widgets
+## Widget
 
 ### Pattern
 
