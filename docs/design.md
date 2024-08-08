@@ -300,8 +300,7 @@ In simpler words, you don't need to check if the entity is the play button, the 
 or something entire different, you just run the system that was added to the entity.
 
 This also keeps the interaction logic close to the entity that is interacted with,
-allowing for better code organization. If you however need a more global interaction system,
-consider triggering an observer from the callback.
+allowing for better code organization. If you want multiple buttons to do the same thing, consider triggering an event in their callbacks.
 
 ## Dev Tools
 
