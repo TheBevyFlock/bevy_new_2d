@@ -293,7 +293,7 @@ fn despawn_one_shot_system(
 ### Reasoning
 
 This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
-By adding the system handling the interaction as a component to the entity,
+By adding the system handling the interaction to the entity as a component,
 the code running on interactions does not need to differentiate about the entity it is running on.
 
 In simpler words, you don't need to check if the entity is the play button, the exit button,
