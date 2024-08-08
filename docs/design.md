@@ -34,7 +34,20 @@ Bevy is still young, and many design patterns are still being discovered and ref
 Most do not even have an agreed name yet. For some prior work in this area that inspired us,
 see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
 
-## Code structure
+## Pattern Table of Contents
+
+- [Plugin Organization](#plugin-organization)
+- [Widgets](#widgets)
+- [Asset Preloading](#asset-preloading)
+- [Spawn Commands](#spawn-commands)
+- [Interaction Callbacks](#interaction-callbacks)
+- [Dev Tools](#dev-tools)
+- [Screen States](#screen-states)
+
+When talking about these, use their name followed by "pattern",
+e.g. "the widgets pattern", or "the plugin organization pattern".
+
+## Plugin Organization
 
 ### Pattern
 
@@ -67,7 +80,10 @@ pub(super) fn plugin(app: &mut App) {
 Bevy is great at organizing code into plugins. The most lightweight way to do this is by using simple functions as plugins.
 By splitting your code like this, you can easily keep all your systems and resources locally grouped. Everything that belongs to the `player` is only in `player.rs`, and so on.
 
-## UI
+A good rule of thumb is to have one plugin per file,
+but feel free to leave out a plugin if your file does not need to do anything with the `App`.
+
+## Widgets
 
 ### Pattern
 
@@ -91,97 +107,160 @@ This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_
 By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
 By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
 
-## Assets
+## Asset Preloading
 
 ### Pattern
 
-Define your assets in an enum so each variant maps to a `Handle`:
+Define your assets with a resource that maps asset paths to `Handle`s.
+If you're defining the assets in code, add their paths as constants.
+Otherwise, load them dynamically from e.g. a file.
 
 ```rust
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-pub enum SpriteKey {
-    Player,
-    Enemy,
-    Powerup,
+#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[reflect(Resource)]
+pub struct ImageHandles(HashMap<String, Handle<Image>>);
+
+impl ImageHandles {
+    pub const KEY_PLAYER: &'static str = "images/player.png";
+    pub const KEY_ENEMY: &'static str = "images/enemy.png";
+    pub const KEY_POWERUP: &'static str = "images/powerup.png";
 }
 
-impl AssetKey for SpriteKey {
-    type Asset = Image;
-}
-
-impl FromWorld for HandleMap<SpriteKey> {
+impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        [
-            (SpriteKey::Player, asset_server.load("player.png")),
-            (SpriteKey::Enemy, asset_server.load("enemy.png")),
-            (SpriteKey::Powerup, asset_server.load("powerup.png")),
-        ]
-        .into()
+
+        let files = [
+            ImageHandles::KEY_PLAYER,
+            ImageHandles::KEY_ENEMY,
+            ImageHandles::KEY_POWERUP,
+        ];
+        let map = files
+            .into_iter()
+            .map(|file| (file.to_string(), asset_server.load(file)))
+            .collect();
+
+        Self(map)
     }
 }
 ```
 
-Then set up preloading in a plugin:
+Then start preloading in the `assets::plugin`:
 
 ```rust
-app.register_type::<HandleMap<SpriteKey>>();
-app.init_resource::<HandleMap<SpriteKey>>();
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<ImageHandles>();
+    app.init_resource::<ImageHandles>();
+}
+```
+
+And finally add a loading check to the `screens::loading::plugin`:
+
+```rust
+fn all_assets_loaded(
+    image_handles: Res<ImageHandles>,
+) -> bool {
+    image_handles.all_loaded(&asset_server)
+}
 ```
 
 ### Reasoning
 
 This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
 By preloading your assets, you can avoid hitches during gameplay.
+We start loading as soon as the app starts and wait for all assets to be loaded in the loading screen.
 
-Using an enum to represent your assets encapsulates their file path from the rest of the game code,
-and gives you access to static tooling like renaming in an IDE, and compile errors for an invalid name.
+By using strings as keys, you can dynamically load assets based on input data such as a level file.
+If you prefer a purely static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
+You can also mix the dynamic and static approach according to your needs.
 
-## Spawning
+## Spawn Commands
 
 ### Pattern
 
-Spawn a game object by using an observer:
+Spawn a game object by using a custom command. Inside the command,
+run the spawning code with `world.run_system_once` or  `world.run_system_once_with`:
 
 ```rust
 // monster.rs
-use bevy::prelude::*;
 
-pub(super) fn plugin(app: &mut App) {
-    app.observe(on_spawn_monster);
+#[derive(Debug)]
+pub struct SpawnMonster {
+    pub health: u32,
+    pub transform: Transform,
 }
 
-#[derive(Event, Debug)]
-pub struct SpawnMonster;
+impl Command for SpawnMonster {
+    fn apply(self, world: &mut World) {
+        world.run_system_once_with(self, spawn_monster);
+    }
+}
 
-fn on_spawn_monster(
-    _trigger: Trigger<SpawnMonster>,
+fn spawn_monster(
+    spawn_monster: In<SpawnMonster>,
     mut commands: Commands,
 ) {
     commands.spawn((
         Name::new("Monster"),
+        Health::new(spawn_monster.health),
+        SpatialBundle::from_transform(spawn_monster.transform),
         // other components
     ));
 }
 ```
 
-And then, somewhere else in your code, trigger the observer:
+And then to use a spawn command, add it to `Commands`:
 
 ```rust
-fn spawn_monster(mut commands: Commands) {
-    commands.trigger(SpawnMonster);
+// dangerous_forest.rs
+
+fn spawn_forest_goblin(mut commands: Commands) {
+    commands.add(SpawnMonster {
+        health: 100,
+        transform: Transform::from_xyz(10.0, 0.0, 0.0),
+    });
 }
 ```
 
 ### Reasoning
 
-By encapsulating the spawning of a game object in a function,
+By encapsulating the spawning of a game object in a custom command,
 you save on boilerplate code and can easily change the behavior of spawning.
-An observer is an elegant way to then trigger this function from anywhere in your code.
-A limitation of this approach is that calling code cannot extend the spawn call with additional components or children.
-If you know about a better pattern, please let us know!
+We use `world.run_system_once_with` to run the spawning code with the same syntax as a regular system.
+That way you can easily add system parameters to access things like assets and resources while spawning the entity.
 
-## Dev tools
+A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
+as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
+
+## Interaction Callbacks
+
+### Pattern
+
+When spawning an entity that can be interacted with, such as a button that can be pressed,
+register a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems) to handle the interaction:
+
+```rust
+fn spawn_button(mut commands: Commands) {
+    let pay_money = commands.register_one_shot_system(pay_money);
+    commands.button("Pay up!", pay_money);
+}
+```
+
+The resulting `SystemId` is added as a newtype component on the button entity.
+See the definition of [`OnPress`](../src/theme/interaction.rs) for how this is done.
+
+### Reasoning
+
+This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
+By adding the system handling the interaction to the entity as a component,
+the code running on interactions can be scoped to the exact context of the interaction.
+
+For example, the code for what happens when you press a *specific* button is directly attached to that exact button.
+
+This also keeps the interaction logic close to the entity that is interacted with,
+allowing for better code organization. If you want multiple buttons to do the same thing, consider triggering an event in their callbacks.
+
+## Dev Tools
 
 ### Pattern
 
@@ -199,7 +278,7 @@ pub(super) fn plugin(app: &mut App) {
 The `dev_tools` plugin is only included in dev builds.
 By adding your dev tools here, you automatically guarantee that they are not included in release builds.
 
-## Screens
+## Screen States
 
 ### Pattern
 
