@@ -209,7 +209,7 @@ fn spawn_monster(
 }
 ```
 
-And then, somewhere else in your code, add the command to the command queue:
+And then to use a spawn command, add it to `Commands`:
 
 ```rust
 // dangerous_forest.rs
