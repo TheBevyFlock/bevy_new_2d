@@ -111,8 +111,8 @@ By returning `EntityCommands`, you can easily chain multiple widgets together an
 
 ### Pattern
 
-Define your assets in a `Handles` resource that maps their path to a `Handle`.
-If you are definiting the assets in code, add them as constants to the `Handles` struct.
+Define your assets with a resource that maps asset paths to `Handle`s.
+If you're defining the assets in code, add their paths as constants.
 Otherwise, load them dynamically from e.g. a file.
 
 ```rust
