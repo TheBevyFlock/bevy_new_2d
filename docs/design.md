@@ -37,12 +37,12 @@ see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy
 ## Pattern Table of Contents
 
 - [Plugin Organization](#plugin-organization)
-- [Widget](#widget)
+- [Widgets](#widgets)
 - [Asset Preloading](#asset-preloading)
-- [Spawn Command](#spawn-command)
-- [Interaction Callback](#interaction-callback)
+- [Spawn Commands](#spawn-commands)
+- [Interaction Callbacks](#interaction-callbacks)
 - [Dev Tools](#dev-tools)
-- [Screen State](#screen-state)
+- [Screen States](#screen-states)
 
 When talking about these, use their name followed by "pattern",
 e.g. "the widgets pattern", or "the plugin organization pattern".
@@ -83,7 +83,7 @@ By splitting your code like this, you can easily keep all your systems and resou
 A good rule of thumb is to have one plugin per file,
 but feel free to leave out a plugin if your file does not need to do anything with the `App`.
 
-## Widget
+## Widgets
 
 ### Pattern
 
@@ -174,7 +174,7 @@ By using strings as keys, you can dynamically load assets based on input data su
 If you prefer a purely static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
 You can also mix the dynamic and static approach according to your needs.
 
-## Spawn Command
+## Spawn Commands
 
 ### Pattern
 
@@ -231,7 +231,7 @@ A custom command is an elegant way to then indirectly call this function from an
 A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
 as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
 
-## Interaction Callback
+## Interaction Callbacks
 
 ### Pattern
 
@@ -317,7 +317,7 @@ pub(super) fn plugin(app: &mut App) {
 The `dev_tools` plugin is only included in dev builds.
 By adding your dev tools here, you automatically guarantee that they are not included in release builds.
 
-## Screen State
+## Screen States
 
 ### Pattern
 
