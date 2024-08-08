@@ -45,7 +45,7 @@ see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy
 - [Screen State](#screen-state)
 
 When talking about these, use their name followed by "pattern",
-e.g. "ghe widgets pattern", or "the plugin organization pattern".
+e.g. "the widgets pattern", or "the plugin organization pattern".
 
 ## Plugin Organization
 
