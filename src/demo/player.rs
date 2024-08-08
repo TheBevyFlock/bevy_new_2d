@@ -32,7 +32,7 @@ pub(super) fn plugin(app: &mut App) {
 pub struct Player;
 
 /// A command to spawn the player character.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct SpawnPlayer {
     // We can add fields to this struct if we need data for spawning.
 }
