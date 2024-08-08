@@ -32,18 +32,20 @@ pub(super) fn plugin(app: &mut App) {
 pub struct Player;
 
 /// A command to spawn the player character.
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct SpawnPlayer {
-    // We can add fields to this struct if we need data for spawning.
+    /// See [`MovementController::max_speed`].
+    pub max_speed: f32,
 }
 
 impl Command for SpawnPlayer {
     fn apply(self, world: &mut World) {
-        world.run_system_once(spawn_player);
+        world.run_system_once_with(self, spawn_player);
     }
 }
 
 fn spawn_player(
+    In(config): In<SpawnPlayer>,
     mut commands: Commands,
     image_handles: Res<ImageHandles>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
@@ -69,7 +71,10 @@ fn spawn_player(
             layout: texture_atlas_layout.clone(),
             index: player_animation.get_atlas_index(),
         },
-        MovementController::default(),
+        MovementController {
+            max_speed: config.max_speed,
+            ..default()
+        },
         ScreenWrap,
         player_animation,
         StateScoped(Screen::Playing),
