@@ -86,6 +86,7 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 
 If you are using Linux, make sure you take a look at Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
 Note that this template uses Wayland by default, which requires additional dependencies that are detailed in the link above.
+Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
 
 </details>
 
