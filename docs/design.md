@@ -250,7 +250,6 @@ fn spawn_button(mut commands: Commands) {
     commands.button("Pay up!", pay_money);
 }
 
-
 // See the `Widgets` pattern for context
 impl<T: Spawn> Widgets for T {
     fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands {
