@@ -25,7 +25,7 @@ pub(super) fn plugin(app: &mut App) {
 pub struct ImageHandles(HashMap<String, Handle<Image>>);
 
 impl ImageHandles {
-    pub const KEY_DUCKY: &'static str = "images/ducky.png";
+    pub const PATH_DUCKY: &'static str = "images/ducky.png";
 }
 
 impl FromWorld for ImageHandles {
@@ -38,8 +38,8 @@ impl FromWorld for ImageHandles {
         };
         let mut map = HashMap::new();
         map.insert(
-            Self::KEY_DUCKY.to_string(),
-            asset_server.load_with_settings(Self::KEY_DUCKY, pixel_art_settings),
+            Self::PATH_DUCKY.to_string(),
+            asset_server.load_with_settings(Self::PATH_DUCKY, pixel_art_settings),
         );
 
         Self(map)
@@ -51,21 +51,21 @@ impl FromWorld for ImageHandles {
 pub struct SoundtrackHandles(HashMap<String, Handle<AudioSource>>);
 
 impl SoundtrackHandles {
-    pub const KEY_CREDITS: &'static str = "audio/soundtracks/Monkeys Spinning Monkeys.ogg";
-    pub const KEY_GAMEPLAY: &'static str = "audio/soundtracks/Fluffing A Duck.ogg";
+    pub const PATH_CREDITS: &'static str = "audio/soundtracks/Monkeys Spinning Monkeys.ogg";
+    pub const PATH_GAMEPLAY: &'static str = "audio/soundtracks/Fluffing A Duck.ogg";
 }
 
 impl FromWorld for SoundtrackHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
 
-        let files = [
-            SoundtrackHandles::KEY_CREDITS,
-            SoundtrackHandles::KEY_GAMEPLAY,
+        let paths = [
+            SoundtrackHandles::PATH_CREDITS,
+            SoundtrackHandles::PATH_GAMEPLAY,
         ];
-        let map = files
+        let map = paths
             .into_iter()
-            .map(|file| (file.to_string(), asset_server.load(file)))
+            .map(|path| (path.to_string(), asset_server.load(path)))
             .collect();
 
         Self(map)
@@ -79,19 +79,19 @@ impl FromWorld for SoundtrackHandles {
 pub struct SoundEffectHandles(HashMap<String, Vec<Handle<AudioSource>>>);
 
 impl SoundEffectHandles {
-    pub const KEY_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
-    pub const KEY_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
-    pub const KEY_STEP: &'static str = "audio/sfx/step";
+    pub const PATH_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
+    pub const PATH_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
+    pub const PATH_STEP: &'static str = "audio/sfx/step";
 }
 
 impl FromWorld for SoundEffectHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.get_resource::<AssetServer>().unwrap();
 
-        let files = [Self::KEY_BUTTON_HOVER, Self::KEY_BUTTON_PRESS];
-        let mut map: HashMap<_, _> = files
+        let paths = [Self::PATH_BUTTON_HOVER, Self::PATH_BUTTON_PRESS];
+        let mut map: HashMap<_, _> = paths
             .into_iter()
-            .map(|file| (file.to_string(), vec![asset_server.load(file)]))
+            .map(|path| (path.to_string(), vec![asset_server.load(path)]))
             .collect();
 
         // Using string parsing to strip numbered suffixes + `AssetServer::load_folder`
@@ -100,10 +100,10 @@ impl FromWorld for SoundEffectHandles {
         const STEP_VARIATIONS: u32 = 4;
         let mut step_sfx = Vec::new();
         for i in 1..=STEP_VARIATIONS {
-            let file = format!("{key}{i}.ogg", key = Self::KEY_STEP);
+            let file = format!("{key}{i}.ogg", key = Self::PATH_STEP);
             step_sfx.push(asset_server.load(file));
         }
-        map.insert(Self::KEY_STEP.to_string(), step_sfx);
+        map.insert(Self::PATH_STEP.to_string(), step_sfx);
 
         Self(map)
     }

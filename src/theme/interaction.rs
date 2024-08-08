@@ -72,10 +72,10 @@ fn trigger_interaction_sfx(
     for interaction in &interaction_query {
         match interaction {
             Interaction::Hovered => {
-                commands.play_sound_effect(SoundEffectHandles::KEY_BUTTON_HOVER)
+                commands.play_sound_effect(SoundEffectHandles::PATH_BUTTON_HOVER)
             }
             Interaction::Pressed => {
-                commands.play_sound_effect(SoundEffectHandles::KEY_BUTTON_PRESS)
+                commands.play_sound_effect(SoundEffectHandles::PATH_BUTTON_PRESS)
             }
             _ => (),
         }

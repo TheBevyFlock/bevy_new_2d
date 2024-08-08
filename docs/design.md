@@ -121,23 +121,23 @@ Otherwise, load them dynamically from e.g. a file.
 pub struct ImageHandles(HashMap<String, Handle<Image>>);
 
 impl ImageHandles {
-    pub const KEY_PLAYER: &'static str = "images/player.png";
-    pub const KEY_ENEMY: &'static str = "images/enemy.png";
-    pub const KEY_POWERUP: &'static str = "images/powerup.png";
+    pub const PATH_PLAYER: &'static str = "images/player.png";
+    pub const PATH_ENEMY: &'static str = "images/enemy.png";
+    pub const PATH_POWERUP: &'static str = "images/powerup.png";
 }
 
 impl FromWorld for ImageHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
 
-        let files = [
-            ImageHandles::KEY_PLAYER,
-            ImageHandles::KEY_ENEMY,
-            ImageHandles::KEY_POWERUP,
+        let paths = [
+            ImageHandles::PATH_PLAYER,
+            ImageHandles::PATH_ENEMY,
+            ImageHandles::PATH_POWERUP,
         ];
-        let map = files
+        let map = paths
             .into_iter()
-            .map(|file| (file.to_string(), asset_server.load(file)))
+            .map(|path| (path.to_string(), asset_server.load(path)))
             .collect();
 
         Self(map)
