@@ -3,7 +3,7 @@
 //! for other characters as well.
 
 use bevy::{
-    ecs::{system::RunSystemOnce, world::Command},
+    ecs::{system::RunSystemOnce as _, world::Command},
     prelude::*,
 };
 
