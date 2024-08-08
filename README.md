@@ -8,7 +8,7 @@ You can [try this template in your web browser!](https://the-bevy-flock.itch.io/
 
 Don't want to read through the whole README? [@ChristopherBiscardi](https://github.com/ChristopherBiscardi) made a video on how to use the template from start to finish:
 
-[<img src="./docs/thumbnail.png" width=40% height=40% alt="A video tutorial for bevy_quickstart"/>](https://www.youtube.com/watch?v=ESBRyXClaYc)
+[<img src="./docs/img/thumbnail.png" width=40% height=40% alt="A video tutorial for bevy_quickstart"/>](https://www.youtube.com/watch?v=ESBRyXClaYc)
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ Then [create a GitHub repository](https://github.com/new) and push your local re
 
 Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/bevy_quickstart/) and select `Use this template > Create a new repository`:
 
-![UI demonstration](./docs/readme-manual-setup.png)
+![UI demonstration](./docs/img/readme-manual-setup.png)
 
 Clone your new Github repository to a local repository and push a commit with the following changes:
 

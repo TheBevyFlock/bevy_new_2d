@@ -16,7 +16,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 > You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.
 > <details>
 > <summary>This picture shows how such a setup would look like</summary>
-> <img src="workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
+> <img src="img/workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
 > </details>
 
 ## CD (releasing)
@@ -32,7 +32,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 
 In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
-![A screenshot showing a manually triggered workflow on GitHub Actions](./workflow-dispatch-release.png)
+![A screenshot showing a manually triggered workflow on GitHub Actions](./img/workflow-dispatch-release.png)
 
 Enter a version number in the format `v1.2.3`, then hit the green `Run workflow` button.
 </details>
@@ -76,11 +76,11 @@ In any case, make note of the value used for `ITCH_TARGET`, as you will need it 
 
 In your GitHub repository, navigate to `Settings > Actions > General`:
 
-![A screenshot showing how to navigate to the general GitHub Actions settings](./workflow-settings.png)
+![A screenshot showing how to navigate to the general GitHub Actions settings](./img/workflow-settings.png)
 
 Set `Workflow permissions` to `Read and write permissions`, then hit `Save`:
 
-![A screenshot showing where to change workflow permissions](./workflow-settings-permissions.png)
+![A screenshot showing where to change workflow permissions](./img/workflow-settings-permissions.png)
 
 ### Set up itch.io upload
 
@@ -96,7 +96,7 @@ On your project page, you'll see a warning saying "There was a problem loading y
 
 In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`:
 
-![A screenshot showing where to add secrets in the GitHub Actions settings](./workflow-secrets.png)
+![A screenshot showing where to add secrets in the GitHub Actions settings](./img/workflow-secrets.png)
 
 Hit `New repository secret` and enter the following, then hit `Add secret`:
 
@@ -108,4 +108,4 @@ Hit `New repository secret` and enter the following, then hit `Add secret`:
 [Run your workflow](#cd-releasing) once. When it's done, go back to itch.io and edit your project.
 Scroll to `Uploads`, where you should now see a bunch of files. Find the one tagged `web` and tick the box that says "This file will be played in the browser". You only have to do this once on your first release.
 
-![A screenshot showing a web build selected in the itch.io uploads](workflow-itch-release.png)
+![A screenshot showing a web build selected in the itch.io uploads](img/workflow-itch-release.png)
