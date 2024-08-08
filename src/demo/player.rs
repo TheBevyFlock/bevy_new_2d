@@ -31,10 +31,11 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Player;
 
-/// Command to spawn the player character.
-/// We can add fields to this struct if we need data for spawning.
+/// A command to spawn the player character.
 #[derive(Debug)]
-pub struct SpawnPlayer;
+pub struct SpawnPlayer {
+    // We can add fields to this struct if we need data for spawning.
+}
 
 impl Command for SpawnPlayer {
     fn apply(self, world: &mut World) {
