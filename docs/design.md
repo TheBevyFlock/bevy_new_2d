@@ -288,7 +288,6 @@ fn despawn_one_shot_system(
     let one_shot_system_entity = on_press.entity();
     commands.entity(one_shot_system_entity).despawn_recursive();
 }
-
 ```
 
 ### Reasoning
