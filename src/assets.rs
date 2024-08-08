@@ -33,7 +33,7 @@ impl FromWorld for ImageHandles {
         let asset_server = world.resource::<AssetServer>();
 
         let pixel_art_settings = |settings: &mut ImageLoaderSettings| {
-            // Using nearest sampling to preserve pixel art style
+            // Use `nearest` image sampling to preserve the pixel art style.
             settings.sampler = ImageSampler::nearest();
         };
         let mut map = HashMap::new();
