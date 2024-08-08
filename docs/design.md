@@ -227,7 +227,7 @@ fn spawn_monster(mut commands: Commands) {
 By encapsulating the spawning of a game object in a custom command,
 you save on boilerplate code and can easily change the behavior of spawning.
 We use `world.run_system_once_with` to run the spawning code with the same syntax as a regular system.
-That wasy, you can easily add system parameters to access things like assets and resources while spawning the entity.
+That way you can easily add system parameters to access things like assets and resources while spawning the entity.
 
 A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
 as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
