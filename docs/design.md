@@ -237,57 +237,17 @@ as custom commands don't return `Entity` or `EntityCommands`. This kind of usage
 ### Pattern
 
 When spawning an entity that can be interacted with, such as a button that can be pressed,
-register a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems) to handle the interaction.
-Add the resulting `SystemId` through a newtype component to your entity:
+register a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems) to handle the interaction:
 
 ```rust
-#[derive(Component, Debug, Reflect, Deref, DerefMut)]
-#[reflect(Component, from_reflect = false)]
-pub struct OnPress(#[reflect(ignore)] pub SystemId);
-
 fn spawn_button(mut commands: Commands) {
     let pay_money = commands.register_one_shot_system(pay_money);
     commands.button("Pay up!", pay_money);
 }
-
-// See the `Widgets` pattern for context
-impl<T: Spawn> Widgets for T {
-    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands {
-        self.spawn((
-            Name::new("Button"),
-            ButtonBundle {
-                // ...
-                default()
-            },
-            OnPress(on_press),
-        ));
-    }
-}
 ```
 
-The reflect attributes are currently needed due to
-[`SystemId` not implementing `Reflect`](https://github.com/bevyengine/bevy/issues/14496)
-
-Also despawn the one-shot system when the interactive entity is despawned to prevent memory leaks:
-
-```rust
-pub(super) fn plugin(app: &mut App) {
-    app.observe(despawn_one_shot_system);
-}
-
-/// Remove the one-shot system entity when the [`OnPress`] component is removed.
-/// This is necessary as otherwise, the system would still exist after the button
-/// is removed, causing a memory leak.
-fn despawn_one_shot_system(
-    trigger: Trigger<OnRemove, OnPress>,
-    mut commands: Commands,
-    on_press_query: Query<&OnPress>,
-) {
-    let on_press = on_press_query.get(trigger.entity()).unwrap();
-    let one_shot_system_entity = on_press.entity();
-    commands.entity(one_shot_system_entity).despawn_recursive();
-}
-```
+Add the resulting `SystemId` through a newtype component to your entity.
+See the definition of [`OnPress`](../src/theme/interaction.rs) for how this is done.
 
 ### Reasoning
 
