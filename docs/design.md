@@ -244,7 +244,6 @@ Add the resulting `SystemId` through a newtype component to your entity:
 #[reflect(Component, from_reflect = false)]
 pub struct OnPress(#[reflect(ignore)] pub SystemId);
 
-
 fn spawn_button(mut commands: Commands) {
     let pay_money = commands.register_one_shot_system(pay_money);
     commands.button("Pay up!", pay_money);
