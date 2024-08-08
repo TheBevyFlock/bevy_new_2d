@@ -1,18 +1,26 @@
-//! Spawn the main level by triggering other observers.
+//! Spawn the main level.
 
-use bevy::prelude::*;
+use bevy::{ecs::world::Command, prelude::*};
 
 use super::player::SpawnPlayer;
 
-pub(super) fn plugin(app: &mut App) {
-    app.observe(spawn_level);
+pub(super) fn plugin(_app: &mut App) {
+    // No setup required for this plugin.
+    // It's still good to have a function here so that we can add some setup
+    // later if needed.
 }
 
-#[derive(Event, Debug)]
+#[derive(Debug)]
 pub struct SpawnLevel;
 
-fn spawn_level(_trigger: Trigger<SpawnLevel>, mut commands: Commands) {
-    // The only thing we have in our level is a player,
-    // but add things like walls etc. here.
-    commands.trigger(SpawnPlayer);
+impl Command for SpawnLevel {
+    fn apply(self, world: &mut World) {
+        // The only thing we have in our level is a player,
+        // but add things like walls etc. here.
+        world.commands().add(SpawnPlayer { max_speed: 400.0 });
+
+        // Flush the commands we just added so that they are
+        // all executed now, as part of this command.
+        world.flush_commands();
+    }
 }

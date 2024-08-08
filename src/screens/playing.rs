@@ -19,7 +19,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_level(mut commands: Commands) {
-    commands.trigger(SpawnLevel);
+    commands.add(SpawnLevel);
     commands.play_soundtrack(SoundtrackHandles::KEY_GAMEPLAY);
 }
 

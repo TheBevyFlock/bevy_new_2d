@@ -26,12 +26,12 @@ impl Command for PlaySoundtrack {
     /// This command will despawn the current soundtrack, then spawn a new one
     /// if necessary.
     fn apply(self, world: &mut World) {
-        world.run_system_once_with(self, apply_play_soundtrack);
+        world.run_system_once_with(self, play_soundtrack);
     }
 }
 
-fn apply_play_soundtrack(
-    In(play_soundtrack): In<PlaySoundtrack>,
+fn play_soundtrack(
+    In(config): In<PlaySoundtrack>,
     mut commands: Commands,
     soundtrack_query: Query<Entity, With<IsSoundtrack>>,
     soundtrack_handles: Res<SoundtrackHandles>,
@@ -40,7 +40,7 @@ fn apply_play_soundtrack(
         commands.entity(entity).despawn_recursive();
     }
 
-    let soundtrack_key = match play_soundtrack {
+    let soundtrack_key = match config {
         PlaySoundtrack::Key(key) => key,
         PlaySoundtrack::Disable => return,
     };
