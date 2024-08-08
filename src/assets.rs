@@ -36,11 +36,17 @@ impl FromWorld for ImageHandles {
             // Use `nearest` image sampling to preserve the pixel art style.
             settings.sampler = ImageSampler::nearest();
         };
-        let mut map = HashMap::new();
-        map.insert(
-            Self::PATH_DUCKY.to_string(),
-            asset_server.load_with_settings(Self::PATH_DUCKY, pixel_art_settings),
-        );
+
+        let pixel_art_paths = [Self::PATH_DUCKY];
+        let map = pixel_art_paths
+            .into_iter()
+            .map(|path| {
+                (
+                    path.to_string(),
+                    asset_server.load_with_settings(path, pixel_art_settings),
+                )
+            })
+            .collect();
 
         Self(map)
     }
@@ -59,10 +65,7 @@ impl FromWorld for SoundtrackHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
 
-        let paths = [
-            SoundtrackHandles::PATH_CREDITS,
-            SoundtrackHandles::PATH_GAMEPLAY,
-        ];
+        let paths = [Self::PATH_CREDITS, Self::PATH_GAMEPLAY];
         let map = paths
             .into_iter()
             .map(|path| (path.to_string(), asset_server.load(path)))
