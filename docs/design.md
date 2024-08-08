@@ -224,7 +224,7 @@ fn spawn_monster(mut commands: Commands) {
 
 ### Reasoning
 
-By encapsulating the spawning of a game object in a function,
+By encapsulating the spawning of a game object in a custom command,
 you save on boilerplate code and can easily change the behavior of spawning.
 A custom command is an elegant way to then indirectly call this function from anywhere in your code.
 
