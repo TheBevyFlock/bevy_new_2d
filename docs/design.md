@@ -264,8 +264,8 @@ impl<T: Spawn> Widgets for T {
 }
 ```
 
-Note that the ugly reflect attributes are due to
-[`SystemId` not implementing `Reflect`](https://github.com/bevyengine/bevy/issues/14496).
+The reflect attributes are currently needed due to
+[`SystemId` not implementing `Reflect`](https://github.com/bevyengine/bevy/issues/14496)
 
 Also despawn the one-shot system when the interactive entity is despawned to prevent memory leaks:
 
