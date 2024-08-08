@@ -1,4 +1,4 @@
-//! Spawn the main level by triggering other observers.
+//! Spawn the main level.
 
 use bevy::{ecs::world::Command, prelude::*};
 
