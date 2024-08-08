@@ -34,6 +34,8 @@ pub struct InteractionPalette {
 /// button press.
 #[derive(Component, Debug, Reflect, Deref, DerefMut)]
 #[reflect(Component, from_reflect = false)]
+// Note that the ugly reflect attributes are due to
+// [`SystemId` not implementing `Reflect`](https://github.com/bevyengine/bevy/issues/14496)
 pub struct OnPress(#[reflect(ignore)] pub SystemId);
 
 fn apply_on_press(

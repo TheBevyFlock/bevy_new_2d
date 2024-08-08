@@ -5,16 +5,6 @@ The exists an [official CI template](https://github.com/bevyengine/bevy_github_c
 that one is currently more of an extension to the [Bevy examples](https://bevyengine.org/examples/) than an actual template.
 We say this because it is extremely bare-bones and as such does not provide things that in practice are necessary for game development.
 
-## Table of Contents
-
-- [Principles](#principles)
-- [Code structure](#code-structure)
-- [UI](#ui)
-- [Asset Loading](#asset-loading)
-- [Spawning](#spawning)
-- [Dev tools](#dev-tools)
-- [Screens](#screens)
-
 ## Principles
 
 So, how would an official template that is built for real-world game development look like?
@@ -44,7 +34,20 @@ Bevy is still young, and many design patterns are still being discovered and ref
 Most do not even have an agreed name yet. For some prior work in this area that inspired us,
 see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
 
-## Code structure
+## Pattern Table of Contents
+
+- [Plugin Organization](#plugin-organization)
+- [Widgets](#widgets)
+- [Asset Preloading](#asset-preloading)
+- [Spawn Command](#spawn-command)
+- [Interaction Callback](#interaction-callback)
+- [Dev Tools](#dev-tools)
+- [Screen State](#screen-state)
+
+When talking about these, use their name followed by "pattern",
+e.g. "ghe widgets pattern", or "the plugin organization pattern".
+
+## Plugin Organization
 
 ### Pattern
 
@@ -77,7 +80,10 @@ pub(super) fn plugin(app: &mut App) {
 Bevy is great at organizing code into plugins. The most lightweight way to do this is by using simple functions as plugins.
 By splitting your code like this, you can easily keep all your systems and resources locally grouped. Everything that belongs to the `player` is only in `player.rs`, and so on.
 
-## UI
+A good rule of thumb is to have one plugin per file,
+but feel free to leave out a plugin if your file does not need to do anything with the `App`.
+
+## Widgets
 
 ### Pattern
 
@@ -101,7 +107,7 @@ This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_
 By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
 By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
 
-## Asset Loading
+## Asset Preloading
 
 ### Pattern
 
@@ -168,7 +174,7 @@ By using strings as keys, you can dynamically load assets based on input data su
 If you prefer a purely static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
 You can also mix the dynamic and static approach according to your needs.
 
-## Spawning
+## Spawn Command
 
 ### Pattern
 
@@ -225,7 +231,80 @@ A custom command is an elegant way to then indirectly call this function from an
 A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
 as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
 
-## Dev tools
+## Interaction Callback
+
+### Pattern
+
+When adding a component that can have an interaction, such as a button that can be pressed,
+register a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems) to handle the interaction.
+Add the resulting `SystemId` through a newtype component to your entity:
+
+```rust
+#[derive(Component, Debug, Reflect, Deref, DerefMut)]
+#[reflect(Component, from_reflect = false)]
+pub struct OnPress(#[reflect(ignore)] pub SystemId);
+
+
+fn spawn_button(mut commands: Commands) {
+    let pay_money = commands.register_one_shot_system(pay_money);
+    commands.button("Pay up!", pay_money);
+}
+
+
+// See the `Widgets` pattern for context
+impl<T: Spawn> Widgets for T {
+    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands {
+        self.spawn((
+            Name::new("Button"),
+            ButtonBundle {
+                // ...
+                default()
+            },
+            OnPress(on_press),
+        ));
+    }
+}
+```
+
+Note that the ugly reflect attributes are due to
+[`SystemId` not implementing `Reflect`](https://github.com/bevyengine/bevy/issues/14496).
+
+Also despawn the one-shot system when the interactive entity is despawned to prevent memory leaks:
+
+```rust
+pub(super) fn plugin(app: &mut App) {
+    app.observe(despawn_one_shot_system);
+}
+
+/// Remove the one-shot system entity when the [`OnPress`] component is removed.
+/// This is necessary as otherwise, the system would still exist after the button
+/// is removed, causing a memory leak.
+fn despawn_one_shot_system(
+    trigger: Trigger<OnRemove, OnPress>,
+    mut commands: Commands,
+    on_press_query: Query<&OnPress>,
+) {
+    let on_press = on_press_query.get(trigger.entity()).unwrap();
+    let one_shot_system_entity = on_press.entity();
+    commands.entity(one_shot_system_entity).despawn_recursive();
+}
+
+```
+
+### Reasoning
+
+This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
+By adding the system handling the interaction as a component to the entity,
+the code running on interactions does not need to differentiate about the entity it is running on.
+
+In simpler words, you don't need to check if the entity is the play button, the exit button,
+or something entire different, you just run the system that was added to the entity.
+
+This also keeps the interaction logic close to the entity that is interacted with,
+allowing for better code organization. If you however need a more global interaction system,
+consider triggering an observer from the callback.
+
+## Dev Tools
 
 ### Pattern
 
@@ -243,7 +322,7 @@ pub(super) fn plugin(app: &mut App) {
 The `dev_tools` plugin is only included in dev builds.
 By adding your dev tools here, you automatically guarantee that they are not included in release builds.
 
-## Screens
+## Screen State
 
 ### Pattern
 
