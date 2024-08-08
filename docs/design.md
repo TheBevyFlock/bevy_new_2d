@@ -131,9 +131,9 @@ impl FromWorld for ImageHandles {
         let asset_server = world.resource::<AssetServer>();
 
         let files = [
-            SoundtrackHandles::KEY_PLAYER,
-            SoundtrackHandles::KEY_ENEMY,
-            SoundtrackHandles::KEY_POWERUP,
+            ImageHandles::KEY_PLAYER,
+            ImageHandles::KEY_ENEMY,
+            ImageHandles::KEY_POWERUP,
         ];
         let map = files
             .into_iter()
