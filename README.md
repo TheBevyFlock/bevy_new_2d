@@ -82,6 +82,14 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 </details>
 
 <details>
+  <summary>Linux dependencies</summary>
+
+If you are using Linux, make sure you take a look at Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+Note that this template uses Wayland by default, which requires additional dependencies that are detailed in the link above.
+
+</details>
+
+<details>
     <summary>(Optional) Improve your compile times</summary>
 
 [`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
