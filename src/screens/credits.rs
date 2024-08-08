@@ -31,7 +31,7 @@ fn show_credits_screen(mut commands: Commands) {
             children.button("Back", enter_title);
         });
 
-    commands.play_soundtrack(SoundtrackHandles::KEY_CREDITS);
+    commands.play_soundtrack(SoundtrackHandles::PATH_CREDITS);
 }
 
 fn disable_soundtrack(mut commands: Commands) {
