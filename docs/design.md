@@ -246,7 +246,7 @@ fn spawn_button(mut commands: Commands) {
 }
 ```
 
-Add the resulting `SystemId` through a newtype component to your entity.
+The resulting `SystemId` is added as a newtype component on the button entity.
 See the definition of [`OnPress`](../src/theme/interaction.rs) for how this is done.
 
 ### Reasoning
