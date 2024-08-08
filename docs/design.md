@@ -145,7 +145,7 @@ impl FromWorld for ImageHandles {
 }
 ```
 
-Then start preloading in the `asset::plugin`:
+Then start preloading in the `assets::plugin`:
 
 ```rust
 pub(super) fn plugin(app: &mut App) {
