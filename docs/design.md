@@ -121,9 +121,9 @@ Otherwise, load them dynamically from e.g. a file.
 pub struct ImageHandles(HashMap<String, Handle<Image>>);
 
 impl ImageHandles {
-    pub const KEY_PLAYER: &'static str = "assets/images/player.png";
-    pub const KEY_ENEMY: &'static str = "assets/images/enemy.png";
-    pub const KEY_POWERUP: &'static str = "assets/images/powerup.png";
+    pub const KEY_PLAYER: &'static str = "images/player.png";
+    pub const KEY_ENEMY: &'static str = "images/enemy.png";
+    pub const KEY_POWERUP: &'static str = "images/powerup.png";
 }
 
 impl FromWorld for ImageHandles {
