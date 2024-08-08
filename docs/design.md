@@ -214,7 +214,7 @@ And then to use a spawn command, add it to `Commands`:
 ```rust
 // dangerous_forest.rs
 
-fn spawn_monster(mut commands: Commands) {
+fn spawn_forest_goblin(mut commands: Commands) {
     commands.add(SpawnMonster {
         health: 100,
         transform: Transform::from_xyz(10.0, 0.0, 0.0),
