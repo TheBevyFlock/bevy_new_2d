@@ -1,0 +1,75 @@
+{
+    "Bevy: New module-level function Plugin": {
+        "scope": "rust",
+        "prefix": "plugin_fn",
+        "body": [
+            "use bevy::prelude::*;",
+            "",
+            "pub(super) fn plugin(app: &mut App) {",
+            "\t$0",
+            "}"
+        ],
+        "description": "Define a new module-level function Plugin"
+    },
+    "Bevy: New Component": {
+        "scope": "rust",
+        "prefix": "component",
+        "body": [
+            "#[derive(Component, Reflect)]",
+            "#[reflect(Component)]",
+            "struct $1;"
+        ],
+        "description": "Define a new Component"
+    },
+    "Bevy: New Resource": {
+        "scope": "rust",
+        "prefix": "resource",
+        "body": [
+            "#[derive(Resource, Reflect, Default)]",
+            "#[reflect(Resource)]",
+            "struct $1;"
+        ],
+        "description": "Define a new Resource"
+    },
+    "Bevy: New Event": {
+        "scope": "rust",
+        "prefix": "event",
+        "body": [
+            "#[derive(Event)]",
+            "struct $1;"
+        ],
+        "description": "Define a new Event"
+    },
+    "Bevy: New SystemSet": {
+        "scope": "rust",
+        "prefix": "system_set",
+        "body": [
+            "#[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
+            "enum $1 {",
+            "\t$0",
+            "}"
+        ],
+        "description": "Define a new SystemSet"
+    },
+    "Bevy: New Schedule": {
+        "scope": "rust",
+        "prefix": "schedule",
+        "body": [
+            "#[derive(ScheduleLabel, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
+            "struct $1;"
+        ],
+        "description": "Define a new Schedule"
+    },
+    "Bevy: New States": {
+        "scope": "rust",
+        "prefix": "states",
+        "body": [
+            "#[derive(States, Copy, Clone, Default, Eq, PartialEq, Hash, Debug, Reflect)]",
+            "enum $1 {",
+            "\t#[default]",
+            "\t$0",
+            "}"
+        ],
+        "description": "Define a new States"
+    }
+}
