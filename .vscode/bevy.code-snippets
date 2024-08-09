@@ -1,35 +1,32 @@
 {
-    "Bevy: New module-level function Plugin": {
+    "Bevy: New top-level function Plugin": {
         "scope": "rust",
-        "prefix": "plugin_fn",
+        "prefix": "plugin",
         "body": [
             "use bevy::prelude::*;",
             "",
             "pub(super) fn plugin(app: &mut App) {",
             "\t$0",
             "}"
-        ],
-        "description": "Define a new module-level function Plugin"
+        ]
     },
     "Bevy: New Component": {
         "scope": "rust",
         "prefix": "component",
         "body": [
             "#[derive(Component, Reflect, Debug)]",
-            "#[reflect(Component, Debug)]",
+            "#[reflect(Component)]",
             "struct $1;"
-        ],
-        "description": "Define a new Component"
+        ]
     },
     "Bevy: New Resource": {
         "scope": "rust",
         "prefix": "resource",
         "body": [
             "#[derive(Resource, Reflect, Debug, Default)]",
-            "#[reflect(Resource, Debug)]",
+            "#[reflect(Resource)]",
             "struct $1;"
-        ],
-        "description": "Define a new Resource"
+        ]
     },
     "Bevy: New Event": {
         "scope": "rust",
@@ -37,19 +34,17 @@
         "body": [
             "#[derive(Event, Debug)]",
             "struct $1;"
-        ],
-        "description": "Define a new Event"
+        ]
     },
     "Bevy: New SystemSet": {
         "scope": "rust",
-        "prefix": "system_set",
+        "prefix": "systemset",
         "body": [
             "#[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
             "enum $1 {",
             "\t$0",
             "}"
-        ],
-        "description": "Define a new SystemSet"
+        ]
     },
     "Bevy: New Schedule": {
         "scope": "rust",
@@ -57,8 +52,7 @@
         "body": [
             "#[derive(ScheduleLabel, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
             "struct $1;"
-        ],
-        "description": "Define a new Schedule"
+        ]
     },
     "Bevy: New States": {
         "scope": "rust",
@@ -69,7 +63,6 @@
             "\t#[default]",
             "\t$0",
             "}"
-        ],
-        "description": "Define a new States"
+        ]
     }
 }
