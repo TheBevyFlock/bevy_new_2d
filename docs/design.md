@@ -257,10 +257,10 @@ If you have many interactions that only change a state, consider using the follo
 
 ```rust
 fn spawn_button(mut commands: Commands) {
-    commands.button("Play the game").observe(change_state(Screen::Playing));
+    commands.button("Play the game").observe(enter_state(Screen::Playing));
 }
 
-fn change_state<S: FreelyMutableState>(
+fn enter_state<S: FreelyMutableState>(
     new_state: S,
 ) -> impl Fn(Trigger<OnPress>, ResMut<NextState<S>>) {
     move |_trigger, mut next_state| next_state.set(new_state.clone())
