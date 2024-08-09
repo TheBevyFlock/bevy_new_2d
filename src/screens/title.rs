@@ -10,32 +10,27 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn show_title_screen(mut commands: Commands) {
-    let enter_playing = commands.register_one_shot_system(enter_playing);
-    let enter_credits = commands.register_one_shot_system(enter_credits);
-    #[cfg(not(target_family = "wasm"))]
-    let exit_app = commands.register_one_shot_system(exit_app);
-
     commands
         .ui_root()
         .insert(StateScoped(Screen::Title))
         .with_children(|children| {
-            children.button("Play", enter_playing);
-            children.button("Credits", enter_credits);
+            children.button("Play").observe(enter_playing);
+            children.button("Credits").observe(enter_credits);
 
             #[cfg(not(target_family = "wasm"))]
-            children.button("Exit", exit_app);
+            children.button("Exit").observe(exit_app);
         });
 }
 
-fn enter_playing(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_playing(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Playing);
 }
 
-fn enter_credits(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_credits(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Credits);
 }
 
 #[cfg(not(target_family = "wasm"))]
-fn exit_app(mut app_exit: EventWriter<AppExit>) {
+fn exit_app(_trigger: Trigger<OnPress>, mut app_exit: EventWriter<AppExit>) {
     app_exit.send(AppExit::Success);
 }

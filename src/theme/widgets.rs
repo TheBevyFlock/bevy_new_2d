@@ -14,7 +14,7 @@ use super::{
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {
     /// Spawn a simple button with text.
-    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands;
+    fn button(&mut self, text: impl Into<String>) -> EntityCommands;
 
     /// Spawn a simple header label. Bigger than [`Widgets::label`].
     fn header(&mut self, text: impl Into<String>) -> EntityCommands;
@@ -24,7 +24,7 @@ pub trait Widgets {
 }
 
 impl<T: Spawn> Widgets for T {
-    fn button(&mut self, text: impl Into<String>, on_press: SystemId) -> EntityCommands {
+    fn button(&mut self, text: impl Into<String>) -> EntityCommands {
         let mut entity = self.spawn((
             Name::new("Button"),
             ButtonBundle {
@@ -43,7 +43,6 @@ impl<T: Spawn> Widgets for T {
                 hovered: BUTTON_HOVERED_BACKGROUND,
                 pressed: BUTTON_PRESSED_BACKGROUND,
             },
-            OnPress(on_press),
         ));
         entity.with_children(|children| {
             children.spawn((
