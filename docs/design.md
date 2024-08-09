@@ -254,6 +254,20 @@ The event `OnPress`, which is [defined in this template](../src/theme/interactio
 is triggered when the button's [`Interaction`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html)
 component becomes [`Interaction::Pressed`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html#variant.Pressed).
 
+If your interactions mostly consist of changing the game state, consider using the following helper function:
+
+```rust
+fn spawn_button(mut commands: Commands) {
+    commands.button("Play the game").observe(change_state(Screen::Playing));
+}
+
+fn change_state<S: FreelyMutableState>(
+    new_state: S,
+) -> impl Fn(Trigger<OnPress>, ResMut<NextState<S>>) {
+    move |_trigger, mut next_state| next_state.set(new_state.clone())
+}
+```
+
 ### Reasoning
 
 This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
