@@ -1,5 +1,5 @@
 //! Functions and types for playing sound effects in the game.
-//! The main point of interest here is the extension trait `SoundEffectCommands`
+//! The main point of interest here is the extension trait `SfxCommands`
 //! and its `play_sfx` method.
 //!
 //! This method accepts any type which implements `Into<String>`.
@@ -43,7 +43,7 @@ impl SfxHandles {
 
             // We don't need a (slightly) more expensive strong handle here (which is used
             // to keep an asset loaded in memory), because a copy is always
-            // stored in the SoundEffects resource.
+            // stored in the `SfxHandles` resource.
             let source = random_sfx.clone_weak();
 
             world.spawn(AudioBundle { source, settings });
