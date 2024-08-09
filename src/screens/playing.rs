@@ -3,13 +3,11 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
-use crate::{
-    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, demo::level::SpawnLevel,
-};
+use crate::{assets::BgmHandles, audio::bgm::BgmCommands as _, demo::level::SpawnLevel};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Playing), spawn_level);
-    app.add_systems(OnExit(Screen::Playing), disable_soundtrack);
+    app.add_systems(OnExit(Screen::Playing), disable_bgm);
 
     app.add_systems(
         Update,
@@ -20,11 +18,11 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_level(mut commands: Commands) {
     commands.add(SpawnLevel);
-    commands.play_soundtrack(SoundtrackHandles::PATH_GAMEPLAY);
+    commands.play_bgm(BgmHandles::PATH_GAMEPLAY);
 }
 
-fn disable_soundtrack(mut commands: Commands) {
-    commands.stop_current_soundtrack();
+fn disable_bgm(mut commands: Commands) {
+    commands.stop_bgm();
 }
 
 fn return_to_title_screen(mut next_screen: ResMut<NextState<Screen>>) {

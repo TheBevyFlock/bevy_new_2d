@@ -3,13 +3,11 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::{
-    assets::SoundtrackHandles, audio::soundtrack::SoundtrackCommands as _, theme::prelude::*,
-};
+use crate::{assets::BgmHandles, audio::bgm::BgmCommands as _, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), show_credits_screen);
-    app.add_systems(OnExit(Screen::Credits), disable_soundtrack);
+    app.add_systems(OnExit(Screen::Credits), disable_bgm);
 }
 
 fn show_credits_screen(mut commands: Commands) {
@@ -31,11 +29,11 @@ fn show_credits_screen(mut commands: Commands) {
             children.button("Back", enter_title);
         });
 
-    commands.play_soundtrack(SoundtrackHandles::PATH_CREDITS);
+    commands.play_bgm(BgmHandles::PATH_CREDITS);
 }
 
-fn disable_soundtrack(mut commands: Commands) {
-    commands.stop_current_soundtrack();
+fn disable_bgm(mut commands: Commands) {
+    commands.stop_bgm();
 }
 
 fn enter_title(mut next_screen: ResMut<NextState<Screen>>) {

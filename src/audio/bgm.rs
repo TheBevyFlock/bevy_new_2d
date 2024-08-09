@@ -4,7 +4,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::assets::SoundtrackHandles;
+use crate::assets::BgmHandles;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<IsSoundtrack>();
@@ -34,7 +34,7 @@ fn play_soundtrack(
     In(config): In<PlaySoundtrack>,
     mut commands: Commands,
     soundtrack_query: Query<Entity, With<IsSoundtrack>>,
-    soundtrack_handles: Res<SoundtrackHandles>,
+    soundtrack_handles: Res<BgmHandles>,
 ) {
     for entity in soundtrack_query.iter() {
         commands.entity(entity).despawn_recursive();
@@ -58,21 +58,21 @@ fn play_soundtrack(
 }
 
 /// An extension trait with convenience methods for soundtrack commands.
-pub trait SoundtrackCommands {
+pub trait BgmCommands {
     /// Play a soundtrack, replacing the current one.
     /// Soundtracks will loop.
-    fn play_soundtrack(&mut self, name: impl Into<String>);
+    fn play_bgm(&mut self, name: impl Into<String>);
 
     /// Stop the current soundtrack.
-    fn stop_current_soundtrack(&mut self);
+    fn stop_bgm(&mut self);
 }
 
-impl SoundtrackCommands for Commands<'_, '_> {
-    fn play_soundtrack(&mut self, name: impl Into<String>) {
+impl BgmCommands for Commands<'_, '_> {
+    fn play_bgm(&mut self, name: impl Into<String>) {
         self.add(PlaySoundtrack::Key(name.into()));
     }
 
-    fn stop_current_soundtrack(&mut self) {
+    fn stop_bgm(&mut self) {
         self.add(PlaySoundtrack::Disable);
     }
 }

@@ -62,7 +62,7 @@ struct PlaySfx {
 impl Command for PlaySfx {
     fn apply(self, world: &mut World) {
         // If you need more complex behavior, use `world.run_system_once_with`,
-        // as demonstrated with `PlaySoundtrack`.
+        // as demonstrated with `PlayBgm`.
         world.resource_scope(|world, mut sfx: Mut<SfxHandles>| {
             sfx.play(self.name, world, self.settings);
         });
