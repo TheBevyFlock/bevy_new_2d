@@ -13,8 +13,8 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<ImageHandles>();
     app.init_resource::<ImageHandles>();
 
-    app.register_type::<SoundtrackHandles>();
-    app.init_resource::<SoundtrackHandles>();
+    app.register_type::<BgmHandles>();
+    app.init_resource::<BgmHandles>();
 
     app.register_type::<SfxHandles>();
     app.init_resource::<SfxHandles>();
@@ -52,16 +52,17 @@ impl FromWorld for ImageHandles {
     }
 }
 
+/// Stores the handles for background music, aka soundtracks.
 #[derive(Resource, Debug, Deref, DerefMut, Reflect)]
 #[reflect(Resource)]
-pub struct SoundtrackHandles(HashMap<String, Handle<AudioSource>>);
+pub struct BgmHandles(HashMap<String, Handle<AudioSource>>);
 
-impl SoundtrackHandles {
-    pub const PATH_CREDITS: &'static str = "audio/soundtracks/Monkeys Spinning Monkeys.ogg";
-    pub const PATH_GAMEPLAY: &'static str = "audio/soundtracks/Fluffing A Duck.ogg";
+impl BgmHandles {
+    pub const PATH_CREDITS: &'static str = "audio/bgm/Monkeys Spinning Monkeys.ogg";
+    pub const PATH_GAMEPLAY: &'static str = "audio/bgm/Fluffing A Duck.ogg";
 }
 
-impl FromWorld for SoundtrackHandles {
+impl FromWorld for BgmHandles {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
 

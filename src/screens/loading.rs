@@ -5,7 +5,7 @@ use bevy::{prelude::*, utils::HashMap};
 
 use super::Screen;
 use crate::{
-    assets::{ImageHandles, SfxHandles, SoundtrackHandles},
+    assets::{BgmHandles, ImageHandles, SfxHandles},
     theme::prelude::*,
 };
 
@@ -30,11 +30,11 @@ fn all_assets_loaded(
     asset_server: Res<AssetServer>,
     image_handles: Res<ImageHandles>,
     sfx_handles: Res<SfxHandles>,
-    soundtrack_handles: Res<SoundtrackHandles>,
+    bgm_handles: Res<BgmHandles>,
 ) -> bool {
     image_handles.all_loaded(&asset_server)
         && sfx_handles.all_loaded(&asset_server)
-        && soundtrack_handles.all_loaded(&asset_server)
+        && bgm_handles.all_loaded(&asset_server)
 }
 
 fn continue_to_title(mut next_screen: ResMut<NextState<Screen>>) {
