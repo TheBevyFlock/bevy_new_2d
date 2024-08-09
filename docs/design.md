@@ -276,8 +276,7 @@ the code running on interactions can be scoped to the exact context of the inter
 For example, the code for what happens when you press a *specific* button is directly attached to that exact button.
 
 This also keeps the interaction logic close to the entity that is interacted with,
-allowing for better code organization. If you want multiple buttons to do the same thing,
-consider triggering a secondary event in their callbacks.
+allowing for better code organization.
 
 ## Dev Tools
 
