@@ -251,8 +251,7 @@ fn pay_money(_trigger: Trigger<OnPress>, /* Bevy query parameters */) {
 ```
 
 The event `OnPress`, which is [defined in this template](../src/theme/interaction.rs),
-is triggered when the button's [`Interaction`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html)
-component becomes [`Interaction::Pressed`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html#variant.Pressed).
+is triggered when the button is [`Interaction::Pressed`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html#variant.Pressed).
 
 If your interactions mostly consist of changing the game state, consider using the following helper function:
 
