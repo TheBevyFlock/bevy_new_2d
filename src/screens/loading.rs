@@ -29,11 +29,11 @@ fn show_loading_screen(mut commands: Commands) {
 fn all_assets_loaded(
     asset_server: Res<AssetServer>,
     image_handles: Res<ImageHandles>,
-    sound_effects_handles: Res<SfxHandles>,
+    sfx_handles: Res<SfxHandles>,
     soundtrack_handles: Res<SoundtrackHandles>,
 ) -> bool {
     image_handles.all_loaded(&asset_server)
-        && sound_effects_handles.all_loaded(&asset_server)
+        && sfx_handles.all_loaded(&asset_server)
         && soundtrack_handles.all_loaded(&asset_server)
 }
 
