@@ -7,53 +7,53 @@ use bevy::{
 use crate::assets::BgmHandles;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<IsSoundtrack>();
+    app.register_type::<IsBgm>();
 }
 
 /// Marker component for the soundtrack entity so we can find it later.
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-struct IsSoundtrack;
+struct IsBgm;
 
 /// A custom command used to play soundtracks.
 #[derive(Debug)]
-enum PlaySoundtrack {
+enum PlayBgm {
     Key(String),
     Disable,
 }
 
-impl Command for PlaySoundtrack {
+impl Command for PlayBgm {
     /// This command will despawn the current soundtrack, then spawn a new one
     /// if necessary.
     fn apply(self, world: &mut World) {
-        world.run_system_once_with(self, play_soundtrack);
+        world.run_system_once_with(self, play_bgm);
     }
 }
 
-fn play_soundtrack(
-    In(config): In<PlaySoundtrack>,
+fn play_bgm(
+    In(config): In<PlayBgm>,
     mut commands: Commands,
-    soundtrack_query: Query<Entity, With<IsSoundtrack>>,
-    soundtrack_handles: Res<BgmHandles>,
+    bgm_query: Query<Entity, With<IsBgm>>,
+    bgm_handles: Res<BgmHandles>,
 ) {
-    for entity in soundtrack_query.iter() {
+    for entity in bgm_query.iter() {
         commands.entity(entity).despawn_recursive();
     }
 
-    let soundtrack_key = match config {
-        PlaySoundtrack::Key(key) => key,
-        PlaySoundtrack::Disable => return,
+    let bgm_key = match config {
+        PlayBgm::Key(key) => key,
+        PlayBgm::Disable => return,
     };
 
     commands.spawn((
         AudioSourceBundle {
-            source: soundtrack_handles[&soundtrack_key].clone_weak(),
+            source: bgm_handles[&bgm_key].clone_weak(),
             settings: PlaybackSettings {
                 mode: PlaybackMode::Loop,
                 ..default()
             },
         },
-        IsSoundtrack,
+        IsBgm,
     ));
 }
 
@@ -69,10 +69,10 @@ pub trait BgmCommands {
 
 impl BgmCommands for Commands<'_, '_> {
     fn play_bgm(&mut self, name: impl Into<String>) {
-        self.add(PlaySoundtrack::Key(name.into()));
+        self.add(PlayBgm::Key(name.into()));
     }
 
     fn stop_bgm(&mut self) {
-        self.add(PlaySoundtrack::Disable);
+        self.add(PlayBgm::Disable);
     }
 }
