@@ -270,7 +270,7 @@ fn change_state<S: FreelyMutableState>(
 ### Reasoning
 
 This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
-By coupling the system handling the interaction to the entity as an observer,
+By pairing the system handling the interaction with the entity as an observer,
 the code running on interactions can be scoped to the exact context of the interaction.
 
 For example, the code for what happens when you press a *specific* button is directly attached to that exact button.
