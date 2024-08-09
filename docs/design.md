@@ -245,8 +245,8 @@ fn spawn_button(mut commands: Commands) {
     commands.button("Pay up!").observe(pay_money);
 }
 
-fn pay_money(_trigger: Trigger<OnPress>, /* Bevy query parameters */) {
-    // Handle the interaction
+fn pay_money(_trigger: Trigger<OnPress>, mut money: ResMut<Money>) {
+    money.0 -= 10.0;
 }
 ```
 
