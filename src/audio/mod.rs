@@ -1,7 +1,7 @@
 //! Functionality relating to playing audio in the game.
 
-pub mod sfx;
 pub mod bgm;
+pub mod sfx;
 
 use bevy::prelude::*;
 
