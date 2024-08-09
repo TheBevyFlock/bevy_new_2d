@@ -16,7 +16,7 @@
 use bevy::{ecs::world::Command, prelude::*};
 use rand::seq::SliceRandom;
 
-use crate::assets::SoundEffectHandles;
+use crate::assets::SfxHandles;
 
 pub(super) fn plugin(_app: &mut App) {
     // No setup required for this plugin.
@@ -24,7 +24,7 @@ pub(super) fn plugin(_app: &mut App) {
     // later if needed.
 }
 
-impl SoundEffectHandles {
+impl SfxHandles {
     /// Plays a random sound effect matching the given name.
     ///
     /// When defining the settings for this method, we almost always want to use
@@ -54,23 +54,23 @@ impl SoundEffectHandles {
 }
 
 /// A custom command used to play sound effects.
-struct PlaySoundEffect {
+struct PlaySfx {
     name: String,
     settings: PlaybackSettings,
 }
 
-impl Command for PlaySoundEffect {
+impl Command for PlaySfx {
     fn apply(self, world: &mut World) {
         // If you need more complex behavior, use `world.run_system_once_with`,
         // as demonstrated with `PlaySoundtrack`.
-        world.resource_scope(|world, mut sound_effects: Mut<SoundEffectHandles>| {
+        world.resource_scope(|world, mut sound_effects: Mut<SfxHandles>| {
             sound_effects.play(self.name, world, self.settings);
         });
     }
 }
 
 /// An extension trait with convenience methods for sound effect commands.
-pub trait SoundEffectCommands {
+pub trait SfxCommands {
     fn play_sound_effect_with_settings(
         &mut self,
         name: impl Into<String>,
@@ -82,7 +82,7 @@ pub trait SoundEffectCommands {
     }
 }
 
-impl SoundEffectCommands for Commands<'_, '_> {
+impl SfxCommands for Commands<'_, '_> {
     // By accepting an `Into<String>` here, we can be flexible about what we want to
     // accept: &str literals are better for prototyping and data-driven sound
     // effects, but enums are nicer for special-cased effects
@@ -92,6 +92,6 @@ impl SoundEffectCommands for Commands<'_, '_> {
         settings: PlaybackSettings,
     ) {
         let name = name.into();
-        self.add(PlaySoundEffect { name, settings });
+        self.add(PlaySfx { name, settings });
     }
 }

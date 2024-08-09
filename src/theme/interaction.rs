@@ -1,6 +1,6 @@
 use bevy::{ecs::system::SystemId, prelude::*};
 
-use crate::{assets::SoundEffectHandles, audio::sound_effects::SoundEffectCommands as _};
+use crate::{assets::SfxHandles, audio::sfx::SfxCommands as _};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
@@ -71,12 +71,8 @@ fn trigger_interaction_sfx(
 ) {
     for interaction in &interaction_query {
         match interaction {
-            Interaction::Hovered => {
-                commands.play_sound_effect(SoundEffectHandles::PATH_BUTTON_HOVER)
-            }
-            Interaction::Pressed => {
-                commands.play_sound_effect(SoundEffectHandles::PATH_BUTTON_PRESS)
-            }
+            Interaction::Hovered => commands.play_sound_effect(SfxHandles::PATH_BUTTON_HOVER),
+            Interaction::Pressed => commands.play_sound_effect(SfxHandles::PATH_BUTTON_PRESS),
             _ => (),
         }
     }
