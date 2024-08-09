@@ -1,6 +1,6 @@
 //! Functions and types for playing sound effects in the game.
 //! The main point of interest here is the extension trait `SoundEffectCommands`
-//! and its `play_sound_effect` method.
+//! and its `play_sfx` method.
 //!
 //! This method accepts any type which implements `Into<String>`.
 //! This allows us to pass in `&str`, `String`, or a custom type that can be
@@ -16,7 +16,7 @@
 use bevy::{ecs::world::Command, prelude::*};
 use rand::seq::SliceRandom;
 
-use crate::assets::SoundEffectHandles;
+use crate::assets::SfxHandles;
 
 pub(super) fn plugin(_app: &mut App) {
     // No setup required for this plugin.
@@ -24,7 +24,7 @@ pub(super) fn plugin(_app: &mut App) {
     // later if needed.
 }
 
-impl SoundEffectHandles {
+impl SfxHandles {
     /// Plays a random sound effect matching the given name.
     ///
     /// When defining the settings for this method, we almost always want to use
@@ -54,44 +54,36 @@ impl SoundEffectHandles {
 }
 
 /// A custom command used to play sound effects.
-struct PlaySoundEffect {
+struct PlaySfx {
     name: String,
     settings: PlaybackSettings,
 }
 
-impl Command for PlaySoundEffect {
+impl Command for PlaySfx {
     fn apply(self, world: &mut World) {
         // If you need more complex behavior, use `world.run_system_once_with`,
         // as demonstrated with `PlaySoundtrack`.
-        world.resource_scope(|world, mut sound_effects: Mut<SoundEffectHandles>| {
-            sound_effects.play(self.name, world, self.settings);
+        world.resource_scope(|world, mut sfx: Mut<SfxHandles>| {
+            sfx.play(self.name, world, self.settings);
         });
     }
 }
 
 /// An extension trait with convenience methods for sound effect commands.
-pub trait SoundEffectCommands {
-    fn play_sound_effect_with_settings(
-        &mut self,
-        name: impl Into<String>,
-        settings: PlaybackSettings,
-    );
+pub trait SfxCommands {
+    fn play_sfx_with_settings(&mut self, name: impl Into<String>, settings: PlaybackSettings);
 
-    fn play_sound_effect(&mut self, name: impl Into<String>) {
-        self.play_sound_effect_with_settings(name, PlaybackSettings::DESPAWN);
+    fn play_sfx(&mut self, name: impl Into<String>) {
+        self.play_sfx_with_settings(name, PlaybackSettings::DESPAWN);
     }
 }
 
-impl SoundEffectCommands for Commands<'_, '_> {
+impl SfxCommands for Commands<'_, '_> {
     // By accepting an `Into<String>` here, we can be flexible about what we want to
     // accept: &str literals are better for prototyping and data-driven sound
     // effects, but enums are nicer for special-cased effects
-    fn play_sound_effect_with_settings(
-        &mut self,
-        name: impl Into<String>,
-        settings: PlaybackSettings,
-    ) {
+    fn play_sfx_with_settings(&mut self, name: impl Into<String>, settings: PlaybackSettings) {
         let name = name.into();
-        self.add(PlaySoundEffect { name, settings });
+        self.add(PlaySfx { name, settings });
     }
 }
