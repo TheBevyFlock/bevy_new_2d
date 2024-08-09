@@ -15,8 +15,8 @@
         "scope": "rust",
         "prefix": "component",
         "body": [
-            "#[derive(Component, Reflect)]",
-            "#[reflect(Component)]",
+            "#[derive(Component, Reflect, Debug)]",
+            "#[reflect(Component, Debug)]",
             "struct $1;"
         ],
         "description": "Define a new Component"
@@ -25,8 +25,8 @@
         "scope": "rust",
         "prefix": "resource",
         "body": [
-            "#[derive(Resource, Reflect, Default)]",
-            "#[reflect(Resource)]",
+            "#[derive(Resource, Reflect, Debug, Default)]",
+            "#[reflect(Resource, Debug)]",
             "struct $1;"
         ],
         "description": "Define a new Resource"
@@ -35,7 +35,7 @@
         "scope": "rust",
         "prefix": "event",
         "body": [
-            "#[derive(Event)]",
+            "#[derive(Event, Debug)]",
             "struct $1;"
         ],
         "description": "Define a new Event"
@@ -64,7 +64,7 @@
         "scope": "rust",
         "prefix": "states",
         "body": [
-            "#[derive(States, Copy, Clone, Default, Eq, PartialEq, Hash, Debug, Reflect)]",
+            "#[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default)]",
             "enum $1 {",
             "\t#[default]",
             "\t$0",
