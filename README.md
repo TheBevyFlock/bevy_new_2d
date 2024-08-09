@@ -52,7 +52,7 @@ This template comes with a basic project structure that you may find useful:
 | [`src/assets.rs`](./src/assets.rs)       | Definition of assets that will be preloaded before the game starts             |
 | [`src/audio/`](./src/audio)              | Commands for playing SFX and music                                             |
 | [`src/demo/`](./src/demo)                | Example game mechanics & content (replace with your own code)                  |
-| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds                                                       |
+| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds (press \` aka backtick to toggle)                     |
 | [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.                              |
 | [`src/theme/`](./src/theme)              | Reusable UI widgets & theming                                                  |
 
