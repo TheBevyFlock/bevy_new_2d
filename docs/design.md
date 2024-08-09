@@ -253,7 +253,7 @@ fn pay_money(_trigger: Trigger<OnPress>, mut money: ResMut<Money>) {
 The event `OnPress`, which is [defined in this template](../src/theme/interaction.rs),
 is triggered when the button is [`Interaction::Pressed`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html#variant.Pressed).
 
-If your interactions mostly consist of changing the game state, consider using the following helper function:
+If you have many interactions that only change a state, consider using the following helper function:
 
 ```rust
 fn spawn_button(mut commands: Commands) {
