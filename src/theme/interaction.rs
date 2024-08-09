@@ -4,16 +4,14 @@ use crate::{assets::SfxHandles, audio::sfx::SfxCommands as _};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
-    app.register_type::<OnPress>();
     app.add_systems(
         Update,
         (
-            apply_on_press,
+            trigger_on_press,
             apply_interaction_palette,
             trigger_interaction_sfx,
         ),
     );
-    app.observe(despawn_one_shot_system);
 }
 
 /// Palette for widget interactions. Add this to an entity that supports
@@ -27,24 +25,18 @@ pub struct InteractionPalette {
     pub pressed: Color,
 }
 
-/// Component that calls a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems)
-/// when the [`Interaction`] component on the same entity changes to
-/// [`Interaction::Pressed`]. Use this in conjuction with
-/// [`Commands::register_one_shot_system`] to create a callback for e.g. a
-/// button press.
-#[derive(Component, Debug, Reflect, Deref, DerefMut)]
-#[reflect(Component, from_reflect = false)]
-// The reflect attributes are currently needed due to
-// [`SystemId` not implementing `Reflect`](https://github.com/bevyengine/bevy/issues/14496)
-pub struct OnPress(#[reflect(ignore)] pub SystemId);
+/// Event triggered on a UI entity when the [`Interaction`] component on the same entity changes to
+/// [`Interaction::Pressed`]. Observe this event to detect e.g. button presses.
+#[derive(Event)]
+pub struct OnPress;
 
-fn apply_on_press(
-    interaction_query: Query<(&Interaction, &OnPress), Changed<Interaction>>,
+fn trigger_on_press(
+    interaction_query: Query<(Entity, &Interaction), Changed<Interaction>>,
     mut commands: Commands,
 ) {
-    for (interaction, &OnPress(system_id)) in &interaction_query {
+    for (entity, interaction) in &interaction_query {
         if matches!(interaction, Interaction::Pressed) {
-            commands.run_system(system_id);
+            commands.trigger_targets(OnPress, entity);
         }
     }
 }
@@ -76,17 +68,4 @@ fn trigger_interaction_sfx(
             _ => (),
         }
     }
-}
-
-/// Remove the one-shot system entity when the [`OnPress`] component is removed.
-/// This is necessary as otherwise, the system would still exist after the button
-/// is removed, causing a memory leak.
-fn despawn_one_shot_system(
-    trigger: Trigger<OnRemove, OnPress>,
-    mut commands: Commands,
-    on_press_query: Query<&OnPress>,
-) {
-    let on_press = on_press_query.get(trigger.entity()).unwrap();
-    let one_shot_system_entity = on_press.entity();
-    commands.entity(one_shot_system_entity).despawn_recursive();
 }

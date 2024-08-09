@@ -11,8 +11,6 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn show_credits_screen(mut commands: Commands) {
-    let enter_title = commands.register_one_shot_system(enter_title);
-
     commands
         .ui_root()
         .insert(StateScoped(Screen::Credits))
@@ -26,7 +24,7 @@ fn show_credits_screen(mut commands: Commands) {
             children.label("Ducky sprite - CC0 by Caz Creates Games");
             children.label("Music - CC BY 3.0 by Kevin MacLeod");
 
-            children.button("Back", enter_title);
+            children.button("Back").observe(enter_title);
         });
 
     commands.play_bgm(BgmHandles::PATH_CREDITS);
@@ -36,6 +34,6 @@ fn stop_bgm(mut commands: Commands) {
     commands.stop_bgm();
 }
 
-fn enter_title(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_title(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
 }

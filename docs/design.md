@@ -237,28 +237,34 @@ as custom commands don't return `Entity` or `EntityCommands`. This kind of usage
 ### Pattern
 
 When spawning an entity that can be interacted with, such as a button that can be pressed,
-register a [one-shot system](https://bevyengine.org/news/bevy-0-12/#one-shot-systems) to handle the interaction:
+use an observer to handle the interaction:
 
 ```rust
 fn spawn_button(mut commands: Commands) {
-    let pay_money = commands.register_one_shot_system(pay_money);
-    commands.button("Pay up!", pay_money);
+    // See the Widgets pattern for information on the `button` method
+    commands.button("Pay up!").observe(pay_money);
+}
+
+fn pay_money(_trigger: Trigger<OnPress>, /* Bevy query parameters */) {
+    // Handle the interaction
 }
 ```
 
-The resulting `SystemId` is added as a newtype component on the button entity.
-See the definition of [`OnPress`](../src/theme/interaction.rs) for how this is done.
+The event `OnPress`, which is [defined in this template](../src/theme/interaction.rs),
+is triggered when the button's [`Interaction`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html)
+component becomes [`Interaction::Pressed`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html#variant.Pressed).
 
 ### Reasoning
 
 This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
-By adding the system handling the interaction to the entity as a component,
+By coupling the system handling the interaction to the entity as an observer,
 the code running on interactions can be scoped to the exact context of the interaction.
 
 For example, the code for what happens when you press a *specific* button is directly attached to that exact button.
 
 This also keeps the interaction logic close to the entity that is interacted with,
-allowing for better code organization. If you want multiple buttons to do the same thing, consider triggering an event in their callbacks.
+allowing for better code organization. If you want multiple buttons to do the same thing,
+consider triggering a secondary event in their callbacks.
 
 ## Dev Tools
 
