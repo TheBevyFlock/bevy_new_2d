@@ -83,7 +83,7 @@ Hit `New repository secret` and enter the following values, then hit `Add secret
 - **Name:** `BUTLER_CREDENTIALS`
 - **Secret:** Your [itch.io API key](https://itch.io/user/settings/api-keys) (create a new one if necessary)
 
-#### Set up itch.io project
+#### Create itch.io project
 
 Create a new itch.io project with the same user and project name as in the `ITCH_TARGET` variable in [release.yaml](../.github/workflows/release.yaml).
 Hit `Save & view page` at the bottom of the page.
