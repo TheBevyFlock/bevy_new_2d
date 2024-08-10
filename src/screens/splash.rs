@@ -178,7 +178,7 @@ fn tick_splash_timer(time: Res<Time>, mut timer: ResMut<SplashTimer>) {
 
 fn check_splash_timer(
     mut commands: Commands,
-    mut timer: ResMut<SplashTimer>,
+    timer: Res<SplashTimer>,
     mut next_screen: ResMut<NextState<Screen>>,
     mut splash_images: ResMut<SplashScreenImageList>,
     containers: Query<Entity, With<SplashScreenContainer>>,
