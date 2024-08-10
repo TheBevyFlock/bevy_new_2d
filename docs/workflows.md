@@ -15,7 +15,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 > [!Tip]
 > <details>
 >   <summary>You may want to set up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI.</summary>
-
+>
 >   <img src="img/workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
 > </details>
 
