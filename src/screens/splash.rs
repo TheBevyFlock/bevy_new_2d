@@ -2,11 +2,7 @@
 
 use std::collections::VecDeque;
 
-use bevy::{
-    input::common_conditions::input_just_pressed,
-    prelude::*,
-    render::texture::{ImageLoaderSettings, ImageSampler},
-};
+use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
 use crate::{theme::prelude::*, AppSet};
@@ -14,6 +10,9 @@ use crate::{theme::prelude::*, AppSet};
 pub(super) fn plugin(app: &mut App) {
     // Spawn splash screen.
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
+
+    app.register_type::<SplashScreenContainer>();
+    app.register_type::<SplashScreenImageList>();
     app.init_resource::<SplashScreenImageList>();
 
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
@@ -53,17 +52,22 @@ const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 struct SplashScreenContainer;
 
-#[derive(Resource)]
-struct SplashScreenImageList(VecDeque<&'static str>);
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+struct SplashScreenImageList(VecDeque<Handle<Image>>);
 
-impl Default for SplashScreenImageList {
-    fn default() -> Self {
-        // Use paths here rather than an ImageHandle as the loading screen hasn't
-        // run yet. To show your own splash images, replace or add here
-        Self(VecDeque::from_iter(["images/splash.png"]))
+impl FromWorld for SplashScreenImageList {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+
+        // To show your own splash images, replace or add images here
+        Self(VecDeque::from_iter(
+            [asset_server.load("images/splash.png")],
+        ))
     }
 }
 
@@ -71,7 +75,9 @@ fn exit_splash_screen(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Loading);
 }
 
-fn splash_image_bundle(asset_server: &AssetServer, path: &'static str) -> impl Bundle {
+fn splash_image_bundle(image: Handle<Image>) -> impl Bundle {
+    let image = image.into();
+
     (
         Name::new("Splash image"),
         ImageBundle {
@@ -80,16 +86,7 @@ fn splash_image_bundle(asset_server: &AssetServer, path: &'static str) -> impl B
                 width: Val::Percent(70.0),
                 ..default()
             },
-            image: UiImage::new(asset_server.load_with_settings(
-                // This should be an embedded asset for instant loading, but that is
-                // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
-                path,
-                |settings: &mut ImageLoaderSettings| {
-                    // Make an exception for the splash image in case
-                    // `ImagePlugin::default_nearest()` is used for pixel art.
-                    settings.sampler = ImageSampler::linear();
-                },
-            )),
+            image,
             background_color: BackgroundColor(Color::srgba(0., 0., 0., 0.)),
             ..default()
         },
@@ -178,7 +175,6 @@ fn tick_splash_timer(time: Res<Time>, mut timer: ResMut<SplashTimer>) {
 
 fn check_splash_timer(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
     mut timer: ResMut<SplashTimer>,
     mut next_screen: ResMut<NextState<Screen>>,
     mut splash_images: ResMut<SplashScreenImageList>,
@@ -189,21 +185,20 @@ fn check_splash_timer(
     }
 
     // try to get the next splash image. If there isn't one, we move on to the next screen
-    if let Some(next_splash_image) = splash_images.0.pop_front() {
-        // despawn other splash images
-        if let Ok(container) = containers.get_single() {
-            commands
-                .entity(container)
-                .despawn_descendants()
-                .with_children(|parent| {
-                    parent.spawn(splash_image_bundle(&asset_server, next_splash_image));
-                });
-        }
-
-        // reset the timer
-        timer.0.reset();
-    } else {
+    let Some(next_splash_image) = splash_images.0.pop_front() else {
         // no more splash screens, exit
         next_screen.set(Screen::Loading);
-    }
+        return;
+    };
+
+    let container = containers.single();
+    commands
+        .entity(container)
+        .despawn_descendants() // previous splash images
+        .with_children(|parent| {
+            parent.spawn(splash_image_bundle(next_splash_image));
+        });
+
+    // reset the timer
+    timer.0.reset();
 }
