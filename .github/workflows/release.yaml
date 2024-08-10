@@ -82,9 +82,13 @@ jobs:
             package_ext: .dmg
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
+    permissions:
+      # Required to create a GitHub release (https://docs.github.com/en/rest/releases/releases#create-a-release).
+      contents: write
     defaults:
       run:
         shell: bash
+
     steps:
       - name: Set up environment
         run: |
@@ -235,6 +239,7 @@ jobs:
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.get-itch-target.outputs.itch-target != '' }}
+
     steps:
       - name: Download all packages
         uses: actions/download-artifact@v4
