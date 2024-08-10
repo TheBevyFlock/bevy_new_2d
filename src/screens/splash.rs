@@ -181,15 +181,15 @@ fn check_splash_timer(
     asset_server: Res<AssetServer>,
     mut timer: ResMut<SplashTimer>,
     mut next_screen: ResMut<NextState<Screen>>,
-    mut splash_screens: ResMut<SplashScreenImageList>,
+    mut splash_images: ResMut<SplashScreenImageList>,
     containers: Query<Entity, With<SplashScreenContainer>>,
 ) {
     if !timer.0.just_finished() {
         return;
     }
 
-    // try to get  the next splash screen. If there isn't one, we move on to the next screen
-    if let Some(next_splash_image) = splash_screens.0.pop_front() {
+    // try to get the next splash image. If there isn't one, we move on to the next screen
+    if let Some(next_splash_image) = splash_images.0.pop_front() {
         // despawn other splash images
         if let Ok(container) = containers.get_single() {
             commands
