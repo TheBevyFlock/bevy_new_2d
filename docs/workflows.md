@@ -41,8 +41,10 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 
 ### Configure environment variables
 
+The release workflow can be configured by tweaking the environment variables in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
+
 <details>
-  <summary><a href="../.github/workflows/release.yaml"><code>.github/workflows/release.yaml</code></a> contains a list of environment variables.</summary>
+  <summary>Click here for a list of variables and how they're used.</summary>
 
   ```yaml
   env:
@@ -65,7 +67,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
   ```
 </details>
 
-These values are set automatically by `cargo generate`, or you can edit them yourself and push a commit.
+The values are set automatically by `cargo generate`, or you can edit them yourself and push a commit.
 
 ### Set up itch.io upload
 
