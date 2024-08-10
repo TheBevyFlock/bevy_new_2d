@@ -1,6 +1,7 @@
 //! A splash screen that plays briefly at startup.
 
 use bevy::{
+    input::common_conditions::input_just_pressed,
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},
 };
@@ -35,48 +36,24 @@ pub(super) fn plugin(app: &mut App) {
         )
             .run_if(in_state(Screen::Splash)),
     );
+
+    // exit the splash screen early if the player hits escape
+    app.add_systems(
+        Update,
+        exit_splash_screen
+            .run_if(input_just_pressed(KeyCode::Escape).and_then(in_state(Screen::Splash))),
+    );
 }
 
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
-fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands
-        .ui_root()
-        .insert((
-            Name::new("Splash screen"),
-            BackgroundColor(SPLASH_BACKGROUND_COLOR),
-            StateScoped(Screen::Splash),
-        ))
-        .with_children(|children| {
-            children.spawn((
-                Name::new("Splash image"),
-                ImageBundle {
-                    style: Style {
-                        margin: UiRect::all(Val::Auto),
-                        width: Val::Percent(70.0),
-                        ..default()
-                    },
-                    image: UiImage::new(asset_server.load_with_settings(
-                        // This should be an embedded asset for instant loading, but that is
-                        // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
-                        "images/splash.png",
-                        |settings: &mut ImageLoaderSettings| {
-                            // Make an exception for the splash image in case
-                            // `ImagePlugin::default_nearest()` is used for pixel art.
-                            settings.sampler = ImageSampler::linear();
-                        },
-                    )),
-                    ..default()
-                },
-                UiImageFadeInOut {
-                    total_duration: SPLASH_DURATION_SECS,
-                    fade_duration: SPLASH_FADE_DURATION_SECS,
-                    t: 0.0,
-                },
-            ));
-        });
+
+fn exit_splash_screen(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Loading);
+}
+
 }
 
 #[derive(Component, Reflect)]
