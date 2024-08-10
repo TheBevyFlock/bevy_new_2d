@@ -93,7 +93,7 @@ impl<T: Spawn> Widgets for T {
     }
 
     fn label(&mut self, text: impl Into<String>) -> EntityCommands {
-        let mut entity = self.spawn((
+        let entity = self.spawn((
             Name::new("Label"),
             TextBundle::from_section(
                 text,
