@@ -5,7 +5,7 @@ They are defined in [`.github/workflows/`](../.github/workflows).
 
 ## CI (testing)
 
-The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR to `main`, and does the following.
+The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR to `main`, and do the following:
 
 - Run tests.
 - Run Clippy lints.
@@ -13,15 +13,15 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 - Check documentation.
 
 > [!Tip]
-> You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.
 > <details>
->   <summary>This picture shows how such a setup would look like</summary>
+>   <summary>You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.</summary>
+
 >   <img src="img/workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
 > </details>
 
 ## CD (releasing)
 
-The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and:
+The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and do the following:
 
 - Create a release build for Windows, macOS, Linux, and web.
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
@@ -40,13 +40,10 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 > [!Important]
 > Using this workflow requires some setup. We will go through this now.
 
-### Set up variables
-
-[`.github/workflows/release.yaml`](../.github/workflows/release.yaml) contains a list of environment variables that are set automatically by `cargo generate`.
-Otherwise, you will have to fill them in manually and push a commit.
+### Configure environment variables
 
 <details>
-  <summary>Environment variables section of the release workflow</summary>
+  <summary>[`.github/workflows/release.yaml`](../.github/workflows/release.yaml) contains a list of environment variables.</summary>
 
   ```yaml
   env:
@@ -69,12 +66,14 @@ Otherwise, you will have to fill them in manually and push a commit.
   ```
 </details>
 
+The values are set automatically by `cargo generate`, or you can edit them yourself and push a commit.
+
 ### Set up itch.io upload
 
 #### Add butler credentials
 
 <details>
-  <summary>In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`</summary>
+  <summary>In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`.</summary>
 
   ![A screenshot showing where to add secrets in the GitHub Actions settings](./img/workflow-secrets.png)
 </details>
