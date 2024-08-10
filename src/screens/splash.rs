@@ -191,7 +191,10 @@ fn check_splash_timer(
         return;
     };
 
-    let container = containers.single();
+    let Ok(container) = containers.get_single() else {
+        return;
+    };
+
     commands
         .entity(container)
         .despawn_descendants()
