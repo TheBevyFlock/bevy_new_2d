@@ -98,7 +98,7 @@ impl<T: Spawn> Widgets for T {
             NodeBundle {
                 style: Style {
                     width: Px(500.0),
-                    justify_content: JustifyContent::Center,
+                    justify_content: JustifyContent::FlexStart,
                     align_items: AlignItems::Center,
                     ..default()
                 },
