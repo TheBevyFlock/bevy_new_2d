@@ -85,7 +85,7 @@ Hit `New repository secret` and enter the following values, then hit `Add secret
 
 #### Create itch.io project
 
-Create a new itch.io project with the same user and project name as in the `ITCH_TARGET` variable in [release.yaml](../.github/workflows/release.yaml).
+Create a new itch.io project with the same user and project name as in the `ITCH_TARGET` variable in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
 Hit `Save & view page` at the bottom of the page.
 
 [Run the release workflow](#cd-releasing) for the first time. Once it's done, go back to itch.io and hit `Edit game` in the top left.
