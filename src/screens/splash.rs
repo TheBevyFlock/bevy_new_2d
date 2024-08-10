@@ -157,7 +157,10 @@ struct SplashTimer(Timer);
 
 impl Default for SplashTimer {
     fn default() -> Self {
-        Self(Timer::from_seconds(SPLASH_DURATION_SECS, TimerMode::Once))
+        Self(Timer::from_seconds(
+            SPLASH_DURATION_SECS,
+            TimerMode::Repeating,
+        ))
     }
 }
 
@@ -201,6 +204,4 @@ fn check_splash_timer(
         .with_children(|parent| {
             parent.spawn(splash_image_bundle(next_splash_image));
         });
-
-    timer.0.reset();
 }
