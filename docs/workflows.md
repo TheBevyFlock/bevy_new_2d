@@ -65,7 +65,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
   ```
 </details>
 
-The values are set automatically by `cargo generate`, or you can edit them yourself and push a commit.
+These values are set automatically by `cargo generate`, or you can edit them yourself and push a commit.
 
 ### Set up itch.io upload
 
