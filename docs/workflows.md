@@ -57,7 +57,9 @@ The release workflow can be configured by tweaking the environment variables in 
     ITCH_TARGET: the-bevy-flock/bevy-template
     # The organization or author that owns the rights to the game.
     OWNER: the-bevy-flock
-    # The path to the assets directory.
+    # The path to the workspace directory. Change this from `.` if you have multiple workspaces.
+    WORKSPACE_DIR: .
+    # The path to the assets directory (relative to the workspace directory).
     ASSETS_DIR: assets
     # Whether packages produced by this workflow should be uploaded to the Github release.
     UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
