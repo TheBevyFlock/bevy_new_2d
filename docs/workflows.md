@@ -1,7 +1,6 @@
 # Workflows
 
-This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd).
-They are defined in [`.github/workflows/`](../.github/workflows).
+This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd), defined in [`.github/workflows/`](../.github/workflows).
 
 ## CI (testing)
 
