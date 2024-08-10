@@ -40,7 +40,7 @@ pub(super) fn plugin(app: &mut App) {
             .run_if(in_state(Screen::Splash)),
     );
 
-    // exit the splash screen early if the player hits escape
+    // Exit the splash screen early if the player hits escape.
     app.add_systems(
         Update,
         exit_splash_screen
@@ -64,7 +64,7 @@ impl FromWorld for SplashScreenImageList {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
 
-        // To show your own splash images, replace or add images here
+        // To show your own splash images, replace or add images here.
         Self(VecDeque::from_iter(
             [asset_server.load("images/splash.png")],
         ))
@@ -104,10 +104,10 @@ fn spawn_splash(
     mut next_screen: ResMut<NextState<Screen>>,
 ) {
     if splash_images.0.is_empty() {
-        // if there are no splash images, go directly to the loading screen
+        // If there are no splash images, go directly to the loading screen.
         next_screen.set(Screen::Loading);
     } else {
-        // spawn the UI root but wait for the first timer tick to show an image
+        // Spawn the UI root but wait for the first timer tick to show an image.
         commands.ui_root().insert((
             Name::new("Splash screen container"),
             BackgroundColor(SPLASH_BACKGROUND_COLOR),
@@ -184,9 +184,9 @@ fn check_splash_timer(
         return;
     }
 
-    // try to get the next splash image. If there isn't one, we move on to the next screen
+    // Try to get the next splash image. If there isn't one, we move on to the next screen.
     let Some(next_splash_image) = splash_images.0.pop_front() else {
-        // no more splash screens, exit
+        // There are no more splash screens, exit to the loading screen.
         next_screen.set(Screen::Loading);
         return;
     };
@@ -194,11 +194,10 @@ fn check_splash_timer(
     let container = containers.single();
     commands
         .entity(container)
-        .despawn_descendants() // previous splash images
+        .despawn_descendants()
         .with_children(|parent| {
             parent.spawn(splash_image_bundle(next_splash_image));
         });
 
-    // reset the timer
     timer.0.reset();
 }
