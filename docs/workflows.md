@@ -14,7 +14,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 
 > [!Tip]
 > <details>
->   <summary>You may want to set up a [GitHub ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require that all commits to `main` pass CI.</summary>
+>   <summary>You may want to set up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI.</summary>
 
 >   <img src="img/workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
 > </details>
@@ -43,7 +43,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 ### Configure environment variables
 
 <details>
-  <summary>[`.github/workflows/release.yaml`](../.github/workflows/release.yaml) contains a list of environment variables.</summary>
+  <summary><a href="../.github/workflows/release.yaml"><code>.github/workflows/release.yaml</code></a> contains a list of environment variables.</summary>
 
   ```yaml
   env:
@@ -73,7 +73,7 @@ The values are set automatically by `cargo generate`, or you can edit them yours
 #### Add butler credentials
 
 <details>
-  <summary>In your GitHub repository, navigate to `Settings > Secrets and variables > Actions`.</summary>
+  <summary>In your GitHub repository, navigate to <code>Settings > Secrets and variables > Actions</code>.</summary>
 
   ![A screenshot showing where to add secrets in the GitHub Actions settings](./img/workflow-secrets.png)
 </details>
