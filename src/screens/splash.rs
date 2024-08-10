@@ -63,7 +63,7 @@ impl Default for SplashScreenImageList {
     fn default() -> Self {
         // Use paths here rather than an ImageHandle as the loading screen hasn't
         // run yet. To show your own splash images, replace or add here
-        Self(VecDeque::from_iter(["images/splash.png"].into_iter()))
+        Self(VecDeque::from_iter(["images/splash.png"]))
     }
 }
 
@@ -205,6 +205,5 @@ fn check_splash_timer(
     } else {
         // no more splash screens, exit
         next_screen.set(Screen::Loading);
-        return;
     }
 }
