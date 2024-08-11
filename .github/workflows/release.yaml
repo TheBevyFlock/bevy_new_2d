@@ -124,16 +124,16 @@ jobs:
           # Default values:
           app_binary_name='${{ env.app_binary_name || env.cargo_build_binary_name }}'
           echo "app_binary_name=${app_binary_name}" >> "${GITHUB_ENV}"
-          app_package_name='${{ env.app_package_name || "${app_binary_name}" }}'
+          app_package_name='${{ env.app_package_name || '"${app_binary_name}"' }}'
           echo "app_package_name=${app_package_name}" >> "${GITHUB_ENV}"
-          app_display_name='${{ env.app_display_name || "${app_package_name}" }}'
+          app_display_name='${{ env.app_display_name || '"${app_package_name}"' }}'
           echo "app_display_name=${app_display_name}" >> "${GITHUB_ENV}"
-          app_short_name='${{ env.app_short_name || "${app_display_name}" }}'
+          app_short_name='${{ env.app_short_name || '"${app_display_name}"' }}'
           echo "app_short_name=${app_short_name}" >> "${GITHUB_ENV}"
 
           # File paths:
           echo "app=tmp/app/${app_package_name}"'${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
-          echo "package=${env.app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
+          echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
           # macOS environment:
           if [ '${{ matrix.platform }}' == 'macos' ]; then
