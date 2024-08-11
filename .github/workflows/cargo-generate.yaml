@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Fetch entire history, since we need it all to successfully merge.
+          fetch-depth: 0
 
       - name: Configure Git user
         env:
