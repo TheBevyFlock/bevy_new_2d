@@ -1,6 +1,7 @@
 //! A splash screen that plays briefly at startup.
 
 use bevy::{
+    input::common_conditions::input_just_pressed,
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},
 };
@@ -35,11 +36,22 @@ pub(super) fn plugin(app: &mut App) {
         )
             .run_if(in_state(Screen::Splash)),
     );
+
+    // Exit the splash screen early if the player hits escape.
+    app.add_systems(
+        Update,
+        exit_splash_screen
+            .run_if(input_just_pressed(KeyCode::Escape).and_then(in_state(Screen::Splash))),
+    );
 }
 
 const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
+
+fn exit_splash_screen(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Loading);
+}
 
 fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
