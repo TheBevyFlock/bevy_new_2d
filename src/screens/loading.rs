@@ -22,7 +22,10 @@ fn show_loading_screen(mut commands: Commands) {
         .ui_root()
         .insert(StateScoped(Screen::Loading))
         .with_children(|children| {
-            children.label("Loading...");
+            children.label("Loading...").insert(Style {
+                justify_content: JustifyContent::Center,
+                ..default()
+            });
         });
 }
 
