@@ -1,0 +1,50 @@
+name: Update `cargo-generate` branch
+
+on:
+  # Update `cargo-generate` from `main` every time `main` is updated.
+  push:
+    branches: main
+  # Allow this workflow to be manually triggered.
+  workflow_dispatch:
+
+permissions:
+  # Allow this workflow to write to the Git repository.
+  #
+  # BE VERY CAREFUL about what this workflow runs, since IT HAS THE ABILITY TO DELETE THE ENTIRE
+  # REPOSITORY'S CONTENTS. For reason, stick to pre-installed tools and trusted actions (such as
+  # those hosted from the `actions` organization.)
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git user
+        env:
+          # From https://github.com/actions/checkout/pull/1707.
+          NAME: github-actions[bot]
+          EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          git config user.name $NAME
+          git config user.email $EMAIL
+
+      - name: Switch to `cargo-generate` branch
+        run: git checkout cargo-generate
+
+      - name: Merge `main` branch into `cargo-generate`
+        id: merge
+        # We use `--no-edit` to prevent any editor from being opened, since we can't close it.
+        run: git merge main --no-edit
+
+      - name: Handle merge conflict
+        # Only run this if merging failed.
+        if: ${{ failure() && steps.merge.outcome == 'failure' }}
+        run: echo TODO :)
+
+      - name: Push changes
+        # Only run if merging succeeded.
+        if: ${{ success() && steps.merge.outcome == 'success' }}
+        run: git push
