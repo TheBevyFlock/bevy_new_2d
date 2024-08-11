@@ -2,7 +2,11 @@
 
 use std::collections::VecDeque;
 
-use bevy::{input::common_conditions::input_just_pressed, prelude::*};
+use bevy::{
+    input::common_conditions::input_just_pressed,
+    prelude::*,
+    render::texture::{ImageLoaderSettings, ImageSampler},
+};
 
 use super::Screen;
 use crate::{theme::prelude::*, AppSet};
@@ -52,10 +56,16 @@ const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
+/// This is a marker component for the UI node that holds splash screen images.
+/// Splash screen images will be added as children of this container, and removed
+/// again once they have been displayed.
 #[derive(Component, Reflect)]
 #[reflect(Component)]
 struct SplashScreenContainer;
 
+/// This contains images handles that will be displayed (in order), one by one.
+/// A `VecDeque` is used to store the handles to allow the "front" screen to be
+/// popped off each time a new splash image is displayed.
 #[derive(Resource, Reflect)]
 #[reflect(Resource)]
 struct SplashScreenImageList(VecDeque<Handle<Image>>);
@@ -64,9 +74,15 @@ impl FromWorld for SplashScreenImageList {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
 
-        // To show your own splash images, replace or add images here.
+        // To show your own splash images, replace or add image paths here.
         Self(VecDeque::from_iter(
-            [asset_server.load("images/splash.png")],
+            ["images/splash.png", "images/wilsk_logo.png"].map(|path| {
+                asset_server.load_with_settings(path, |settings: &mut ImageLoaderSettings| {
+                    // Make an exception for the splash image in case
+                    // `ImagePlugin::default_nearest()` is used for pixel art.
+                    settings.sampler = ImageSampler::linear();
+                })
+            }),
         ))
     }
 }
@@ -87,7 +103,6 @@ fn splash_image_bundle(image: Handle<Image>) -> impl Bundle {
                 ..default()
             },
             image,
-            background_color: BackgroundColor(Color::srgba(0., 0., 0., 0.)),
             ..default()
         },
         UiImageFadeInOut {
@@ -105,16 +120,20 @@ fn spawn_splash(
 ) {
     if splash_images.0.is_empty() {
         // If there are no splash images, go directly to the loading screen.
+        // This check is also made in the [`check_splash_timer`] system below,
+        // but is repeated here to avoid a blank screen being shown if there are
+        // no splash screen images to display.
         next_screen.set(Screen::Loading);
-    } else {
-        // Spawn the UI root but wait for the first timer tick to show an image.
-        commands.ui_root().insert((
-            Name::new("Splash screen container"),
-            BackgroundColor(SPLASH_BACKGROUND_COLOR),
-            StateScoped(Screen::Splash),
-            SplashScreenContainer,
-        ));
+        return;
     }
+
+    // Spawn the UI root but wait for the first timer tick to show an image.
+    commands.ui_root().insert((
+        Name::new("Splash screen container"),
+        BackgroundColor(SPLASH_BACKGROUND_COLOR),
+        StateScoped(Screen::Splash),
+        SplashScreenContainer,
+    ));
 }
 
 #[derive(Component, Reflect)]
