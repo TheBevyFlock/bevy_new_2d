@@ -190,7 +190,7 @@ jobs:
 
       - name: Add assets to app (non-Web)
         if: ${{ matrix.platform != 'web' }}
-        run: cp -r '${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
+        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
 
       - name: Add metadata to app (macOS)
         if: ${{ matrix.platform == 'macos' }}
