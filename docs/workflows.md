@@ -49,23 +49,21 @@ The release workflow can be configured by tweaking the environment variables in 
   ```yaml
   env:
     # The base filename of the binary produced by `cargo build`.
-    BINARY: bevy_template
-    # The name to use for the packaged application produced by this workflow.
-    PACKAGE_NAME: bevy-template
-    # The itch.io page to upload to, in the format: `user-name/project-name`.
-    # Comment this out to disable.
-    ITCH_TARGET: the-bevy-flock/bevy-template
-    # The organization or author that owns the rights to the game.
-    OWNER: the-bevy-flock
-    # The path to the workspace directory. Change this from `.` if you have multiple workspaces.
-    WORKSPACE_DIR: .
-    # The path to the assets directory (relative to the workspace directory).
-    ASSETS_DIR: assets
-    # Whether packages produced by this workflow should be uploaded to the Github release.
-    UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
+    cargo_binary_name: bevy_quickstart
+    # The path to the assets directory.
+    assets: assets
+    # The name to use for the app produced by this workflow.
+    app_name: bevy_quickstart
+    # The organization or author that owns the rights to the app.
+    app_owner: the-bevy-flock
+    # The itch.io project to upload to in the format `user-name/project-name`.
+    # Comment this out if you're not uploading to itch.io.
+    upload_to_itch: the-bevy-flock/bevy-quickstart
+    # Whether the packages produced by this workflow should be uploaded to a GitHub release.
+    upload_to_github: true
     # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
     # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
-    USE_GIT_LFS: false
+    git_lfs: false
   ```
 </details>
 
