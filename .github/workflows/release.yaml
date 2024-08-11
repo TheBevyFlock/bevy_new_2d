@@ -14,21 +14,50 @@ on:
         required: true
         type: string
 
-# Configure constants for this workflow.
+# Configure the release workflow by editing these values.
 env:
   # The base filename of the binary produced by `cargo build`.
-  cargo_binary_name: bevy_quickstart
+  cargo_build_binary_name: bevy_quickstart
+
   # The path to the assets directory.
-  assets: assets
-  # The name to use for the app produced by this workflow.
-  app_name: bevy_quickstart
-  # The organization or author that owns the rights to the app.
-  app_owner: the-bevy-flock
-  # The itch.io project to upload to in the format `user-name/project-name`.
-  # Comment this out if you're not uploading to itch.io.
-  upload_to_itch: the-bevy-flock/bevy-quickstart
-  # Whether the packages produced by this workflow should be uploaded to a GitHub release.
+  assets_path: assets
+
+  # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
+
+  # The itch.io project to upload to in the format `user-name/project-name`.
+  # There will be no upload to itch.io if this is commented out.
+  upload_to_itch: the-bevy-flock/bevy-quickstart
+
+  ############
+  # ADVANCED #
+  ############
+
+  # The ID of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Must contain only A-Z, a-z, 0-9, hyphen, and period: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
+  app_id: the-bevy-flock.bevy-quickstart
+
+  # The base filename of the binary in the package produced by this workflow.
+  # Applies to Windows, macOS, and Linux releases.
+  # Defaults to `cargo_build_binary_name` if commented out.
+  #app_binary_name: bevy_quickstart
+
+  # The name of the `.zip` or `.dmg` file produced by this workflow.
+  # Defaults to `app_binary_name` if commented out.
+  app_package_name: bevy-quickstart
+
+  # The display name of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Defaults to `app_package_name` if commented out.
+  app_display_name: Bevy Quickstart
+
+  # The short display name of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
+  # Defaults to `app_display_name` if commented out.
+  #app_short_name: Bevy Quickstart
+
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   git_lfs: false
@@ -83,7 +112,7 @@ jobs:
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
     permissions:
-      # Required to create a GitHub release (https://docs.github.com/en/rest/releases/releases#create-a-release).
+      # Required to create a GitHub release: https://docs.github.com/en/rest/releases/releases#create-a-release
       contents: write
     defaults:
       run:
@@ -92,10 +121,23 @@ jobs:
     steps:
       - name: Set up environment
         run: |
-          echo 'app=tmp/app/${{ env.app_name }}${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
-          echo 'package=${{ env.app_name }}-${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
+          # Default values:
+          app_binary_name='${{ env.app_binary_name || env.cargo_build_binary_name }}'
+          echo "app_binary_name=${app_binary_name}" >> "${GITHUB_ENV}"
+          app_package_name='${{ env.app_package_name || "${app_binary_name}" }}'
+          echo "app_package_name=${app_package_name}" >> "${GITHUB_ENV}"
+          app_display_name='${{ env.app_display_name || "${app_package_name}" }}'
+          echo "app_display_name=${app_display_name}" >> "${GITHUB_ENV}"
+          app_short_name='${{ env.app_short_name || "${app_display_name}" }}'
+          echo "app_short_name=${app_short_name}" >> "${GITHUB_ENV}"
+
+          # File paths:
+          echo "app=tmp/app/${app_package_name}"'${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
+          echo "package=${env.app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
+
+          # macOS environment:
           if [ '${{ matrix.platform }}' == 'macos' ]; then
-            echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
+            echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # macOS 11.0 Big Sur is the first version to support universal binaries.
             echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
           fi
 
@@ -109,7 +151,7 @@ jobs:
         with:
           targets: ${{ matrix.targets }}
 
-      - name: Populate target directory from cache
+      - name: Populate cargo cache
         uses: Leafwing-Studios/cargo-cache@v2
 
       - name: Install dependencies (Linux)
@@ -141,16 +183,16 @@ jobs:
         if: ${{ matrix.platform != 'web' }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
-            lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_name }}${{ matrix.binary_ext }}'
+            lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
           else
-            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.app }}/${{ env.app_name }}${{ matrix.binary_ext }}'
+            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
           fi
 
       - name: Add assets to app (non-Web)
         if: ${{ matrix.platform != 'web' }}
-        run: cp -r '${{ env.assets }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
+        run: cp -r '${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
 
-      - name: Add metadata to app (MacOS)
+      - name: Add metadata to app (macOS)
         if: ${{ matrix.platform == 'macos' }}
         run: |
           cat >'${{ env.app }}/../Info.plist' <<EOF
@@ -161,17 +203,17 @@ jobs:
                     <key>CFBundleDevelopmentRegion</key>
                     <string>en</string>
                     <key>CFBundleDisplayName</key>
-                    <string>${{ env.app_name }}</string>
+                    <string>${{ env.app_display_name }}</string>
                     <key>CFBundleExecutable</key>
-                    <string>${{ env.app_name }}</string>
+                    <string>${{ env.app_binary_name }}</string>
                     <key>CFBundleIdentifier</key>
-                    <string>${{ env.app_owner }}.${{ env.app_name }}</string>
+                    <string>${{ env.app_id }}</string>
                     <key>CFBundleName</key>
-                    <string>${{ env.app_name }}</string>
+                    <string>${{ env.app_short_name }}</string>
                     <key>CFBundleShortVersionString</key>
-                    <string>${{ env.VERSION }}</string>
+                    <string>${{ env.version }}</string>
                     <key>CFBundleVersion</key>
-                    <string>${{ env.VERSION }}</string>
+                    <string>${{ env.version }}</string>
                     <key>CFBundleInfoDictionaryVersion</key>
                     <string>6.0</string>
                     <key>CFBundlePackageType</key>
@@ -190,16 +232,16 @@ jobs:
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             ln -s /Applications .
-            hdiutil create -fs HFS+ -volname '${{ env.app_name }}' -srcfolder . '${{ env.package }}'
+            hdiutil create -fs HFS+ -volname '${{ env.app_package_name }}' -srcfolder . '${{ env.package }}'
           else
-            zip --recurse-paths '${{ env.package }}' '${{ env.app_name }}'
+            zip --recurse-paths '${{ env.package }}' '${{ env.app_package_name }}'
           fi
 
       - name: Package app (Windows)
         if: ${{ matrix.platform == 'windows' }}
         working-directory: tmp/app
         shell: pwsh
-        run: Compress-Archive -Path '${{ env.app_name }}' -DestinationPath '${{ env.package }}'
+        run: Compress-Archive -Path '${{ env.app_package_name }}' -DestinationPath '${{ env.package }}'
 
       - name: Upload package to workflow artifacts
         uses: actions/upload-artifact@v4
@@ -220,8 +262,8 @@ jobs:
           overwrite: true
 
   # Check if upload to itch.io is enabled.
-  # This is needed because the `env` context can't be used in the `if:` condition of a job.
-  # See: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+  # This is needed because the `env` context can't be used in the `if:` condition of a job:
+  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
   check-upload-to-itch:
     runs-on: ubuntu-latest
     steps:

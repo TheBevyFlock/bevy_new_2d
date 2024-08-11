@@ -47,23 +47,51 @@ The release workflow can be configured by tweaking the environment variables in 
   <summary>Click here for a list of variables and how they're used.</summary>
 
   ```yaml
-  env:
-    # The base filename of the binary produced by `cargo build`.
-    cargo_binary_name: bevy_quickstart
-    # The path to the assets directory.
-    assets: assets
-    # The name to use for the app produced by this workflow.
-    app_name: bevy_quickstart
-    # The organization or author that owns the rights to the app.
-    app_owner: the-bevy-flock
-    # The itch.io project to upload to in the format `user-name/project-name`.
-    # Comment this out if you're not uploading to itch.io.
-    upload_to_itch: the-bevy-flock/bevy-quickstart
-    # Whether the packages produced by this workflow should be uploaded to a GitHub release.
-    upload_to_github: true
-    # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
-    # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
-    git_lfs: false
+  # The base filename of the binary produced by `cargo build`.
+  cargo_build_binary_name: bevy_quickstart
+
+  # The path to the assets directory.
+  assets_path: assets
+
+  # Whether to upload the packages produced by this workflow to a GitHub release.
+  upload_to_github: true
+
+  # The itch.io project to upload to in the format `user-name/project-name`.
+  # There will be no upload to itch.io if this is commented out.
+  upload_to_itch: the-bevy-flock/bevy-quickstart
+
+  ############
+  # ADVANCED #
+  ############
+
+  # The ID of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Must contain only A-Z, a-z, 0-9, hyphens, and periods: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
+  app_id: the-bevy-flock.bevy-quickstart
+
+  # The base filename of the binary in the package produced by this workflow.
+  # Applies to Windows, macOS, and Linux releases.
+  # Defaults to `cargo_build_binary_name` if commented out.
+  app_binary_name: bevy_quickstart
+
+  # The name of the `.zip` or `.dmg` file produced by this workflow.
+  # Defaults to `app_binary_name` if commented out.
+  app_package_name: bevy_quickstart
+
+  # The display name of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Defaults to `app_package_name` if commented out.
+  app_display_name: Bevy Quickstart
+
+  # The short display name of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
+  # Defaults to `app_display_name` if commented out.
+  app_short_name: Bevy Quickstart
+
+  # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
+  # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
+  git_lfs: false
   ```
 </details>
 
