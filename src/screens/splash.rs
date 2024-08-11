@@ -1,7 +1,5 @@
 //! A splash screen that plays briefly at startup.
 
-use std::collections::VecDeque;
-
 use bevy::{
     input::common_conditions::input_just_pressed,
     prelude::*,
@@ -14,11 +12,6 @@ use crate::{theme::prelude::*, AppSet};
 pub(super) fn plugin(app: &mut App) {
     // Spawn splash screen.
     app.insert_resource(ClearColor(SPLASH_BACKGROUND_COLOR));
-
-    app.register_type::<SplashScreenContainer>();
-    app.register_type::<SplashScreenImageList>();
-    app.init_resource::<SplashScreenImageList>();
-
     app.add_systems(OnEnter(Screen::Splash), spawn_splash);
 
     // Animate splash screen.
@@ -56,84 +49,46 @@ const SPLASH_BACKGROUND_COLOR: Color = Color::srgb(0.157, 0.157, 0.157);
 const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
-/// This is a marker component for the UI node that holds splash screen images.
-/// Splash screen images will be added as children of this container, and removed
-/// again once they have been displayed.
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-struct SplashScreenContainer;
-
-/// This contains images handles that will be displayed (in order), one by one.
-/// A `VecDeque` is used to store the handles to allow the "front" screen to be
-/// popped off each time a new splash image is displayed.
-#[derive(Resource, Reflect)]
-#[reflect(Resource)]
-struct SplashScreenImageList(VecDeque<Handle<Image>>);
-
-impl FromWorld for SplashScreenImageList {
-    fn from_world(world: &mut World) -> Self {
-        let asset_server = world.resource::<AssetServer>();
-
-        // To show your own splash images, replace or add image paths here.
-        Self(VecDeque::from_iter(
-            ["images/splash.png", "images/wilsk_logo.png"].map(|path| {
-                asset_server.load_with_settings(path, |settings: &mut ImageLoaderSettings| {
-                    // Make an exception for the splash image in case
-                    // `ImagePlugin::default_nearest()` is used for pixel art.
-                    settings.sampler = ImageSampler::linear();
-                })
-            }),
-        ))
-    }
-}
-
 fn exit_splash_screen(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Loading);
 }
 
-fn splash_image_bundle(image: Handle<Image>) -> impl Bundle {
-    let image = image.into();
-
-    (
-        Name::new("Splash image"),
-        ImageBundle {
-            style: Style {
-                margin: UiRect::all(Val::Auto),
-                width: Val::Percent(70.0),
-                ..default()
-            },
-            image,
-            ..default()
-        },
-        UiImageFadeInOut {
-            total_duration: SPLASH_DURATION_SECS,
-            fade_duration: SPLASH_FADE_DURATION_SECS,
-            t: 0.0,
-        },
-    )
-}
-
-fn spawn_splash(
-    mut commands: Commands,
-    splash_images: Res<SplashScreenImageList>,
-    mut next_screen: ResMut<NextState<Screen>>,
-) {
-    if splash_images.0.is_empty() {
-        // If there are no splash images, go directly to the loading screen.
-        // This check is also made in the [`check_splash_timer`] system below,
-        // but is repeated here to avoid a blank screen being shown if there are
-        // no splash screen images to display.
-        next_screen.set(Screen::Loading);
-        return;
-    }
-
-    // Spawn the UI root but wait for the first timer tick to show an image.
-    commands.ui_root().insert((
-        Name::new("Splash screen container"),
-        BackgroundColor(SPLASH_BACKGROUND_COLOR),
-        StateScoped(Screen::Splash),
-        SplashScreenContainer,
-    ));
+fn spawn_splash(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands
+        .ui_root()
+        .insert((
+            Name::new("Splash screen"),
+            BackgroundColor(SPLASH_BACKGROUND_COLOR),
+            StateScoped(Screen::Splash),
+        ))
+        .with_children(|children| {
+            children.spawn((
+                Name::new("Splash image"),
+                ImageBundle {
+                    style: Style {
+                        margin: UiRect::all(Val::Auto),
+                        width: Val::Percent(70.0),
+                        ..default()
+                    },
+                    image: UiImage::new(asset_server.load_with_settings(
+                        // This should be an embedded asset for instant loading, but that is
+                        // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
+                        "images/splash.png",
+                        |settings: &mut ImageLoaderSettings| {
+                            // Make an exception for the splash image in case
+                            // `ImagePlugin::default_nearest()` is used for pixel art.
+                            settings.sampler = ImageSampler::linear();
+                        },
+                    )),
+                    ..default()
+                },
+                UiImageFadeInOut {
+                    total_duration: SPLASH_DURATION_SECS,
+                    fade_duration: SPLASH_FADE_DURATION_SECS,
+                    t: 0.0,
+                },
+            ));
+        });
 }
 
 #[derive(Component, Reflect)]
@@ -176,10 +131,7 @@ struct SplashTimer(Timer);
 
 impl Default for SplashTimer {
     fn default() -> Self {
-        Self(Timer::from_seconds(
-            SPLASH_DURATION_SECS,
-            TimerMode::Repeating,
-        ))
+        Self(Timer::from_seconds(SPLASH_DURATION_SECS, TimerMode::Once))
     }
 }
 
@@ -195,32 +147,8 @@ fn tick_splash_timer(time: Res<Time>, mut timer: ResMut<SplashTimer>) {
     timer.0.tick(time.delta());
 }
 
-fn check_splash_timer(
-    mut commands: Commands,
-    timer: Res<SplashTimer>,
-    mut next_screen: ResMut<NextState<Screen>>,
-    mut splash_images: ResMut<SplashScreenImageList>,
-    containers: Query<Entity, With<SplashScreenContainer>>,
-) {
-    if !timer.0.just_finished() {
-        return;
-    }
-
-    // Try to get the next splash image. If there isn't one, we move on to the next screen.
-    let Some(next_splash_image) = splash_images.0.pop_front() else {
-        // There are no more splash screens, exit to the loading screen.
+fn check_splash_timer(timer: ResMut<SplashTimer>, mut next_screen: ResMut<NextState<Screen>>) {
+    if timer.0.just_finished() {
         next_screen.set(Screen::Loading);
-        return;
-    };
-
-    let Ok(container) = containers.get_single() else {
-        return;
-    };
-
-    commands
-        .entity(container)
-        .despawn_descendants()
-        .with_children(|parent| {
-            parent.spawn(splash_image_bundle(next_splash_image));
-        });
+    }
 }
