@@ -72,8 +72,6 @@ jobs:
             git merge main
             ```
 
-            ---
-
             <details>
               <summary><code>git status</code></summary>
 
@@ -85,7 +83,7 @@ jobs:
             <details>
               <summary><code>git diff --diff-filter=U</code></summary>
 
-              ```
+              ```diff
               GIT_DIFF_IDENTIFIER
               ```
             </details>
