@@ -14,6 +14,12 @@ on:
   # Allow this workflow to be manually triggered.
   workflow_dispatch:
 
+# This workflows also has write-access for content and workflow, but it is through
+# CARGO_GENERATE_PAT.
+permissions:
+  # We need write permissions to create new issues.
+  issues: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -67,6 +73,7 @@ jobs:
             ```
 
             _This is an automated message created using `cargo-generate.yaml`._
+          GH_TOKEN: ${{ github.token }}
         # The messages must be in quotes, since they contain spaces.
         run: gh issue create --title "$TITLE" --body "$BODY"
 
