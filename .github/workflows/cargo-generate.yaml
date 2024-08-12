@@ -74,8 +74,19 @@ jobs:
 
             _This is an automated message created using `cargo-generate.yaml`._
           GH_TOKEN: ${{ github.token }}
-        # The messages must be in quotes, since they contain spaces.
-        run: gh issue create --title "$TITLE" --body "$BODY"
+        run: |
+          GIT_STATUS=$(git status)
+
+          # Filter the diff to only include files with merge conflicts.
+          GIT_DIFF=$(git diff --diff-filter=U)
+
+          # Create `body.md`, including the output of `git status` and `git diff`.
+          echo $BODY > body.md
+          echo -e "\n---\n\n<details><summary><code>git status</code></summary>\n$GIT_STATUS</details>\n" >> body.md
+          echo -e "\n<details><summary><code>git diff --diff-filter=U</code></summary>\n$GIT_DIFF</details>" >> body.md
+
+          # Create the issue. The title must be in quotes, since it contains spaces.
+          gh issue create --title "$TITLE" --body-file body.md
 
       - name: Push changes
         # Only run if merging succeeded.
