@@ -1,3 +1,7 @@
+# BE VERY CAREFUL about what this workflow runs, since IT HAS THE ABILITY TO DELETE THE ENTIRE
+# REPOSITORY'S CONTENTS. For reason, stick to pre-installed tools and trusted actions (such as
+# those hosted from the `actions` organization.)
+
 name: Update `cargo-generate` branch
 
 on:
@@ -6,14 +10,6 @@ on:
     branches: main
   # Allow this workflow to be manually triggered.
   workflow_dispatch:
-
-permissions:
-  # Allow this workflow to write to the Git repository.
-  #
-  # BE VERY CAREFUL about what this workflow runs, since IT HAS THE ABILITY TO DELETE THE ENTIRE
-  # REPOSITORY'S CONTENTS. For reason, stick to pre-installed tools and trusted actions (such as
-  # those hosted from the `actions` organization.)
-  contents: write
 
 jobs:
   update:
@@ -44,7 +40,7 @@ jobs:
       - name: Merge `main` branch into `cargo-generate`
         id: merge
         # We use `--no-edit` to prevent any editor from being opened, since we can't close it.
-        run: git merge main --no-edit
+        run: git merge main --no-edit --verbose
 
       - name: Handle merge conflict
         # Only run this if merging failed.
