@@ -67,7 +67,8 @@ jobs:
             ```
 
             _This is an automated message created using `cargo-generate.yaml`._
-        run: gh issue create --title $TITLE --body $BODY
+        # The messages must be in quotes, since they contain spaces.
+        run: gh issue create --title "$TITLE" --body "$BODY"
 
       - name: Push changes
         # Only run if merging succeeded.
