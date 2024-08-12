@@ -1,3 +1,6 @@
+# This workflow is used to automatically update the `cargo-generate` branch. If you copied the
+# template, you can safely delete this. :)
+#
 # BE VERY CAREFUL about what this workflow runs, since IT HAS THE ABILITY TO DELETE THE ENTIRE
 # REPOSITORY'S CONTENTS. For reason, stick to pre-installed tools and trusted actions (such as
 # those hosted from the `actions` organization.)
@@ -22,7 +25,7 @@ jobs:
         with:
           # Fetch entire history, since we need it all to successfully merge.
           fetch-depth: 0
-          # Specify a personal access token, since the default one does not let workflows to modify
+          # Specify a personal access token, since the default one does not let workflows modify
           # the `.github/workflows` folder. This PAT needs write permissions for Contents and
           # Workflows. I recommend creating a scoped token that only has access to this repository.
           token: ${{ secrets.CARGO_GENERATE_PAT }}
@@ -47,7 +50,24 @@ jobs:
       - name: Handle merge conflict
         # Only run this if merging failed.
         if: ${{ failure() && steps.merge.outcome == 'failure' }}
-        run: echo TODO :)
+        env:
+          TITLE: Failed to auto-update `cargo-generate`
+          BODY: |
+            There were merge conflicts while trying to update `cargo-generate` from `main`. You can
+            do it manually by running:
+
+            ```bash
+            # Update your local copy of the `main` branch.
+            git switch main
+            git pull
+            # Checkout the `cargo-generate` branch.
+            git checkout cargo-generate
+            # Merge changes from `main` to `cargo-generate`. You will have to fix merge conflicts.
+            git merge main
+            ```
+
+            _This is an automated message created using `cargo-generate.yaml`._
+        run: gh issue create --title $TITLE --body $BODY
 
       - name: Push changes
         # Only run if merging succeeded.
