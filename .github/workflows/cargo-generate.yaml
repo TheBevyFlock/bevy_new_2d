@@ -23,8 +23,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    # TODO: Change this to `TheBevyFlock`.
-    if: ${{ github.repository == 'BD103/bevy_quickstart' }}
+    # Only run this job on the source repository, skipping forks.
+    if: ${{ github.repository == 'TheBevyFlock/bevy_quickstart' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -89,6 +89,7 @@ jobs:
             </details>
 
             _This is an automated message created using `cargo-generate.yaml`._
+          # This is required to use the `gh` CLI.
           GH_TOKEN: ${{ github.token }}
         run: |
           GIT_STATUS=$(git status)
