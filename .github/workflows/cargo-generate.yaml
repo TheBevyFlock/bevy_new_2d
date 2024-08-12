@@ -24,6 +24,10 @@ jobs:
         with:
           # Fetch entire history, since we need it all to successfully merge.
           fetch-depth: 0
+          # Specify a personal access token, since the default one does not let workflows to modify
+          # the `.github/workflows` folder. This PAT needs write permissions for Contents and
+          # Workflows. I recommend creating a scoped token that only has access to this repository.
+          token: ${{ secrets.CARGO_GENERATE_PAT }}
 
       - name: Configure Git user
         env:
