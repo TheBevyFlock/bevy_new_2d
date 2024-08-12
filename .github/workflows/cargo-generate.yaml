@@ -14,6 +14,8 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # TODO: Change this to `TheBevyFlock`.
+    if: ${{ github.repository == 'BD103/bevy_quickstart' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
