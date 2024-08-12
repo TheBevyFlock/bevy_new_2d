@@ -14,7 +14,6 @@ permissions:
   # REPOSITORY'S CONTENTS. For reason, stick to pre-installed tools and trusted actions (such as
   # those hosted from the `actions` organization.)
   contents: write
-  actions: write
 
 jobs:
   update:
