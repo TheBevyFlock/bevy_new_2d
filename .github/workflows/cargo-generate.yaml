@@ -2,7 +2,7 @@
 # template, you can safely delete this. :)
 #
 # BE VERY CAREFUL about what this workflow runs, since IT HAS THE ABILITY TO DELETE THE ENTIRE
-# REPOSITORY'S CONTENTS. For reason, stick to pre-installed tools and trusted actions (such as
+# REPOSITORY'S CONTENTS. For this reason, stick to pre-installed tools and trusted actions (such as
 # those hosted from the `actions` organization.)
 
 name: Update `cargo-generate` branch
