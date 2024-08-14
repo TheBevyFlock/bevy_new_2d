@@ -1,16 +1,22 @@
-use bevy::{ecs::system::SystemId, prelude::*};
-
-use crate::{assets::SfxHandles, audio::sfx::SfxCommands as _};
+use crate::{asset_tracking::LoadResource, screens::Screen};
+use bevy::{
+    ecs::{system::SystemId, world::Command},
+    prelude::*,
+};
+use std::{collections::VecDeque, marker::PhantomData};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
+    app.load_resource::<ButtonAssets>();
     app.add_systems(
         Update,
         (
             trigger_on_press,
             apply_interaction_palette,
             trigger_interaction_sfx,
-        ),
+        )
+            .run_if(not(in_state(Screen::Loading)))
+            .run_if(not(in_state(Screen::Splash))),
     );
 }
 
@@ -57,15 +63,49 @@ fn apply_interaction_palette(
     }
 }
 
+#[derive(Resource, Asset, Reflect, Clone)]
+pub struct ButtonAssets {
+    #[dependency]
+    hover: Handle<AudioSource>,
+    #[dependency]
+    press: Handle<AudioSource>,
+}
+
+impl ButtonAssets {
+    pub const PATH_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
+    pub const PATH_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
+}
+
+impl FromWorld for ButtonAssets {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            hover: assets.load(Self::PATH_BUTTON_HOVER),
+            press: assets.load(Self::PATH_BUTTON_PRESS),
+        }
+    }
+}
+
 fn trigger_interaction_sfx(
     interaction_query: Query<&Interaction, Changed<Interaction>>,
+    button_assets: Res<ButtonAssets>,
     mut commands: Commands,
 ) {
     for interaction in &interaction_query {
         match interaction {
-            Interaction::Hovered => commands.play_sfx(SfxHandles::PATH_BUTTON_HOVER),
-            Interaction::Pressed => commands.play_sfx(SfxHandles::PATH_BUTTON_PRESS),
-            _ => (),
+            Interaction::Hovered => {
+                commands.spawn(AudioBundle {
+                    source: button_assets.hover.clone(),
+                    settings: PlaybackSettings::DESPAWN,
+                });
+            }
+            Interaction::Pressed => {
+                commands.spawn(AudioBundle {
+                    source: button_assets.press.clone(),
+                    settings: PlaybackSettings::DESPAWN,
+                });
+            }
+            _ => {}
         }
     }
 }
