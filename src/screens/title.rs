@@ -5,27 +5,27 @@ use bevy::prelude::*;
 use crate::{screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Title), show_title_screen);
+    app.add_systems(OnEnter(Screen::Title), spawn_title_screen);
 }
 
-fn show_title_screen(mut commands: Commands) {
+fn spawn_title_screen(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Title))
         .with_children(|children| {
-            children.button("Play").observe(enter_playing);
-            children.button("Credits").observe(enter_credits);
+            children.button("Play").observe(enter_gameplay_screen);
+            children.button("Credits").observe(enter_credits_screen);
 
             #[cfg(not(target_family = "wasm"))]
             children.button("Exit").observe(exit_app);
         });
 }
 
-fn enter_playing(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_gameplay_screen(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Gameplay);
 }
 
-fn enter_credits(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_credits_screen(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Credits);
 }
 
