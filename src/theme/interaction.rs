@@ -91,26 +91,17 @@ fn trigger_interaction_sfx(
     mut commands: Commands,
 ) {
     for interaction in &interaction_query {
-        match interaction {
-            Interaction::Hovered => {
-                commands.spawn((
-                    AudioBundle {
-                        source: interaction_assets.hover.clone(),
-                        settings: PlaybackSettings::DESPAWN,
-                    },
-                    SoundEffect,
-                ));
-            }
-            Interaction::Pressed => {
-                commands.spawn((
-                    AudioBundle {
-                        source: interaction_assets.press.clone(),
-                        settings: PlaybackSettings::DESPAWN,
-                    },
-                    SoundEffect,
-                ));
-            }
-            _ => {}
-        }
+        let source = match interaction {
+            Interaction::Hovered => interaction_assets.hover.clone(),
+            Interaction::Pressed => interaction_assets.press.clone(),
+            _ => continue,
+        };
+        commands.spawn((
+            AudioBundle {
+                source,
+                settings: PlaybackSettings::DESPAWN,
+            },
+            SoundEffect,
+        ));
     }
 }
