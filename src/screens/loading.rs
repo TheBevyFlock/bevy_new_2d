@@ -3,10 +3,9 @@
 
 use bevy::prelude::*;
 
-use super::Screen;
 use crate::{
     demo::player::PlayerAssets,
-    screens::{credits::CreditsMusic, playing::GameplayMusic},
+    screens::{credits::CreditsMusic, playing::GameplayMusic, Screen},
     theme::{interaction::InteractionAssets, prelude::*},
 };
 

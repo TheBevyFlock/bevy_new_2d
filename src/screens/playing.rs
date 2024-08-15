@@ -2,9 +2,9 @@
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use super::Screen;
 use crate::{
     asset_tracking::LoadResource, audio::Music, demo::level::spawn_level as spawn_level_command,
+    screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {

@@ -1,4 +1,4 @@
-//! A simple, high-level way to load collections of asset handles as resources
+//! A high-level way to load collections of asset handles as resources.
 
 use bevy::prelude::*;
 
@@ -38,7 +38,6 @@ type InsertLoadedResource = fn(&mut World, &UntypedHandle);
 #[derive(Resource, Default)]
 struct ResourceHandles {
     waiting: Vec<(UntypedHandle, InsertLoadedResource)>,
-    #[allow(unused)]
     finished: Vec<UntypedHandle>,
 }
 

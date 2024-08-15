@@ -8,8 +8,9 @@ use bevy::prelude::*;
 use rand::prelude::*;
 use std::time::Duration;
 
-use super::movement::MovementController;
-use crate::{audio::SoundEffect, demo::player::PlayerAssets, AppSet};
+use crate::{
+    audio::SoundEffect, demo::movement::MovementController, demo::player::PlayerAssets, AppSet,
+};
 
 pub(super) fn plugin(app: &mut App) {
     // Animate and play sound effects based on controls.
