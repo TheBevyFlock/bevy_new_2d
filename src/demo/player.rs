@@ -115,6 +115,8 @@ fn record_player_directional_input(
 
 #[derive(Resource, Asset, Reflect, Clone)]
 pub struct PlayerAssets {
+    // This #[dependency] attribute marks the field as a dependency of the Asset.
+    // This means that it will not finish loading until the labeled asset is also loaded.
     #[dependency]
     pub ducky: Handle<Image>,
     #[dependency]
