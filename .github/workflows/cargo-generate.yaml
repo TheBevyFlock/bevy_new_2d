@@ -42,8 +42,8 @@ jobs:
           NAME: github-actions[bot]
           EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
-          git config user.name $NAME
-          git config user.email $EMAIL
+          git config user.name "${NAME}"
+          git config user.email "${EMAIL}"
 
       - name: Switch to `cargo-generate` branch
         run: git checkout cargo-generate
@@ -88,21 +88,21 @@ jobs:
               ```
             </details>
 
-            _This is an automated message created using `cargo-generate.yaml`._
+            _This is an automated message created by `cargo-generate.yaml`._
           # This is required to use the `gh` CLI.
           GH_TOKEN: ${{ github.token }}
         run: |
-          GIT_STATUS=$(git status)
+          GIT_STATUS="$(git status)"
 
           # Filter the diff to only include files with merge conflicts.
-          GIT_DIFF=$(git diff --diff-filter=U)
+          GIT_DIFF="$(git diff --diff-filter=U)"
 
           # Replace `GIT_STATUS_IDENTIFIER` and `GIT_DIFF_IDENTIFIER` with their outputs.
-          BODY=${BODY/GIT_STATUS_IDENTIFIER/"$GIT_STATUS"}
-          BODY=${BODY/GIT_DIFF_IDENTIFIER/"$GIT_DIFF"}
+          BODY="${BODY/GIT_STATUS_IDENTIFIER/"${GIT_STATUS}"}"
+          BODY="${BODY/GIT_DIFF_IDENTIFIER/"${GIT_DIFF}"}"
 
-          # Create the issue. The text must be in quotes, since it contains spaces.
-          gh issue create --title "$TITLE" --body "$BODY"
+          # Create the issue.
+          gh issue create --title "${TITLE}" --body "${BODY}"
 
       - name: Push changes
         # Only run if merging succeeded.
