@@ -1,15 +1,8 @@
 //! Helper traits for creating common widgets.
 
-use bevy::{
-    ecs::system::{EntityCommands, SystemId},
-    prelude::*,
-    ui::Val::*,
-};
+use bevy::{ecs::system::EntityCommands, prelude::*, ui::Val::*};
 
-use super::{
-    interaction::{InteractionPalette, OnPress},
-    palette::*,
-};
+use crate::theme::{interaction::InteractionPalette, palette::*};
 
 /// An extension trait for spawning UI widgets.
 pub trait Widgets {

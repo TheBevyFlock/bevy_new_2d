@@ -6,8 +6,7 @@ use bevy::{
     render::texture::{ImageLoaderSettings, ImageSampler},
 };
 
-use super::Screen;
-use crate::{theme::prelude::*, AppSet};
+use crate::{screens::Screen, theme::prelude::*, AppSet};
 
 pub(super) fn plugin(app: &mut App) {
     // Spawn splash screen.

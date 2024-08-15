@@ -46,19 +46,19 @@ The best way to get started is to play around with what you find in [`src/demo/`
 
 This template comes with a basic project structure that you may find useful:
 
-| Path                                               | Description                                                                |
-| -------------------------------------------------- | -------------------------------------------------------------------------- |
-| [`src/lib.rs`](./src/lib.rs)                       | App setup                                                                  |
-| [`src/asset_tracking.rs`](./src/asset_tracking.rs) | A simple, high-level way to load collections of asset handles as resources |
-| [`src/audio/`](./src/audio)                        | Commands for playing SFX and music                                         |
-| [`src/demo/`](./src/demo)                          | Example game mechanics & content (replace with your own code)              |
-| [`src/dev_tools.rs`](./src/dev_tools.rs)           | Dev tools for dev builds (press \` aka backtick to toggle)                 |
-| [`src/screens/`](./src/screens)                    | Splash screen, title screen, playing screen, etc.                          |
-| [`src/theme/`](./src/theme)                        | Reusable UI widgets & theming
+| Path                                               | Description                                                        |
+| -------------------------------------------------- | ------------------------------------------------------------------ |
+| [`src/lib.rs`](./src/lib.rs)                       | App setup                                                          |
+| [`src/asset_tracking.rs`](./src/asset_tracking.rs) | A high-level way to load collections of asset handles as resources |
+| [`src/audio/`](./src/audio)                        | Commands for playing SFX and music                                 |
+| [`src/demo/`](./src/demo)                          | Example game mechanics & content (replace with your own code)      |
+| [`src/dev_tools.rs`](./src/dev_tools.rs)           | Dev tools for dev builds (press \` aka backtick to toggle)         |
+| [`src/screens/`](./src/screens)                    | Splash screen, title screen, playing screen, etc.                  |
+| [`src/theme/`](./src/theme)                        | Reusable UI widgets & theming                                      |
 
 Feel free to move things around however you want, though.
 
-If you are new to Bevy, the patterns used in this template may look a bit weird at first glance.
+If you're new to Bevy, the patterns used in this template may look a bit weird at first glance.
 See our [Design Document](./docs/design.md) for more information on how we structured the code and why.
 
 > [!Tip]

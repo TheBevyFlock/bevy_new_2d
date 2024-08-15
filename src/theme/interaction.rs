@@ -1,9 +1,6 @@
+use bevy::prelude::*;
+
 use crate::{asset_tracking::LoadResource, audio::SoundEffect};
-use bevy::{
-    ecs::{system::SystemId, world::Command},
-    prelude::*,
-};
-use std::{collections::VecDeque, marker::PhantomData};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();

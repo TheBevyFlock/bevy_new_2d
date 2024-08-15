@@ -2,8 +2,7 @@
 
 use bevy::prelude::*;
 
-use super::Screen;
-use crate::{asset_tracking::LoadResource, audio::Music, theme::prelude::*};
+use crate::{asset_tracking::LoadResource, audio::Music, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<CreditsMusic>();
