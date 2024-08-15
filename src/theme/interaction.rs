@@ -10,7 +10,7 @@ pub(super) fn plugin(app: &mut App) {
         (
             trigger_on_press,
             apply_interaction_palette,
-            trigger_interaction_sfx,
+            trigger_interaction_sound_effect,
         )
             .run_if(resource_exists::<InteractionAssets>),
     );
@@ -68,8 +68,8 @@ pub struct InteractionAssets {
 }
 
 impl InteractionAssets {
-    pub const PATH_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
-    pub const PATH_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
+    pub const PATH_BUTTON_HOVER: &'static str = "audio/sound_effects/button_hover.ogg";
+    pub const PATH_BUTTON_PRESS: &'static str = "audio/sound_effects/button_press.ogg";
 }
 
 impl FromWorld for InteractionAssets {
@@ -82,7 +82,7 @@ impl FromWorld for InteractionAssets {
     }
 }
 
-fn trigger_interaction_sfx(
+fn trigger_interaction_sound_effect(
     interaction_query: Query<&Interaction, Changed<Interaction>>,
     interaction_assets: Res<InteractionAssets>,
     mut commands: Commands,

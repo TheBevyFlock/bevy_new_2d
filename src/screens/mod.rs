@@ -1,8 +1,8 @@
 //! The game's main screen states and transitions between them.
 
-pub mod credits;
+mod credits;
+mod gameplay;
 mod loading;
-pub mod playing;
 mod splash;
 mod title;
 
@@ -13,11 +13,11 @@ pub(super) fn plugin(app: &mut App) {
     app.enable_state_scoped_entities::<Screen>();
 
     app.add_plugins((
-        splash::plugin,
-        loading::plugin,
-        title::plugin,
         credits::plugin,
-        playing::plugin,
+        gameplay::plugin,
+        loading::plugin,
+        splash::plugin,
+        title::plugin,
     ));
 }
 
@@ -29,5 +29,5 @@ pub enum Screen {
     Loading,
     Title,
     Credits,
-    Playing,
+    Gameplay,
 }
