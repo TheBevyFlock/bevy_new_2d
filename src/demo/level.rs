@@ -10,13 +10,10 @@ pub(super) fn plugin(_app: &mut App) {
     // later if needed.
 }
 
-#[derive(Debug)]
-pub struct SpawnLevel;
-
-impl Command for SpawnLevel {
-    fn apply(self, world: &mut World) {
-        // The only thing we have in our level is a player,
-        // but add things like walls etc. here.
-        SpawnPlayer { max_speed: 400.0 }.apply(world);
-    }
+/// A [`Command`] to spawn the level.
+/// Exclusive systems, i.e. systems that only accept `&mut World`, implement [`Command`].
+pub fn spawn_level(world: &mut World) {
+    // The only thing we have in our level is a player,
+    // but add things like walls etc. here.
+    SpawnPlayer { max_speed: 400.0 }.apply(world);
 }

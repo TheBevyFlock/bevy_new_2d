@@ -3,7 +3,9 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
-use crate::{asset_tracking::LoadResource, audio::Music, demo::level::SpawnLevel};
+use crate::{
+    asset_tracking::LoadResource, audio::Music, demo::level::spawn_level as spawn_level_command,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<GameplayMusic>();
@@ -35,7 +37,7 @@ impl FromWorld for GameplayMusic {
 }
 
 fn spawn_level(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
-    commands.add(SpawnLevel);
+    commands.add(spawn_level_command);
     music.entity = Some(
         commands
             .spawn((
