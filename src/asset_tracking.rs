@@ -33,9 +33,12 @@ impl LoadResource for App {
     }
 }
 
+/// A function that inserts a loaded resource
+type InsertLoadedResource = fn(&mut World, &UntypedHandle);
+
 #[derive(Resource, Default)]
 struct ResourceHandles {
-    waiting: VecDeque<(UntypedHandle, fn(&mut World, &UntypedHandle))>,
+    waiting: VecDeque<(UntypedHandle, InsertLoadedResource)>,
     #[allow(unused)]
     finished: Vec<UntypedHandle>,
 }

@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::{asset_tracking::LoadResource, audio::BackgroundMusic, theme::prelude::*};
+use crate::{asset_tracking::LoadResource, audio::Music, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<CreditsMusic>();
@@ -53,7 +53,7 @@ fn show_credits_screen(mut commands: Commands, mut music: ResMut<CreditsMusic>) 
                     source: music.music.clone(),
                     settings: PlaybackSettings::LOOP,
                 },
-                BackgroundMusic,
+                Music,
             ))
             .id(),
     );
@@ -61,7 +61,7 @@ fn show_credits_screen(mut commands: Commands, mut music: ResMut<CreditsMusic>) 
 
 fn stop_bgm(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     if let Some(entity) = music.entity.take() {
-        commands.entity(entity).despawn();
+        commands.entity(entity).despawn_recursive();
     }
 }
 

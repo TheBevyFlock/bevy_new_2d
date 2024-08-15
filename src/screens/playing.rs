@@ -3,7 +3,7 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
-use crate::{asset_tracking::LoadResource, audio::BackgroundMusic, demo::level::SpawnLevel};
+use crate::{asset_tracking::LoadResource, audio::Music, demo::level::SpawnLevel};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<GameplayMusic>();
@@ -43,7 +43,7 @@ fn spawn_level(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
                     source: music.handle.clone(),
                     settings: PlaybackSettings::LOOP,
                 },
-                BackgroundMusic,
+                Music,
             ))
             .id(),
     );
@@ -51,7 +51,7 @@ fn spawn_level(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
 
 fn stop_bgm(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     if let Some(entity) = music.entity.take() {
-        commands.entity(entity).despawn();
+        commands.entity(entity).despawn_recursive();
     }
 }
 

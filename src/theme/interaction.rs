@@ -15,8 +15,7 @@ pub(super) fn plugin(app: &mut App) {
             apply_interaction_palette,
             trigger_interaction_sfx,
         )
-            .run_if(not(in_state(Screen::Loading)))
-            .run_if(not(in_state(Screen::Splash))),
+            .run_if(not(in_state(Screen::Loading)).and_then(not(in_state(Screen::Splash)))),
     );
 }
 
