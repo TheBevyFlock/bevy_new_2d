@@ -8,7 +8,7 @@ use bevy::prelude::*;
 mod animation;
 pub mod level;
 mod movement;
-mod player;
+pub mod player;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((

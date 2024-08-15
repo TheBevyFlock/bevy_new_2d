@@ -1,5 +1,5 @@
-mod assets;
-mod audio;
+mod asset_tracking;
+pub mod audio;
 mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
@@ -56,11 +56,10 @@ impl Plugin for AppPlugin {
 
         // Add other plugins.
         app.add_plugins((
+            asset_tracking::plugin,
             demo::plugin,
             screens::plugin,
             theme::plugin,
-            assets::plugin,
-            audio::plugin,
         ));
 
         // Enable dev tools for dev builds.

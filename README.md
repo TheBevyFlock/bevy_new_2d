@@ -46,15 +46,15 @@ The best way to get started is to play around with what you find in [`src/demo/`
 
 This template comes with a basic project structure that you may find useful:
 
-| Path                                     | Description                                                                    |
-|------------------------------------------|--------------------------------------------------------------------------------|
-| [`src/lib.rs`](./src/lib.rs)             | App setup                                                                      |
-| [`src/assets.rs`](./src/assets.rs)       | Definition of assets that will be preloaded before the game starts             |
-| [`src/audio/`](./src/audio)              | Commands for playing SFX and music                                             |
-| [`src/demo/`](./src/demo)                | Example game mechanics & content (replace with your own code)                  |
-| [`src/dev_tools.rs`](./src/dev_tools.rs) | Dev tools for dev builds (press \` aka backtick to toggle)                     |
-| [`src/screens/`](./src/screens)          | Splash screen, title screen, playing screen, etc.                              |
-| [`src/theme/`](./src/theme)              | Reusable UI widgets & theming                                                  |
+| Path                                               | Description                                                                |
+| -------------------------------------------------- | -------------------------------------------------------------------------- |
+| [`src/lib.rs`](./src/lib.rs)                       | App setup                                                                  |
+| [`src/asset_tracking.rs`](./src/asset_tracking.rs) | A simple, high-level way to load collections of asset handles as resources |
+| [`src/audio/`](./src/audio)                        | Commands for playing SFX and music                                         |
+| [`src/demo/`](./src/demo)                          | Example game mechanics & content (replace with your own code)              |
+| [`src/dev_tools.rs`](./src/dev_tools.rs)           | Dev tools for dev builds (press \` aka backtick to toggle)                 |
+| [`src/screens/`](./src/screens)                    | Splash screen, title screen, playing screen, etc.                          |
+| [`src/theme/`](./src/theme)                        | Reusable UI widgets & theming
 
 Feel free to move things around however you want, though.
 
