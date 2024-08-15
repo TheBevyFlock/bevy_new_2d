@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::{asset_tracking::LoadResource, theme::prelude::*};
+use crate::{asset_tracking::LoadResource, audio::BackgroundMusic, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<CreditsMusic>();
@@ -48,10 +48,13 @@ fn show_credits_screen(mut commands: Commands, mut music: ResMut<CreditsMusic>) 
 
     music.entity = Some(
         commands
-            .spawn(AudioBundle {
-                source: music.music.clone(),
-                settings: PlaybackSettings::LOOP,
-            })
+            .spawn((
+                AudioBundle {
+                    source: music.music.clone(),
+                    settings: PlaybackSettings::LOOP,
+                },
+                BackgroundMusic,
+            ))
             .id(),
     );
 }

@@ -9,7 +9,7 @@ use rand::seq::SliceRandom;
 use std::time::Duration;
 
 use super::movement::MovementController;
-use crate::{demo::player::PlayerAssets, screens::Screen, AppSet};
+use crate::{audio::SoundEffect, demo::player::PlayerAssets, screens::Screen, AppSet};
 
 pub(super) fn plugin(app: &mut App) {
     // Animate and play sound effects based on controls.
@@ -79,10 +79,13 @@ fn trigger_step_sfx(
         {
             let rng = &mut rand::thread_rng();
             let random_step = player_assets.steps.choose(rng).unwrap();
-            commands.spawn(AudioBundle {
-                source: random_step.clone(),
-                settings: PlaybackSettings::DESPAWN,
-            });
+            commands.spawn((
+                AudioBundle {
+                    source: random_step.clone(),
+                    settings: PlaybackSettings::DESPAWN,
+                },
+                SoundEffect,
+            ));
         }
     }
 }

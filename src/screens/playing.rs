@@ -3,7 +3,7 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use super::Screen;
-use crate::{asset_tracking::LoadResource, demo::level::SpawnLevel};
+use crate::{asset_tracking::LoadResource, audio::BackgroundMusic, demo::level::SpawnLevel};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<GameplayMusic>();
@@ -38,10 +38,13 @@ fn spawn_level(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     commands.add(SpawnLevel);
     music.entity = Some(
         commands
-            .spawn(AudioBundle {
-                source: music.handle.clone(),
-                settings: PlaybackSettings::LOOP,
-            })
+            .spawn((
+                AudioBundle {
+                    source: music.handle.clone(),
+                    settings: PlaybackSettings::LOOP,
+                },
+                BackgroundMusic,
+            ))
             .id(),
     );
 }

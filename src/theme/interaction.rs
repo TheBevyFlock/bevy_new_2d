@@ -1,4 +1,4 @@
-use crate::{asset_tracking::LoadResource, screens::Screen};
+use crate::{asset_tracking::LoadResource, audio::SoundEffect, screens::Screen};
 use bevy::{
     ecs::{system::SystemId, world::Command},
     prelude::*,
@@ -94,16 +94,22 @@ fn trigger_interaction_sfx(
     for interaction in &interaction_query {
         match interaction {
             Interaction::Hovered => {
-                commands.spawn(AudioBundle {
-                    source: button_assets.hover.clone(),
-                    settings: PlaybackSettings::DESPAWN,
-                });
+                commands.spawn((
+                    AudioBundle {
+                        source: button_assets.hover.clone(),
+                        settings: PlaybackSettings::DESPAWN,
+                    },
+                    SoundEffect,
+                ));
             }
             Interaction::Pressed => {
-                commands.spawn(AudioBundle {
-                    source: button_assets.press.clone(),
-                    settings: PlaybackSettings::DESPAWN,
-                });
+                commands.spawn((
+                    AudioBundle {
+                        source: button_assets.press.clone(),
+                        settings: PlaybackSettings::DESPAWN,
+                    },
+                    SoundEffect,
+                ));
             }
             _ => {}
         }
