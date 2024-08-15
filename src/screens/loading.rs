@@ -7,7 +7,7 @@ use super::Screen;
 use crate::{
     demo::player::PlayerAssets,
     screens::{credits::CreditsMusic, playing::GameplayMusic},
-    theme::{interaction::ButtonAssets, prelude::*},
+    theme::{interaction::InteractionAssets, prelude::*},
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -32,12 +32,12 @@ fn show_loading_screen(mut commands: Commands) {
 
 fn all_assets_loaded(
     player_assets: Option<Res<PlayerAssets>>,
-    button_assets: Option<Res<ButtonAssets>>,
+    interaction_assets: Option<Res<InteractionAssets>>,
     credits_music: Option<Res<CreditsMusic>>,
     gameplay_music: Option<Res<GameplayMusic>>,
 ) -> bool {
     player_assets.is_some()
-        && button_assets.is_some()
+        && interaction_assets.is_some()
         && credits_music.is_some()
         && gameplay_music.is_some()
 }

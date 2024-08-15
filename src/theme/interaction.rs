@@ -7,7 +7,7 @@ use std::{collections::VecDeque, marker::PhantomData};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
-    app.load_resource::<ButtonAssets>();
+    app.load_resource::<InteractionAssets>();
     app.add_systems(
         Update,
         (
@@ -63,19 +63,19 @@ fn apply_interaction_palette(
 }
 
 #[derive(Resource, Asset, Reflect, Clone)]
-pub struct ButtonAssets {
+pub struct InteractionAssets {
     #[dependency]
     hover: Handle<AudioSource>,
     #[dependency]
     press: Handle<AudioSource>,
 }
 
-impl ButtonAssets {
+impl InteractionAssets {
     pub const PATH_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
     pub const PATH_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
 }
 
-impl FromWorld for ButtonAssets {
+impl FromWorld for InteractionAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
@@ -87,7 +87,7 @@ impl FromWorld for ButtonAssets {
 
 fn trigger_interaction_sfx(
     interaction_query: Query<&Interaction, Changed<Interaction>>,
-    button_assets: Res<ButtonAssets>,
+    interaction_assets: Res<InteractionAssets>,
     mut commands: Commands,
 ) {
     for interaction in &interaction_query {
@@ -95,7 +95,7 @@ fn trigger_interaction_sfx(
             Interaction::Hovered => {
                 commands.spawn((
                     AudioBundle {
-                        source: button_assets.hover.clone(),
+                        source: interaction_assets.hover.clone(),
                         settings: PlaybackSettings::DESPAWN,
                     },
                     SoundEffect,
@@ -104,7 +104,7 @@ fn trigger_interaction_sfx(
             Interaction::Pressed => {
                 commands.spawn((
                     AudioBundle {
-                        source: button_assets.press.clone(),
+                        source: interaction_assets.press.clone(),
                         settings: PlaybackSettings::DESPAWN,
                     },
                     SoundEffect,
