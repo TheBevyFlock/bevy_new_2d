@@ -311,7 +311,7 @@ pub enum Screen {
     Title,
     Credits,
     Gameplay,
-    Defeat,
+    Victory,
     Leaderboard,
     MultiplayerLobby,
     SecretMinigame,
@@ -327,14 +327,14 @@ For each screen, create a plugin that handles the setup and teardown of the scre
 ```rust
 // game_over.rs
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Defeat), show_defeat_screen);
-    app.add_systems(OnExit(Screen::Defeat), reset_highscore);
+    app.add_systems(OnEnter(Screen::Victory), show_victory_screen);
+    app.add_systems(OnExit(Screen::Victory), reset_highscore);
 }
 
-fn show_defeat_screen(mut commands: Commands) {
+fn show_victory_screen(mut commands: Commands) {
     commands.
         .ui_root()
-        .insert((Name::new("Defeat screen"), StateScoped(Screen::Defeat)))
+        .insert((Name::new("Victory screen"), StateScoped(Screen::Victory)))
         .with_children(|parent| {
             // Spawn UI elements.
         });
@@ -347,7 +347,7 @@ fn reset_highscore(mut highscore: ResMut<Highscore>) {
 
 ### Reasoning
 
-"Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the credits screen, the defeat screen, etc.
+"Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the credits screen, the victory screen, etc.
 These screens usually correspond to different logical states of your game that have different systems running.
 
 By using dedicated `State`s for each screen, you can easily manage systems and entities that are only relevant for a certain screen.
