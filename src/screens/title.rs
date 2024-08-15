@@ -22,7 +22,7 @@ fn show_title_screen(mut commands: Commands) {
 }
 
 fn enter_playing(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Playing);
+    next_screen.set(Screen::Gameplay);
 }
 
 fn enter_credits(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {

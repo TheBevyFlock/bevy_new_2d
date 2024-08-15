@@ -22,7 +22,7 @@ pub(super) fn plugin(app: &mut App) {
             (
                 update_animation_movement,
                 update_animation_atlas,
-                trigger_step_sfx,
+                trigger_step_sound_effect,
             )
                 .chain()
                 .run_if(resource_exists::<PlayerAssets>)
@@ -68,7 +68,7 @@ fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)
 
 /// If the player is moving, play a step sound effect synchronized with the
 /// animation.
-fn trigger_step_sfx(
+fn trigger_step_sound_effect(
     mut commands: Commands,
     player_assets: Res<PlayerAssets>,
     mut step_query: Query<&PlayerAnimation>,

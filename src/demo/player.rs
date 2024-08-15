@@ -79,7 +79,7 @@ fn spawn_player(
         },
         ScreenWrap,
         player_animation,
-        StateScoped(Screen::Playing),
+        StateScoped(Screen::Gameplay),
     ));
 }
 
@@ -125,10 +125,10 @@ pub struct PlayerAssets {
 
 impl PlayerAssets {
     pub const PATH_DUCKY: &'static str = "images/ducky.png";
-    pub const PATH_STEP_1: &'static str = "audio/sfx/step1.ogg";
-    pub const PATH_STEP_2: &'static str = "audio/sfx/step2.ogg";
-    pub const PATH_STEP_3: &'static str = "audio/sfx/step3.ogg";
-    pub const PATH_STEP_4: &'static str = "audio/sfx/step4.ogg";
+    pub const PATH_STEP_1: &'static str = "audio/sound_effects/step1.ogg";
+    pub const PATH_STEP_2: &'static str = "audio/sound_effects/step2.ogg";
+    pub const PATH_STEP_3: &'static str = "audio/sound_effects/step3.ogg";
+    pub const PATH_STEP_4: &'static str = "audio/sound_effects/step4.ogg";
 }
 
 impl FromWorld for PlayerAssets {

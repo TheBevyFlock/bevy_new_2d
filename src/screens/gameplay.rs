@@ -8,15 +8,21 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
+    app.add_systems(OnEnter(Screen::Gameplay), spawn_level);
+
     app.load_resource::<GameplayMusic>();
-    app.add_systems(OnEnter(Screen::Playing), spawn_level);
-    app.add_systems(OnExit(Screen::Playing), stop_bgm);
+    app.add_systems(OnEnter(Screen::Gameplay), play_gameplay_music);
+    app.add_systems(OnExit(Screen::Gameplay), stop_music);
 
     app.add_systems(
         Update,
         return_to_title_screen
-            .run_if(in_state(Screen::Playing).and_then(input_just_pressed(KeyCode::Escape))),
+            .run_if(in_state(Screen::Gameplay).and_then(input_just_pressed(KeyCode::Escape))),
     );
+}
+
+fn spawn_level(mut commands: Commands) {
+    commands.add(spawn_level_command);
 }
 
 #[derive(Resource, Asset, Reflect, Clone)]
@@ -30,14 +36,13 @@ impl FromWorld for GameplayMusic {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            handle: assets.load("audio/bgm/Fluffing A Duck.ogg"),
+            handle: assets.load("audio/music/Fluffing A Duck.ogg"),
             entity: None,
         }
     }
 }
 
-fn spawn_level(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
-    commands.add(spawn_level_command);
+fn play_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     music.entity = Some(
         commands
             .spawn((
@@ -51,7 +56,7 @@ fn spawn_level(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     );
 }
 
-fn stop_bgm(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
+fn stop_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     if let Some(entity) = music.entity.take() {
         commands.entity(entity).despawn_recursive();
     }

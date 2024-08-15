@@ -5,19 +5,20 @@ use bevy::prelude::*;
 
 use crate::{
     demo::player::PlayerAssets,
-    screens::{credits::CreditsMusic, playing::GameplayMusic, Screen},
+    screens::{credits::CreditsMusic, gameplay::GameplayMusic, Screen},
     theme::{interaction::InteractionAssets, prelude::*},
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Loading), show_loading_screen);
+    app.add_systems(OnEnter(Screen::Loading), spawn_loading_screen);
+
     app.add_systems(
         Update,
-        continue_to_title.run_if(in_state(Screen::Loading).and_then(all_assets_loaded)),
+        continue_to_title_screen.run_if(in_state(Screen::Loading).and_then(all_assets_loaded)),
     );
 }
 
-fn show_loading_screen(mut commands: Commands) {
+fn spawn_loading_screen(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Loading))
@@ -27,6 +28,10 @@ fn show_loading_screen(mut commands: Commands) {
                 ..default()
             });
         });
+}
+
+fn continue_to_title_screen(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Title);
 }
 
 fn all_assets_loaded(
@@ -39,8 +44,4 @@ fn all_assets_loaded(
         && interaction_assets.is_some()
         && credits_music.is_some()
         && gameplay_music.is_some()
-}
-
-fn continue_to_title(mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Title);
 }

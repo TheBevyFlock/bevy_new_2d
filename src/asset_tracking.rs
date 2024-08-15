@@ -3,8 +3,8 @@
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.init_resource::<ResourceHandles>()
-        .add_systems(PreUpdate, load_resource_assets);
+    app.init_resource::<ResourceHandles>();
+    app.add_systems(PreUpdate, load_resource_assets);
 }
 
 pub trait LoadResource {
