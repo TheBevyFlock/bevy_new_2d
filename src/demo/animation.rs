@@ -4,12 +4,12 @@
 //! - [Sprite animation](https://github.com/bevyengine/bevy/blob/latest/examples/2d/sprite_animation.rs)
 //! - [Timers](https://github.com/bevyengine/bevy/blob/latest/examples/time/timers.rs)
 
+use bevy::prelude::*;
+use rand::prelude::*;
 use std::time::Duration;
 
-use bevy::prelude::*;
-
 use super::movement::MovementController;
-use crate::{assets::SfxHandles, audio::sfx::SfxCommands as _, AppSet};
+use crate::{audio::SoundEffect, demo::player::PlayerAssets, AppSet};
 
 pub(super) fn plugin(app: &mut App) {
     // Animate and play sound effects based on controls.
@@ -24,6 +24,7 @@ pub(super) fn plugin(app: &mut App) {
                 trigger_step_sfx,
             )
                 .chain()
+                .run_if(resource_exists::<PlayerAssets>)
                 .in_set(AppSet::Update),
         ),
     );
@@ -66,13 +67,25 @@ fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)
 
 /// If the player is moving, play a step sound effect synchronized with the
 /// animation.
-fn trigger_step_sfx(mut commands: Commands, mut step_query: Query<&PlayerAnimation>) {
+fn trigger_step_sfx(
+    mut commands: Commands,
+    player_assets: Res<PlayerAssets>,
+    mut step_query: Query<&PlayerAnimation>,
+) {
     for animation in &mut step_query {
         if animation.state == PlayerAnimationState::Walking
             && animation.changed()
             && (animation.frame == 2 || animation.frame == 5)
         {
-            commands.play_sfx(SfxHandles::PATH_STEP);
+            let rng = &mut rand::thread_rng();
+            let random_step = player_assets.steps.choose(rng).unwrap();
+            commands.spawn((
+                AudioBundle {
+                    source: random_step.clone(),
+                    settings: PlaybackSettings::DESPAWN,
+                },
+                SoundEffect,
+            ));
         }
     }
 }

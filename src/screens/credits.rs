@@ -3,14 +3,32 @@
 use bevy::prelude::*;
 
 use super::Screen;
-use crate::{assets::BgmHandles, audio::bgm::BgmCommands as _, theme::prelude::*};
+use crate::{asset_tracking::LoadResource, audio::Music, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
+    app.load_resource::<CreditsMusic>();
     app.add_systems(OnEnter(Screen::Credits), show_credits_screen);
     app.add_systems(OnExit(Screen::Credits), stop_bgm);
 }
 
-fn show_credits_screen(mut commands: Commands) {
+#[derive(Resource, Asset, Reflect, Clone)]
+pub struct CreditsMusic {
+    #[dependency]
+    music: Handle<AudioSource>,
+    entity: Option<Entity>,
+}
+
+impl FromWorld for CreditsMusic {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            music: assets.load("audio/bgm/Monkeys Spinning Monkeys.ogg"),
+            entity: None,
+        }
+    }
+}
+
+fn show_credits_screen(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Credits))
@@ -28,11 +46,23 @@ fn show_credits_screen(mut commands: Commands) {
             children.button("Back").observe(enter_title);
         });
 
-    commands.play_bgm(BgmHandles::PATH_CREDITS);
+    music.entity = Some(
+        commands
+            .spawn((
+                AudioBundle {
+                    source: music.music.clone(),
+                    settings: PlaybackSettings::LOOP,
+                },
+                Music,
+            ))
+            .id(),
+    );
 }
 
-fn stop_bgm(mut commands: Commands) {
-    commands.stop_bgm();
+fn stop_bgm(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
+    if let Some(entity) = music.entity.take() {
+        commands.entity(entity).despawn_recursive();
+    }
 }
 
 fn enter_title(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {

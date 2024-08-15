@@ -47,23 +47,51 @@ The release workflow can be configured by tweaking the environment variables in 
   <summary>Click here for a list of variables and how they're used.</summary>
 
   ```yaml
-  env:
-    # The base filename of the binary produced by `cargo build`.
-    BINARY: bevy_template
-    # The name to use for the packaged application produced by this workflow.
-    PACKAGE_NAME: bevy-template
-    # The itch.io page to upload to, in the format: `user-name/project-name`.
-    # Comment this out to disable.
-    ITCH_TARGET: the-bevy-flock/bevy-template
-    # The organization or author that owns the rights to the game.
-    OWNER: the-bevy-flock
-    # The path to the assets directory.
-    ASSETS_DIR: assets
-    # Whether packages produced by this workflow should be uploaded to the Github release.
-    UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
-    # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
-    # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
-    USE_GIT_LFS: false
+  # The base filename of the binary produced by `cargo build`.
+  cargo_build_binary_name: bevy_quickstart
+
+  # The path to the assets directory.
+  assets_path: assets
+
+  # Whether to upload the packages produced by this workflow to a GitHub release.
+  upload_to_github: true
+
+  # The itch.io project to upload to in the format `user-name/project-name`.
+  # There will be no upload to itch.io if this is commented out.
+  upload_to_itch: the-bevy-flock/bevy-quickstart
+
+  ############
+  # ADVANCED #
+  ############
+
+  # The ID of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Must contain only A-Z, a-z, 0-9, hyphens, and periods: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
+  app_id: the-bevy-flock.bevy-quickstart
+
+  # The base filename of the binary in the package produced by this workflow.
+  # Applies to Windows, macOS, and Linux releases.
+  # Defaults to `cargo_build_binary_name` if commented out.
+  app_binary_name: bevy_quickstart
+
+  # The name of the `.zip` or `.dmg` file produced by this workflow.
+  # Defaults to `app_binary_name` if commented out.
+  app_package_name: bevy_quickstart
+
+  # The display name of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Defaults to `app_package_name` if commented out.
+  app_display_name: Bevy Quickstart
+
+  # The short display name of the app produced by this workflow.
+  # Applies to macOS releases.
+  # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
+  # Defaults to `app_display_name` if commented out.
+  app_short_name: Bevy Quickstart
+
+  # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
+  # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
+  git_lfs: false
   ```
 </details>
 
@@ -86,7 +114,7 @@ Hit `New repository secret` and enter the following values, then hit `Add secret
 
 #### Create itch.io project
 
-Create a new itch.io project with the same user and project name as in the `ITCH_TARGET` variable in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
+Create a new itch.io project with the same user and project name as in the `upload_to_itch` variable in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
 Hit `Save & view page` at the bottom of the page.
 
 [Trigger the release workflow](#cd-releasing) for the first time. Once it's done, go back to itch.io and hit `Edit game` in the top left.

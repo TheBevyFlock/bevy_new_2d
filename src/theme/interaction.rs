@@ -1,16 +1,21 @@
-use bevy::{ecs::system::SystemId, prelude::*};
-
-use crate::{assets::SfxHandles, audio::sfx::SfxCommands as _};
+use crate::{asset_tracking::LoadResource, audio::SoundEffect};
+use bevy::{
+    ecs::{system::SystemId, world::Command},
+    prelude::*,
+};
+use std::{collections::VecDeque, marker::PhantomData};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
+    app.load_resource::<InteractionAssets>();
     app.add_systems(
         Update,
         (
             trigger_on_press,
             apply_interaction_palette,
             trigger_interaction_sfx,
-        ),
+        )
+            .run_if(resource_exists::<InteractionAssets>),
     );
 }
 
@@ -57,15 +62,46 @@ fn apply_interaction_palette(
     }
 }
 
+#[derive(Resource, Asset, Reflect, Clone)]
+pub struct InteractionAssets {
+    #[dependency]
+    hover: Handle<AudioSource>,
+    #[dependency]
+    press: Handle<AudioSource>,
+}
+
+impl InteractionAssets {
+    pub const PATH_BUTTON_HOVER: &'static str = "audio/sfx/button_hover.ogg";
+    pub const PATH_BUTTON_PRESS: &'static str = "audio/sfx/button_press.ogg";
+}
+
+impl FromWorld for InteractionAssets {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            hover: assets.load(Self::PATH_BUTTON_HOVER),
+            press: assets.load(Self::PATH_BUTTON_PRESS),
+        }
+    }
+}
+
 fn trigger_interaction_sfx(
     interaction_query: Query<&Interaction, Changed<Interaction>>,
+    interaction_assets: Res<InteractionAssets>,
     mut commands: Commands,
 ) {
     for interaction in &interaction_query {
-        match interaction {
-            Interaction::Hovered => commands.play_sfx(SfxHandles::PATH_BUTTON_HOVER),
-            Interaction::Pressed => commands.play_sfx(SfxHandles::PATH_BUTTON_PRESS),
-            _ => (),
-        }
+        let source = match interaction {
+            Interaction::Hovered => interaction_assets.hover.clone(),
+            Interaction::Pressed => interaction_assets.press.clone(),
+            _ => continue,
+        };
+        commands.spawn((
+            AudioBundle {
+                source,
+                settings: PlaybackSettings::DESPAWN,
+            },
+            SoundEffect,
+        ));
     }
 }
