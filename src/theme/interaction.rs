@@ -1,4 +1,4 @@
-use crate::{asset_tracking::LoadResource, audio::SoundEffect, screens::Screen};
+use crate::{asset_tracking::LoadResource, audio::SoundEffect};
 use bevy::{
     ecs::{system::SystemId, world::Command},
     prelude::*,
@@ -15,7 +15,7 @@ pub(super) fn plugin(app: &mut App) {
             apply_interaction_palette,
             trigger_interaction_sfx,
         )
-            .run_if(not(in_state(Screen::Loading)).and_then(not(in_state(Screen::Splash)))),
+            .run_if(resource_exists::<InteractionAssets>),
     );
 }
 

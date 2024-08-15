@@ -9,7 +9,7 @@ use rand::seq::SliceRandom;
 use std::time::Duration;
 
 use super::movement::MovementController;
-use crate::{audio::SoundEffect, demo::player::PlayerAssets, screens::Screen, AppSet};
+use crate::{audio::SoundEffect, demo::player::PlayerAssets, AppSet};
 
 pub(super) fn plugin(app: &mut App) {
     // Animate and play sound effects based on controls.
@@ -24,7 +24,7 @@ pub(super) fn plugin(app: &mut App) {
                 trigger_step_sfx,
             )
                 .chain()
-                .run_if(in_state(Screen::Playing))
+                .run_if(resource_exists::<PlayerAssets>)
                 .in_set(AppSet::Update),
         ),
     );
