@@ -32,7 +32,7 @@ impl LoadResource for App {
     }
 }
 
-/// A function that inserts a loaded resource
+/// A function that inserts a loaded resource.
 type InsertLoadedResource = fn(&mut World, &UntypedHandle);
 
 #[derive(Resource, Default)]

@@ -5,7 +5,7 @@
 //! - [Timers](https://github.com/bevyengine/bevy/blob/latest/examples/time/timers.rs)
 
 use bevy::prelude::*;
-use rand::seq::SliceRandom;
+use rand::prelude::*;
 use std::time::Duration;
 
 use super::movement::MovementController;

@@ -9,8 +9,8 @@ use bevy::prelude::*;
 /// use bevy::prelude::*;
 /// use bevy_quickstart::audio::Music;
 ///
-/// fn set_music_volume(sinks: Query<&AudioSink, With<Music>>) {
-///     for sink in &sinks {
+/// fn set_music_volume(sink_query: Query<&AudioSink, With<Music>>) {
+///     for sink in &sink_query {
 ///         sink.set_volume(0.5);
 ///     }
 /// }
@@ -27,8 +27,8 @@ pub struct Music;
 /// use bevy::prelude::*;
 /// use bevy_quickstart::audio::SoundEffect;
 ///
-/// fn set_sound_effect_volume(sinks: Query<&AudioSink, With<SoundEffect>>) {
-///     for sink in &sinks {
+/// fn set_sound_effect_volume(sink_query: Query<&AudioSink, With<SoundEffect>>) {
+///     for sink in &sink_query {
 ///         sink.set_volume(0.5);
 ///     }
 /// }
