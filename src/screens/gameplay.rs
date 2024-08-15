@@ -1,4 +1,4 @@
-//! The screen state for the main game loop.
+//! The screen state for the main gameplay.
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
