@@ -14,6 +14,9 @@ Don't want to read through the whole README? [@ChristopherBiscardi](https://gith
 
 We assume that you know how to use Bevy already and have seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
 
+If you're new to Bevy, the patterns used in this template may look a bit weird at first glance.
+See our [Design Document](./docs/design.md) for more information on how we structured the code and why.
+
 ## Create a new game
 
 Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following commands:
@@ -57,9 +60,6 @@ This template comes with a basic project structure that you may find useful:
 | [`src/theme/`](./src/theme)                        | Reusable UI widgets & theming                                      |
 
 Feel free to move things around however you want, though.
-
-If you're new to Bevy, the patterns used in this template may look a bit weird at first glance.
-See our [Design Document](./docs/design.md) for more information on how we structured the code and why.
 
 > [!Tip]
 > Be sure to check out the [3rd-party tools](./docs/tooling.md) we recommend!
