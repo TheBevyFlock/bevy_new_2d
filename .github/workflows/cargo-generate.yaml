@@ -92,6 +92,20 @@ jobs:
           # This is required to use the `gh` CLI.
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Get a list of the IDs of open issues created by this action, then count them using JQ.
+          OPEN_ISSUES="$(
+            gh issue list \
+              --search "is:issue is:open author:app/github-actions in:title $TITLE" \
+              --json id \
+              --jq '. | length'
+          )"
+
+          # If an issue already exists, do not create another.
+          if [[ $OPEN_ISSUES -gt 0 ]]; then
+            echo "An issue already exists on merge conflicts! Exiting without creating another."
+            exit 0
+          fi
+
           GIT_STATUS="$(git status)"
 
           # Filter the diff to only include files with merge conflicts.
