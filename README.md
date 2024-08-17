@@ -121,4 +121,4 @@ The CC0 license explicitly does not waive patent rights, but we confirm that we 
 
 ## Credits
 
-The [assets](./assets) in this repository are all 3rd-party. See the [credits screen](./src/screen/credits.rs) for more information.
+The [assets](./assets) in this repository are all 3rd-party. See the [credits screen](./src/screens/credits.rs) for more information.
