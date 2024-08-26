@@ -172,7 +172,7 @@ jobs:
         run: |
           for target in ${{ matrix.targets }}; do
             cargo build --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
-            mv target/"${target}"/'${{ matrix.profile }}/${{ env.cargo_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
+            mv target/"${target}"/'${{ matrix.profile }}/${{ env.cargo_build_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
           done
 
       - name: Add binaries to app (non-Web)
