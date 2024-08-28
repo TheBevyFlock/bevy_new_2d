@@ -29,6 +29,8 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: true
 
       - name: Run tests
         run: |
@@ -55,6 +57,8 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: true
 
       - name: Run clippy lints
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
@@ -93,6 +97,8 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: true
 
       - name: Check documentation
         run: cargo doc --workspace --all-features --document-private-items --no-deps

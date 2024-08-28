@@ -149,6 +149,8 @@ jobs:
 
       - name: Populate cargo cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: true
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
