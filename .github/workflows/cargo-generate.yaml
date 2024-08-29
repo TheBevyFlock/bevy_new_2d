@@ -23,8 +23,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    # Only run this job on the source repository, skipping forks.
-    if: ${{ github.repository == 'TheBevyFlock/bevy_quickstart' }}
+    # Only run this job on the source repository, skipping forks, unless it was manually triggered.
+    if: ${{ github.repository == 'TheBevyFlock/bevy_quickstart' || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
