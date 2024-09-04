@@ -41,6 +41,8 @@ type InsertLoadedResource = fn(&mut World, &UntypedHandle);
 
 #[derive(Resource, Default)]
 struct ResourceHandles {
+    // Not immediately useful for this template, where we wait for all assets anyway, but
+    // use VecDeque to allow assets to be loaded (or fail to load) in arbitrary order.
     waiting: VecDeque<(UntypedHandle, InsertLoadedResource)>,
     finished: Vec<UntypedHandle>,
 }
