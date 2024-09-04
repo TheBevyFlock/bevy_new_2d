@@ -87,7 +87,7 @@ but feel free to leave out a plugin if your file does not need to do anything wi
 
 ### Pattern
 
-Spawn your UI elements by extending the [`Widgets` trait](../src/ui/widgets.rs):
+Spawn your UI elements by extending the [`Widgets` trait](../src/theme/widgets.rs):
 
 ```rust
 pub trait Widgets {
