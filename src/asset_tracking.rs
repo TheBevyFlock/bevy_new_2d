@@ -1,5 +1,7 @@
 //! A high-level way to load collections of asset handles as resources.
 
+use std::collections::VecDeque;
+
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -22,12 +24,14 @@ impl LoadResource for App {
         let assets = world.resource::<AssetServer>();
         let handle = assets.add(value);
         let mut handles = world.resource_mut::<ResourceHandles>();
-        handles.waiting.push((handle.untyped(), |world, handle| {
-            let assets = world.resource::<Assets<T>>();
-            if let Some(value) = assets.get(handle.id().typed::<T>()) {
-                world.insert_resource(value.clone());
-            }
-        }));
+        handles
+            .waiting
+            .push_back((handle.untyped(), |world, handle| {
+                let assets = world.resource::<Assets<T>>();
+                if let Some(value) = assets.get(handle.id().typed::<T>()) {
+                    world.insert_resource(value.clone());
+                }
+            }));
         self
     }
 }
@@ -37,7 +41,9 @@ type InsertLoadedResource = fn(&mut World, &UntypedHandle);
 
 #[derive(Resource, Default)]
 struct ResourceHandles {
-    waiting: Vec<(UntypedHandle, InsertLoadedResource)>,
+    // Use a queue for waiting assets so they can be cycled through and moved to
+    // `finished` one at a time.
+    waiting: VecDeque<(UntypedHandle, InsertLoadedResource)>,
     finished: Vec<UntypedHandle>,
 }
 
@@ -45,12 +51,12 @@ fn load_resource_assets(world: &mut World) {
     world.resource_scope(|world, mut resource_handles: Mut<ResourceHandles>| {
         world.resource_scope(|world, assets: Mut<AssetServer>| {
             for _ in 0..resource_handles.waiting.len() {
-                let (handle, insert_fn) = resource_handles.waiting.pop().unwrap();
+                let (handle, insert_fn) = resource_handles.waiting.pop_front().unwrap();
                 if assets.is_loaded_with_dependencies(&handle) {
                     insert_fn(world, &handle);
                     resource_handles.finished.push(handle);
                 } else {
-                    resource_handles.waiting.push((handle, insert_fn));
+                    resource_handles.waiting.push_back((handle, insert_fn));
                 }
             }
         });
