@@ -167,13 +167,13 @@ jobs:
         if: ${{ matrix.platform == 'web' }}
         run: |
           cargo binstall --no-confirm trunk wasm-bindgen-cli wasm-opt
-          trunk build --release --dist '${{ env.app }}'
+          trunk build --locked --release --dist '${{ env.app }}'
 
       - name: Build binaries (non-Web)
         if: ${{ matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
-            cargo build --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
+            cargo build --locked --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
             mv target/"${target}"/'${{ matrix.profile }}/${{ env.cargo_build_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
           done
 
