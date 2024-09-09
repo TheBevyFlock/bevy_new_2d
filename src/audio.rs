@@ -7,7 +7,8 @@ use bevy::prelude::*;
 ///
 /// ```
 /// use bevy::prelude::*;
-/// use bevy_quickstart::audio::Music;
+///
+/// use crate::audio::Music;
 ///
 /// fn set_music_volume(sink_query: Query<&AudioSink, With<Music>>) {
 ///     for sink in &sink_query {
@@ -25,7 +26,8 @@ pub struct Music;
 ///
 /// ```
 /// use bevy::prelude::*;
-/// use bevy_quickstart::audio::SoundEffect;
+///
+/// use crate::audio::SoundEffect;
 ///
 /// fn set_sound_effect_volume(sink_query: Query<&AudioSink, With<SoundEffect>>) {
 ///     for sink in &sink_query {
