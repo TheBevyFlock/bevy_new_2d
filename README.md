@@ -19,11 +19,18 @@ See our [Design Document](./docs/design.md) for more information on how we struc
 
 ## Create a new game
 
-Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following commands:
+Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
 
 ```sh
 cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
+```
+
+Then navigate to the newly generated directory and run the following commands:
+
+```sh
 git branch --move main
+cargo update
+git commit -am 'Initial commit'
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
