@@ -25,7 +25,7 @@ Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and
 cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
 ```
 
-Then in the new generated directory, run the following commands:
+Then navigate to the newly generated directory and run the following commands:
 
 ```sh
 git branch --move main
