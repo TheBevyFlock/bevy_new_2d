@@ -1,0 +1,14 @@
+[template]
+ignore = ["target", "Cargo.lock"]
+include = ["*.template", ".github/workflows/release.yaml"]
+
+[hooks]
+post = ["post-generate.rhai"]
+
+[placeholders.itch_username]
+prompt = "Enter your itch.io username. Leave blank to disable itch.io upload."
+type = "string"
+default = ""
+
+[conditional.'itch_username != ""'.placeholders]
+itch_project = { type = "string", prompt = "Enter the project name used in the itch.io URL. Leave blank to use this crate's `project-name`.", default = "" }
