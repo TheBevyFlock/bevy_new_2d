@@ -1,6 +1,6 @@
 [template]
 ignore = ["target", "Cargo.lock"]
-include = ["*.template", ".github/workflows/release.yaml"]
+include = ["*.template"]
 
 [hooks]
 post = ["post-generate.rhai"]
