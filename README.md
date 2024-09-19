@@ -22,33 +22,10 @@ See our [Design Document](./docs/design.md) for more information on how we struc
 Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
 
 ```sh
-cargo generate TheBevyFlock/bevy_quickstart --branch cargo-generate
-```
-
-Then navigate to the newly generated directory and run the following commands:
-
-```sh
-git branch --move main
-cargo update
-git commit -am 'Initial commit'
+cargo generate TheBevyFlock/bevy_quickstart
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
-
-<details>
-  <summary>This template can also be set up manually.</summary>
-
-Navigate to the top of [this GitHub repository](https://github.com/TheBevyFlock/bevy_quickstart/) and select `Use this template > Create a new repository`:
-
-![UI demonstration](./docs/img/readme-manual-setup.png)
-
-Clone your new Github repository to a local repository and push a commit with the following changes:
-
-- Delete `LICENSE`, `README`, and `docs/` files.
-- Search for and replace instances of `bevy_quickstart` with the name of your project.
-- Adjust the `env` variables in [`.github/workflows/release.yaml`](./.github/workflows/release.yaml).
-
-</details>
 
 ## Write your game
 
