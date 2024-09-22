@@ -17,7 +17,7 @@ on:
 # Configure the release workflow by editing these values.
 env:
   # The base filename of the binary produced by `cargo build`.
-  cargo_build_binary_name: bevy_quickstart
+  cargo_build_binary_name: bevy_new_2d
 
   # The path to the assets directory.
   assets_path: assets
@@ -27,7 +27,7 @@ env:
 
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
-  upload_to_itch: the-bevy-flock/bevy-quickstart
+  upload_to_itch: the-bevy-flock/bevy-new-2d
 
   ############
   # ADVANCED #
@@ -36,27 +36,27 @@ env:
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
   # Must contain only A-Z, a-z, 0-9, hyphen, and period: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
-  app_id: the-bevy-flock.bevy-quickstart
+  app_id: the-bevy-flock.bevy-new-2d
 
   # The base filename of the binary in the package produced by this workflow.
   # Applies to Windows, macOS, and Linux releases.
   # Defaults to `cargo_build_binary_name` if commented out.
-  #app_binary_name: bevy_quickstart
+  #app_binary_name: bevy_new_2d
 
   # The name of the `.zip` or `.dmg` file produced by this workflow.
   # Defaults to `app_binary_name` if commented out.
-  app_package_name: bevy-quickstart
+  app_package_name: bevy-new-2d
 
   # The display name of the app produced by this workflow.
   # Applies to macOS releases.
   # Defaults to `app_package_name` if commented out.
-  app_display_name: Bevy Quickstart
+  app_display_name: Bevy New 2D
 
   # The short display name of the app produced by this workflow.
   # Applies to macOS releases.
   # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
   # Defaults to `app_display_name` if commented out.
-  #app_short_name: Bevy Quickstart
+  #app_short_name: Bevy New 2D
 
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage

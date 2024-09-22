@@ -792,6 +792,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_new_2d"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "log",
+ "rand",
+ "tracing",
+]
+
+[[package]]
 name = "bevy_pbr"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -823,16 +833,6 @@ name = "bevy_ptr"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ed72afbb6249a6803a3ed7bd2f68ff080d9392f550475e050b34c1e1c1e3e8f"
-
-[[package]]
-name = "bevy_quickstart"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "log",
- "rand",
- "tracing",
-]
 
 [[package]]
 name = "bevy_reflect"
