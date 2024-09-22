@@ -1,14 +1,12 @@
-_Brought to you by the Bevy Jam working group._
+# Bevy New 2D
 
-# Bevy Quickstart
-
-This template is a great way to get started on a new [Bevy](https://bevyengine.org/) game—especially for a game jam!
+This template is a great way to get started on a new 2D [Bevy](https://bevyengine.org/) game!
 Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
-You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-quickstart)
+You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-new-2d)
 
 [@ChristopherBiscardi](https://github.com/ChristopherBiscardi) made a video on how to use this template from start to finish:
 
-[<img src="./docs/img/thumbnail.png" width=40% height=40% alt="A video tutorial for bevy_quickstart"/>](https://www.youtube.com/watch?v=ESBRyXClaYc)
+[<img src="./docs/img/thumbnail.png" width=40% height=40% alt="A video tutorial for bevy_new_2d, formerly known as bevy_quickstart"/>](https://www.youtube.com/watch?v=ESBRyXClaYc)
 
 ## Prerequisites
 
@@ -22,7 +20,7 @@ See our [Design Document](./docs/design.md) for more information on how we struc
 Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
 
 ```sh
-cargo generate TheBevyFlock/bevy_quickstart
+cargo generate thebevyflock/bevy_new_2d
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
