@@ -63,7 +63,7 @@ opt-level = 3
 debug-assertions = false
 
 # Optimize for size in web builds to reduce load times and bandwidth usage.
-[profile.web]
+[profile.web-release]
 inherits = "release"
 # Compile the entire crate as one unit.
 # Slows compile times, marginal improvements.

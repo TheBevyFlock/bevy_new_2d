@@ -48,18 +48,20 @@ Feel free to move things around however you want, though.
 
 ## Run your game
 
+We recommend running your game with the [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli).
+
 Running your game locally is very simple:
 
-- Use `cargo run` to run a native dev build.
-- Use [`trunk serve`](https://trunkrs.dev/) to run a web dev build.
+- Use `bevy run` to run a native dev build.
+- Use `bevy run --no-default-features web` to run a web dev build.
 
 If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](./.vscode/tasks.json) file.
 
 <details>
   <summary>Run release builds</summary>
 
-- Use `cargo run --profile release-native --no-default-features` to run a native release build.
-- Use `trunk serve --release --no-default-features` to run a web release build.
+- Use `bevy run --release --no-default-features` to run a native release build.
+- Use `bevy run --profile web-release --no-default-features web` to run a web release build.
 
 </details>
 
