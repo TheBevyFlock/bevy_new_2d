@@ -62,10 +62,9 @@ opt-level = 3
 [profile.dev.package.wgpu-types]
 debug-assertions = false
 
-# The default profile is optimized for Wasm builds because
-# that's what [Trunk reads](https://github.com/trunk-rs/trunk/issues/605).
-# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
-[profile.release]
+# Optimize for size in web builds to reduce load times and bandwidth usage.
+[profile.web]
+inherits = "release"
 # Compile the entire crate as one unit.
 # Slows compile times, marginal improvements.
 codegen-units = 1
@@ -77,12 +76,3 @@ lto = "thin"
 opt-level = "s"
 # Strip all debugging information from the binary to slightly reduce file size.
 strip = "debuginfo"
-
-# Override some settings for native builds.
-[profile.release-native]
-# Default to release profile values.
-inherits = "release"
-# Optimize with performance in mind.
-opt-level = 3
-# Keep debug information in the binary.
-strip = "none"
