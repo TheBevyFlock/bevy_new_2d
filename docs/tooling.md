@@ -18,7 +18,7 @@ A few libraries that the authors of this template have vetted and think you migh
 | [`bevy_asset_loader`](https://github.com/NiklasEi/bevy_asset_loader)                   | Asset loading  | Asset management tools                |
 | [`iyes_progress`](https://github.com/IyesGames/iyes_progress)                          | Asset loading  | Progress tracking                     |
 | [`bevy_kira_audio`](https://github.com/NiklasEi/bevy_kira_audio)                       | Audio          | Advanced audio                        |
-| [`bevy_cobweb_uii`](https://github.com/UkoeHB/bevy_cobweb_ui)                                | UI             | UI framework providing reactivity, widgets, and localization                            |
+| [`bevy_cobweb_ui`](https://github.com/UkoeHB/bevy_cobweb_ui)                                | UI             | UI framework providing reactivity, widgets, and localization                            |
 | [`bevy_egui`](https://github.com/mvlabat/bevy_egui)                                    | UI / Debugging | UI framework (great for debug UI)     |
 | [`tiny_bail`](https://github.com/benfrankel/tiny_bail)                                 | Error handling | Error handling macros                 |
 
