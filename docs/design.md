@@ -1,7 +1,7 @@
 # Design philosophy
 
 The high-level goal of this template is to feel like the official template that is currently missing from Bevy.
-The exists an [official CI template](https://github.com/bevyengine/bevy_github_ci_template), but, in our opinion,
+There exists an [official CI template](https://github.com/bevyengine/bevy_github_ci_template), but, in our opinion,
 that one is currently more of an extension to the [Bevy examples](https://bevyengine.org/examples/) than an actual template.
 We say this because it is extremely bare-bones and as such does not provide things that in practice are necessary for game development.
 
