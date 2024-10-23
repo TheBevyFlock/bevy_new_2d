@@ -3,7 +3,7 @@
 //! for other characters as well.
 
 use bevy::{
-    ecs::{system::RunSystemOnce as _, world::Command},
+    ecs::world::Command,
     prelude::*,
     render::texture::{ImageLoaderSettings, ImageSampler},
 };
@@ -42,7 +42,7 @@ pub struct SpawnPlayer {
 
 impl Command for SpawnPlayer {
     fn apply(self, world: &mut World) {
-        world.run_system_once_with(self, spawn_player);
+        let _ = world.run_system_cached_with(spawn_player, self);
     }
 }
 
@@ -64,15 +64,15 @@ fn spawn_player(
     commands.spawn((
         Name::new("Player"),
         Player,
-        SpriteBundle {
-            texture: player_assets.ducky.clone(),
-            transform: Transform::from_scale(Vec2::splat(8.0).extend(1.0)),
-            ..Default::default()
+        Sprite {
+            image: player_assets.ducky.clone(),
+            texture_atlas: Some(TextureAtlas {
+                layout: texture_atlas_layout.clone(),
+                index: player_animation.get_atlas_index(),
+            }),
+            ..default()
         },
-        TextureAtlas {
-            layout: texture_atlas_layout.clone(),
-            index: player_animation.get_atlas_index(),
-        },
+        Transform::from_scale(Vec2::splat(8.0).extend(1.0)),
         MovementController {
             max_speed: config.max_speed,
             ..default()
