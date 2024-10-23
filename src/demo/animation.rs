@@ -60,8 +60,11 @@ fn update_animation_timer(time: Res<Time>, mut query: Query<&mut PlayerAnimation
 }
 
 /// Update the texture atlas to reflect changes in the animation.
-fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut TextureAtlas)>) {
-    for (animation, mut atlas) in &mut query {
+fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut Sprite)>) {
+    for (animation, mut sprite) in &mut query {
+        let Some(atlas) = sprite.texture_atlas.as_mut() else {
+            continue;
+        };
         if animation.changed() {
             atlas.index = animation.get_atlas_index();
         }
@@ -83,10 +86,8 @@ fn trigger_step_sound_effect(
             let rng = &mut rand::thread_rng();
             let random_step = player_assets.steps.choose(rng).unwrap();
             commands.spawn((
-                AudioBundle {
-                    source: random_step.clone(),
-                    settings: PlaybackSettings::DESPAWN,
-                },
+                AudioPlayer(random_step.clone()),
+                PlaybackSettings::DESPAWN,
                 SoundEffect,
             ));
         }

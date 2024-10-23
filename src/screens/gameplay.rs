@@ -17,12 +17,12 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         return_to_title_screen
-            .run_if(in_state(Screen::Gameplay).and_then(input_just_pressed(KeyCode::Escape))),
+            .run_if(in_state(Screen::Gameplay).and(input_just_pressed(KeyCode::Escape))),
     );
 }
 
 fn spawn_level(mut commands: Commands) {
-    commands.add(spawn_level_command);
+    commands.queue(spawn_level_command);
 }
 
 #[derive(Resource, Asset, Reflect, Clone)]
@@ -46,10 +46,8 @@ fn play_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>)
     music.entity = Some(
         commands
             .spawn((
-                AudioBundle {
-                    source: music.handle.clone(),
-                    settings: PlaybackSettings::LOOP,
-                },
+                AudioPlayer(music.handle.clone()),
+                PlaybackSettings::LOOP,
                 Music,
             ))
             .id(),

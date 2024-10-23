@@ -93,12 +93,6 @@ fn trigger_interaction_sound_effect(
             Interaction::Pressed => interaction_assets.press.clone(),
             _ => continue,
         };
-        commands.spawn((
-            AudioBundle {
-                source,
-                settings: PlaybackSettings::DESPAWN,
-            },
-            SoundEffect,
-        ));
+        commands.spawn((AudioPlayer(source), PlaybackSettings::DESPAWN, SoundEffect));
     }
 }
