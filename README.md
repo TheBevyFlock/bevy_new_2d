@@ -35,7 +35,7 @@ This template comes with a basic project structure that you may find useful:
 | -------------------------------------------------- | ------------------------------------------------------------------ |
 | [`src/lib.rs`](./src/lib.rs)                       | App setup                                                          |
 | [`src/asset_tracking.rs`](./src/asset_tracking.rs) | A high-level way to load collections of asset handles as resources |
-| [`src/audio/`](./src/audio)                        | Marker components for sound effects and music                      |
+| [`src/audio.rs`](./src/audio.rs)                   | Marker components for sound effects and music                      |
 | [`src/demo/`](./src/demo)                          | Example game mechanics & content (replace with your own code)      |
 | [`src/dev_tools.rs`](./src/dev_tools.rs)           | Dev tools for dev builds (press \` aka backtick to toggle)         |
 | [`src/screens/`](./src/screens)                    | Splash screen, title screen, gameplay screen, etc.                 |
