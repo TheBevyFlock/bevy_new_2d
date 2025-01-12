@@ -35,8 +35,9 @@ jobs:
       - name: Run tests
         run: |
           cargo test --locked --workspace --all-features --all-targets
-          # Workaround for https://github.com/rust-lang/cargo/issues/6669
-          cargo test --locked --workspace --all-features --doc
+          # Running doc tests separately is a workaround for https://github.com/rust-lang/cargo/issues/6669
+          # Setting LD_LIBRARY_PATH is a workaround for https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350
+          LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
 
   # Run clippy lints.
   clippy:
