@@ -179,7 +179,7 @@ You can also mix the dynamic and static approach according to your needs.
 ### Pattern
 
 Spawn a game object by using a custom command. Inside the command,
-run the spawning code with `world.run_system_once` or  `world.run_system_once_with`:
+run the spawning code with `world.run_system_cached` or  `world.run_system_cached_with`:
 
 ```rust
 // monster.rs
@@ -192,7 +192,7 @@ pub struct SpawnMonster {
 
 impl Command for SpawnMonster {
     fn apply(self, world: &mut World) {
-        world.run_system_once_with(self, spawn_monster);
+        let _ = world.run_system_cached_with(spawn_monster, self);
     }
 }
 
@@ -203,7 +203,8 @@ fn spawn_monster(
     commands.spawn((
         Name::new("Monster"),
         Health::new(spawn_monster.health),
-        SpatialBundle::from_transform(spawn_monster.transform),
+        spawn_monster.transform,
+        Visibility::default(),
         // other components
     ));
 }
@@ -215,7 +216,7 @@ And then to use a spawn command, add it to `Commands`:
 // dangerous_forest.rs
 
 fn spawn_forest_goblin(mut commands: Commands) {
-    commands.add(SpawnMonster {
+    commands.queue(SpawnMonster {
         health: 100,
         transform: Transform::from_xyz(10.0, 0.0, 0.0),
     });

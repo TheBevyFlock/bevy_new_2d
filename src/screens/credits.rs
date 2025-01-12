@@ -56,10 +56,8 @@ fn play_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     music.entity = Some(
         commands
             .spawn((
-                AudioBundle {
-                    source: music.music.clone(),
-                    settings: PlaybackSettings::LOOP,
-                },
+                AudioPlayer(music.music.clone()),
+                PlaybackSettings::LOOP,
                 Music,
             ))
             .id(),
