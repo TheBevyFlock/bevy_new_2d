@@ -41,10 +41,7 @@ impl<T: Spawn> Widgets for T {
                 (
                     Name::new("Button Text"),
                     Text(text.into()),
-                    TextFont {
-                        font_size: 40.0,
-                        ..default()
-                    },
+                    TextFont::from_font_size(40.0),
                     TextColor(BUTTON_TEXT),
                 ),
             );
@@ -71,10 +68,7 @@ impl<T: Spawn> Widgets for T {
                 (
                     Name::new("Header Text"),
                     Text(text.into()),
-                    TextFont {
-                        font_size: 40.0,
-                        ..default()
-                    },
+                    TextFont::from_font_size(40.0),
                     TextColor(HEADER_TEXT),
                 ),
             );
@@ -86,10 +80,7 @@ impl<T: Spawn> Widgets for T {
         let entity = self.spawn((
             Name::new("Label"),
             Text(text.into()),
-            TextFont {
-                font_size: 24.0,
-                ..default()
-            },
+            TextFont::from_font_size(24.0),
             TextColor(LABEL_TEXT),
             Node {
                 width: Px(500.0),
