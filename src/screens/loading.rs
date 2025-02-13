@@ -3,11 +3,7 @@
 
 use bevy::prelude::*;
 
-use crate::{
-    demo::player::PlayerAssets,
-    screens::{credits::CreditsMusic, gameplay::GameplayMusic, Screen},
-    theme::{interaction::InteractionAssets, prelude::*},
-};
+use crate::{asset_tracking::ResourceHandles, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Loading), spawn_loading_screen);
@@ -34,14 +30,6 @@ fn continue_to_title_screen(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
 }
 
-fn all_assets_loaded(
-    player_assets: Option<Res<PlayerAssets>>,
-    interaction_assets: Option<Res<InteractionAssets>>,
-    credits_music: Option<Res<CreditsMusic>>,
-    gameplay_music: Option<Res<GameplayMusic>>,
-) -> bool {
-    player_assets.is_some()
-        && interaction_assets.is_some()
-        && credits_music.is_some()
-        && gameplay_music.is_some()
+fn all_assets_loaded(resource_handles: Res<ResourceHandles>) -> bool {
+    resource_handles.is_all_done()
 }

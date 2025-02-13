@@ -40,11 +40,18 @@ impl LoadResource for App {
 type InsertLoadedResource = fn(&mut World, &UntypedHandle);
 
 #[derive(Resource, Default)]
-struct ResourceHandles {
+pub struct ResourceHandles {
     // Use a queue for waiting assets so they can be cycled through and moved to
     // `finished` one at a time.
     waiting: VecDeque<(UntypedHandle, InsertLoadedResource)>,
     finished: Vec<UntypedHandle>,
+}
+
+impl ResourceHandles {
+    /// Returns true if all requested [`Asset`]s have finished loading and are available as [`Resource`]s.
+    pub fn is_all_done(&self) -> bool {
+        self.waiting.is_empty()
+    }
 }
 
 fn load_resource_assets(world: &mut World) {
