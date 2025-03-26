@@ -102,7 +102,6 @@ pub trait Widgets {
 
 ### Reasoning
 
-This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_ui).
 `Widgets` is implemented for `Commands` and similar, so you can easily spawn UI elements in your systems.
 By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
 By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
