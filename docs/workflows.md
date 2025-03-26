@@ -95,7 +95,7 @@ The release workflow can be configured by tweaking the environment variables in 
   ```
 </details>
 
-The values are set automatically by `cargo generate`, or you can edit them yourself and push a commit.
+The initial values are set automatically by `bevy new`, but you can edit them yourself and push a commit.
 
 ### Set up itch.io upload
 
