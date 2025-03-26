@@ -3,7 +3,6 @@
 //! for other characters as well.
 
 use bevy::{
-    ecs::world::Command,
     image::{ImageLoaderSettings, ImageSampler},
     prelude::*,
 };

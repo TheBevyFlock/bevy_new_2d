@@ -31,5 +31,5 @@ fn enter_credits_screen(_trigger: Trigger<OnPress>, mut next_screen: ResMut<Next
 
 #[cfg(not(target_family = "wasm"))]
 fn exit_app(_trigger: Trigger<OnPress>, mut app_exit: EventWriter<AppExit>) {
-    app_exit.send(AppExit::Success);
+    app_exit.write(AppExit::Success);
 }

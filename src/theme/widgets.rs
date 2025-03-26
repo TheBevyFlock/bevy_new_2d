@@ -1,6 +1,13 @@
 //! Helper traits for creating common widgets.
 
-use bevy::{ecs::system::EntityCommands, hierarchy::ChildBuild, prelude::*, ui::Val::*};
+use bevy::{
+    ecs::{
+        relationship::{RelatedSpawnerCommands, Relationship},
+        system::EntityCommands,
+    },
+    prelude::*,
+    ui::Val::*,
+};
 
 use crate::theme::{interaction::InteractionPalette, palette::*};
 
@@ -36,15 +43,12 @@ impl<T: Spawn> Widgets for T {
             },
         ));
         entity.with_children(|children| {
-            ChildBuild::spawn(
-                children,
-                (
-                    Name::new("Button Text"),
-                    Text(text.into()),
-                    TextFont::from_font_size(40.0),
-                    TextColor(BUTTON_TEXT),
-                ),
-            );
+            children.spawn((
+                Name::new("Button Text"),
+                Text(text.into()),
+                TextFont::from_font_size(40.0),
+                TextColor(BUTTON_TEXT),
+            ));
         });
 
         entity
@@ -63,15 +67,12 @@ impl<T: Spawn> Widgets for T {
             BackgroundColor(NODE_BACKGROUND),
         ));
         entity.with_children(|children| {
-            ChildBuild::spawn(
-                children,
-                (
-                    Name::new("Header Text"),
-                    Text(text.into()),
-                    TextFont::from_font_size(40.0),
-                    TextColor(HEADER_TEXT),
-                ),
-            );
+            children.spawn((
+                Name::new("Header Text"),
+                Text(text.into()),
+                TextFont::from_font_size(40.0),
+                TextColor(HEADER_TEXT),
+            ));
         });
         entity
     }
@@ -130,8 +131,8 @@ impl Spawn for Commands<'_, '_> {
     }
 }
 
-impl Spawn for ChildBuilder<'_> {
+impl<R: Relationship> Spawn for RelatedSpawnerCommands<'_, R> {
     fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityCommands {
-        ChildBuild::spawn(self, bundle)
+        self.spawn(bundle)
     }
 }

@@ -56,7 +56,7 @@ fn play_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>)
 
 fn stop_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     if let Some(entity) = music.entity.take() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 }
 

@@ -1,6 +1,6 @@
 //! Spawn the main level.
 
-use bevy::{ecs::world::Command, prelude::*};
+use bevy::prelude::*;
 
 use crate::demo::player::SpawnPlayer;
 

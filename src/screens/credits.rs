@@ -66,6 +66,6 @@ fn play_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
 
 fn stop_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     if let Some(entity) = music.entity.take() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 }
