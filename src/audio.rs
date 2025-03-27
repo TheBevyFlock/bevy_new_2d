@@ -6,7 +6,7 @@ use bevy::prelude::*;
 /// This can then be used to query for and operate on sounds in that category. For example:
 ///
 /// ```
-/// use bevy::prelude::*;
+/// use bevy::{audio::Volume, prelude::*};
 /// use bevy_new_2d::audio::Music;
 ///
 /// fn set_music_volume(sink_query: Query<&AudioSink, With<Music>>) {
@@ -24,7 +24,7 @@ pub struct Music;
 /// This can then be used to query for and operate on sounds in that category. For example:
 ///
 /// ```
-/// use bevy::prelude::*;
+/// use bevy::{audio::Volume, prelude::*};
 /// use bevy_new_2d::audio::SoundEffect;
 ///
 /// fn set_sound_effect_volume(sink_query: Query<&AudioSink, With<SoundEffect>>) {
