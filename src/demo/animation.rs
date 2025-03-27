@@ -9,9 +9,9 @@ use rand::prelude::*;
 use std::time::Duration;
 
 use crate::{
+    AppSet,
     audio::SoundEffect,
     demo::{movement::MovementController, player::PlayerAssets},
-    AppSet,
 };
 
 pub(super) fn plugin(app: &mut App) {
