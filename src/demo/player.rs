@@ -9,13 +9,13 @@ use bevy::{
 };
 
 use crate::{
+    AppSet,
     asset_tracking::LoadResource,
     demo::{
         animation::PlayerAnimation,
         movement::{MovementController, ScreenWrap},
     },
     screens::Screen,
-    AppSet,
 };
 
 pub(super) fn plugin(app: &mut App) {

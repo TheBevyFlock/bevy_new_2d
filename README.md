@@ -17,10 +17,10 @@ See our [Design Document](./docs/design.md) for more information on how we struc
 
 ## Create a new game
 
-Install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) and run the following command:
+Install [`bevy_cli`](https://github.com/TheBevyFlock/bevy_cli/) and run the following command:
 
 ```sh
-cargo generate thebevyflock/bevy_new_2d
+bevy new my_game --template 2d
 ```
 
 Then [create a GitHub repository](https://github.com/new) and push your local repository to it.
