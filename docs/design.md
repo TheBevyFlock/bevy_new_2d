@@ -14,7 +14,7 @@ The Bevy Jam working group has agreed on the following guiding design principles
 - Have some basic game code written out already.
 - Have everything outside of code already set up.
   - Nice IDE support.
-  - `cargo-generate` support.
+  - `bevy new` template support.
   - Workflows that provide CI and CD with an auto-publish to itch.io.
   - Builds configured for performance by default.
 - Answer questions that will quickly come up when creating an actual game.
@@ -102,7 +102,6 @@ pub trait Widgets {
 
 ### Reasoning
 
-This pattern is inspired by [sickle_ui](https://github.com/UmbraLuminosa/sickle_ui).
 `Widgets` is implemented for `Commands` and similar, so you can easily spawn UI elements in your systems.
 By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
 By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
