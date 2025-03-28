@@ -38,14 +38,14 @@ dev_native = [
 ]
 
 
-# Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
-# In some cases they may still signal poor code quality however, so consider commenting out these lines.
 [lints.clippy]
 # Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
-# request more than 7 arguments -- which triggers this lint.
+# request more than 7 arguments, which would undesirably trigger this lint.
 too_many_arguments = "allow"
-# Queries that access many components may trigger this lint.
+# Queries may access many components, which would undesirably trigger this lint.
 type_complexity = "allow"
+# Make sure macros use their standard braces, such as `[]` for `bevy_ecs::children!`.
+nonstandard_macro_braces = "warn"
 
 
 # Compile with Performance Optimizations:
