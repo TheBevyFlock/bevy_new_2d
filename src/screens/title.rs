@@ -12,12 +12,12 @@ fn spawn_title_screen(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Title))
-        .with_children(|children| {
-            children.button("Play").observe(enter_gameplay_screen);
-            children.button("Credits").observe(enter_credits_screen);
+        .with_children(|parent| {
+            parent.button("Play").observe(enter_gameplay_screen);
+            parent.button("Credits").observe(enter_credits_screen);
 
             #[cfg(not(target_family = "wasm"))]
-            children.button("Exit").observe(exit_app);
+            parent.button("Exit").observe(exit_app);
         });
 }
 

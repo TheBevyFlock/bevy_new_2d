@@ -18,8 +18,8 @@ fn spawn_loading_screen(mut commands: Commands) {
     commands
         .ui_root()
         .insert(StateScoped(Screen::Loading))
-        .with_children(|children| {
-            children.label("Loading...").insert(Node {
+        .with_children(|parent| {
+            parent.label("Loading...").insert(Node {
                 justify_content: JustifyContent::Center,
                 ..default()
             });
