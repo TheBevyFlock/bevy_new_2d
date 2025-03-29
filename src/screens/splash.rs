@@ -56,31 +56,29 @@ fn spawn_splash_screen(mut commands: Commands, asset_server: Res<AssetServer>) {
             BackgroundColor(SPLASH_BACKGROUND_COLOR),
             StateScoped(Screen::Splash),
         ))
-        .with_children(|children| {
-            children.spawn((
-                Name::new("Splash image"),
-                Node {
-                    margin: UiRect::all(Val::Auto),
-                    width: Val::Percent(70.0),
-                    ..default()
+        .with_child((
+            Name::new("Splash image"),
+            Node {
+                margin: UiRect::all(Val::Auto),
+                width: Val::Percent(70.0),
+                ..default()
+            },
+            ImageNode::new(asset_server.load_with_settings(
+                // This should be an embedded asset for instant loading, but that is
+                // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
+                "images/splash.png",
+                |settings: &mut ImageLoaderSettings| {
+                    // Make an exception for the splash image in case
+                    // `ImagePlugin::default_nearest()` is used for pixel art.
+                    settings.sampler = ImageSampler::linear();
                 },
-                ImageNode::new(asset_server.load_with_settings(
-                    // This should be an embedded asset for instant loading, but that is
-                    // currently [broken on Windows Wasm builds](https://github.com/bevyengine/bevy/issues/14246).
-                    "images/splash.png",
-                    |settings: &mut ImageLoaderSettings| {
-                        // Make an exception for the splash image in case
-                        // `ImagePlugin::default_nearest()` is used for pixel art.
-                        settings.sampler = ImageSampler::linear();
-                    },
-                )),
-                ImageNodeFadeInOut {
-                    total_duration: SPLASH_DURATION_SECS,
-                    fade_duration: SPLASH_FADE_DURATION_SECS,
-                    t: 0.0,
-                },
-            ));
-        });
+            )),
+            ImageNodeFadeInOut {
+                total_duration: SPLASH_DURATION_SECS,
+                fade_duration: SPLASH_FADE_DURATION_SECS,
+                t: 0.0,
+            },
+        ));
 }
 
 #[derive(Component, Reflect)]

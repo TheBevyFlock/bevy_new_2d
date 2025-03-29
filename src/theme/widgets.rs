@@ -42,14 +42,12 @@ impl<T: Spawn> Widgets for T {
                 pressed: BUTTON_PRESSED_BACKGROUND,
             },
         ));
-        entity.with_children(|children| {
-            children.spawn((
-                Name::new("Button Text"),
-                Text(text.into()),
-                TextFont::from_font_size(40.0),
-                TextColor(BUTTON_TEXT),
-            ));
-        });
+        entity.with_child((
+            Name::new("Button Text"),
+            Text(text.into()),
+            TextFont::from_font_size(40.0),
+            TextColor(BUTTON_TEXT),
+        ));
 
         entity
     }
@@ -66,14 +64,13 @@ impl<T: Spawn> Widgets for T {
             },
             BackgroundColor(NODE_BACKGROUND),
         ));
-        entity.with_children(|children| {
-            children.spawn((
-                Name::new("Header Text"),
-                Text(text.into()),
-                TextFont::from_font_size(40.0),
-                TextColor(HEADER_TEXT),
-            ));
-        });
+        entity.with_child((
+            Name::new("Header Text"),
+            Text(text.into()),
+            TextFont::from_font_size(40.0),
+            TextColor(HEADER_TEXT),
+        ));
+
         entity
     }
 
