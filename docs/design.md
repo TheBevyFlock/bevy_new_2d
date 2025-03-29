@@ -232,52 +232,6 @@ That way you can easily add system parameters to access things like assets and r
 A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
 as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
 
-## Interaction Callbacks
-
-### Pattern
-
-When spawning an entity that can be interacted with, such as a button that can be pressed,
-use an observer to handle the interaction:
-
-```rust
-fn spawn_button(mut commands: Commands) {
-    // See the Widgets pattern for information on the `button` method
-    commands.button("Pay up!").observe(pay_money);
-}
-
-fn pay_money(_trigger: Trigger<OnPress>, mut money: ResMut<Money>) {
-    money.0 -= 10.0;
-}
-```
-
-The event `OnPress`, which is [defined in this template](../src/theme/interaction.rs),
-is triggered when the button is [`Interaction::Pressed`](https://docs.rs/bevy/latest/bevy/prelude/enum.Interaction.html#variant.Pressed).
-
-If you have many interactions that only change a state, consider using the following helper function:
-
-```rust
-fn spawn_button(mut commands: Commands) {
-    commands.button("Play the game").observe(enter_state(Screen::Gameplay));
-}
-
-fn enter_state<S: FreelyMutableState>(
-    new_state: S,
-) -> impl Fn(Trigger<OnPress>, ResMut<NextState<S>>) {
-    move |_trigger, mut next_state| next_state.set(new_state.clone())
-}
-```
-
-### Reasoning
-
-This pattern is inspired by [bevy_mod_picking](https://github.com/aevyrie/bevy_mod_picking).
-By pairing the system handling the interaction with the entity as an observer,
-the code running on interactions can be scoped to the exact context of the interaction.
-
-For example, the code for what happens when you press a *specific* button is directly attached to that exact button.
-
-This also keeps the interaction logic close to the entity that is interacted with,
-allowing for better code organization.
-
 ## Dev Tools
 
 ### Pattern

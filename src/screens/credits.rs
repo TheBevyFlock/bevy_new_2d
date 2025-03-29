@@ -31,7 +31,7 @@ fn spawn_credits_screen(mut commands: Commands) {
         });
 }
 
-fn enter_title_screen(_trigger: Trigger<OnPress>, mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_title_screen(_: Trigger<Pointer<Pressed>>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
 }
 

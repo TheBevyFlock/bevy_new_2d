@@ -8,11 +8,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
-            trigger_on_press,
             apply_interaction_palette,
-            trigger_interaction_sound_effect,
-        )
-            .run_if(resource_exists::<InteractionAssets>),
+            trigger_interaction_sound_effect.run_if(resource_exists::<InteractionAssets>),
+        ),
     );
 }
 
@@ -25,22 +23,6 @@ pub struct InteractionPalette {
     pub none: Color,
     pub hovered: Color,
     pub pressed: Color,
-}
-
-/// Event triggered on a UI entity when the [`Interaction`] component on the same entity changes to
-/// [`Interaction::Pressed`]. Observe this event to detect e.g. button presses.
-#[derive(Event)]
-pub struct OnPress;
-
-fn trigger_on_press(
-    interaction_query: Query<(Entity, &Interaction), Changed<Interaction>>,
-    mut commands: Commands,
-) {
-    for (entity, interaction) in &interaction_query {
-        if matches!(interaction, Interaction::Pressed) {
-            commands.trigger_targets(OnPress, entity);
-        }
-    }
 }
 
 fn apply_interaction_palette(
