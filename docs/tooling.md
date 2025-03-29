@@ -9,7 +9,6 @@ A few libraries that the authors of this template have vetted and think you migh
 | Name                                                                                   | Category       | Description                           |
 | -------------------------------------------------------------------------------------- | -------------- | ------------------------------------- |
 | [`leafwing-input-manager`](https://github.com/Leafwing-Studios/leafwing-input-manager) | Input          | Input -> Action mapping               |
-| [`bevy_mod_picking`](https://github.com/aevyrie/bevy_mod_picking)                      | Input          | Advanced mouse interaction            |
 | [`bevy-inspector-egui`](https://github.com/jakobhellermann/bevy-inspector-egui)        | Debugging      | Live entity inspector                 |
 | [`bevy_mod_debugdump`](https://github.com/jakobhellermann/bevy_mod_debugdump)          | Debugging      | Schedule inspector                    |
 | [`avian`](https://github.com/Jondolf/avian)                                            | Physics        | Physics engine                        |
@@ -24,7 +23,7 @@ A few libraries that the authors of this template have vetted and think you migh
 
 In particular:.
 
-- `leafwing-input-manager` and `bevy_mod_picking` are very likely to be upstreamed into Bevy in the near future.
+- `leafwing-input-manager` is very likely to be upstreamed into Bevy in the near future.
 - `bevy-inspector-egui` and `bevy_mod_debugdump` help fill the gap until Bevy has its own editor.
 - `avian` or `bevy_rapier` helps fill the gap until Bevy has its own physics engine. `avian` is easier to use, while `bevy_rapier` is more performant.
 - `bevy_cobweb_ui` is well-aligned with `bevy_ui` and helps fill the gap until Bevy has a full collection of UI widgets and features.
