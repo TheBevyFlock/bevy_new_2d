@@ -75,7 +75,7 @@ impl<T: Spawn> Widgets for T {
     }
 
     fn label(&mut self, text: impl Into<String>) -> EntityCommands {
-        let entity = self.spawn((
+        self.spawn((
             Name::new("Label"),
             Text(text.into()),
             TextFont::from_font_size(24.0),
@@ -84,8 +84,7 @@ impl<T: Spawn> Widgets for T {
                 width: Px(500.0),
                 ..default()
             },
-        ));
-        entity
+        ))
     }
 }
 
