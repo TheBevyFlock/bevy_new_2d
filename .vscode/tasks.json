@@ -3,8 +3,11 @@
     "tasks": [
         {
             "label": "Run native dev",
-            "type": "cargo",
-            "command": "run",
+            "type": "shell",
+            "command": "bevy",
+            "args": [
+                "run",
+            ],
             "options": {
                 "env": {
                     "RUST_BACKTRACE": "full"
@@ -13,7 +16,9 @@
             "presentation": {
                 "clear": true
             },
-            "problemMatcher": ["$rustc"],
+            "problemMatcher": [
+                "$rustc"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -21,20 +26,31 @@
         },
         {
             "label": "Run native release",
-            "type": "cargo",
-            "command": "run",
-            "args": ["--release", "--no-default-features"],
+            "type": "shell",
+            "command": "bevy",
+            "args": [
+                "run",
+                "--release",
+                "--no-default-features"
+            ],
             "presentation": {
                 "clear": true
             },
-            "problemMatcher": ["$rustc"],
+            "problemMatcher": [
+                "$rustc"
+            ],
             "group": "build"
         },
         {
             "label": "Run web dev",
             "type": "process",
             "command": "bevy",
-            "args": ["run", "--yes", "--no-default-features", "web"],
+            "args": [
+                "run",
+                "--yes",
+                "--no-default-features",
+                "web"
+            ],
             "options": {
                 "env": {
                     "RUST_BACKTRACE": "full"
@@ -43,7 +59,9 @@
             "presentation": {
                 "clear": true
             },
-            "problemMatcher": ["$rustc"],
+            "problemMatcher": [
+                "$rustc"
+            ],
             "group": "build"
         },
         {
@@ -60,7 +78,9 @@
             "presentation": {
                 "clear": true
             },
-            "problemMatcher": ["$rustc"],
+            "problemMatcher": [
+                "$rustc"
+            ],
             "group": "build"
         }
     ]
