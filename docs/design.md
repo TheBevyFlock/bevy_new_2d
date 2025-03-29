@@ -40,7 +40,6 @@ see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy
 - [Widgets](#widgets)
 - [Asset Preloading](#asset-preloading)
 - [Spawn Commands](#spawn-commands)
-- [Interaction Callbacks](#interaction-callbacks)
 - [Dev Tools](#dev-tools)
 - [Screen States](#screen-states)
 
