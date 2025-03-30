@@ -49,14 +49,11 @@ const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
 fn spawn_splash_screen(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands
-        .ui_root()
-        .insert((
-            Name::new("Splash screen"),
-            BackgroundColor(SPLASH_BACKGROUND_COLOR),
-            StateScoped(Screen::Splash),
-        ))
-        .with_child((
+    commands.ui_root().insert((
+        Name::new("Splash screen"),
+        BackgroundColor(SPLASH_BACKGROUND_COLOR),
+        StateScoped(Screen::Splash),
+        children![(
             Name::new("Splash image"),
             Node {
                 margin: UiRect::all(Val::Auto),
@@ -78,7 +75,8 @@ fn spawn_splash_screen(mut commands: Commands, asset_server: Res<AssetServer>) {
                 fade_duration: SPLASH_FADE_DURATION_SECS,
                 t: 0.0,
             },
-        ));
+        )],
+    ));
 }
 
 #[derive(Component, Reflect)]

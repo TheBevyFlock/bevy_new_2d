@@ -25,7 +25,7 @@ pub trait Widgets {
 
 impl<T: Spawn> Widgets for T {
     fn button(&mut self, text: impl Into<String>) -> EntityCommands {
-        let mut entity = self.spawn((
+        self.spawn((
             Name::new("Button"),
             Button,
             Node {
@@ -41,19 +41,17 @@ impl<T: Spawn> Widgets for T {
                 hovered: BUTTON_HOVERED_BACKGROUND,
                 pressed: BUTTON_PRESSED_BACKGROUND,
             },
-        ));
-        entity.with_child((
-            Name::new("Button Text"),
-            Text(text.into()),
-            TextFont::from_font_size(40.0),
-            TextColor(BUTTON_TEXT),
-        ));
-
-        entity
+            children![(
+                Name::new("Button Text"),
+                Text(text.into()),
+                TextFont::from_font_size(40.0),
+                TextColor(BUTTON_TEXT),
+            )],
+        ))
     }
 
     fn header(&mut self, text: impl Into<String>) -> EntityCommands {
-        let mut entity = self.spawn((
+        self.spawn((
             Name::new("Header"),
             Node {
                 width: Px(500.0),
@@ -63,15 +61,13 @@ impl<T: Spawn> Widgets for T {
                 ..default()
             },
             BackgroundColor(NODE_BACKGROUND),
-        ));
-        entity.with_child((
-            Name::new("Header Text"),
-            Text(text.into()),
-            TextFont::from_font_size(40.0),
-            TextColor(HEADER_TEXT),
-        ));
-
-        entity
+            children![(
+                Name::new("Header Text"),
+                Text(text.into()),
+                TextFont::from_font_size(40.0),
+                TextColor(HEADER_TEXT),
+            )],
+        ))
     }
 
     fn label(&mut self, text: impl Into<String>) -> EntityCommands {
