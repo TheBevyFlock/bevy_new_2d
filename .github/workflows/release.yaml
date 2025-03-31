@@ -14,7 +14,7 @@ on:
         required: true
         type: string
 
-# Configure the release workflow by editing these values.
+# Configure the release workflow by editing the following values.
 env:
   # The base filename of the binary produced by `cargo build`.
   cargo_build_binary_name: bevy_new_2d
@@ -61,6 +61,10 @@ env:
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   git_lfs: false
+
+  # This only helps with consecutive releases to the same tag (and takes up cache storage space).
+  # See: https://github.com/orgs/community/discussions/27059
+  use_github_cache: false
 
 jobs:
   # Determine the version number for this workflow.
@@ -148,6 +152,7 @@ jobs:
           targets: ${{ matrix.targets }}
 
       - name: Populate cargo cache
+        if: ${{ env.use_github_cache == 'true' }}
         uses: Leafwing-Studios/cargo-cache@v2
         with:
           sweep-cache: true
