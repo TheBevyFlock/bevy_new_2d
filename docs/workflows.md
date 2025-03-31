@@ -99,7 +99,7 @@ The release workflow can be configured by tweaking the environment variables in 
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   git_lfs: false
 
-  # This only helps with consecutive releases to the same tag (and takes up cache storage space).
+  # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
   # See: https://github.com/orgs/community/discussions/27059
   use_github_cache: false
   ```
