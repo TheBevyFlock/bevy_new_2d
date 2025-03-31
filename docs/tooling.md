@@ -42,7 +42,7 @@ If you're using [VS Code](https://code.visualstudio.com/), the following extensi
 | [Dependi](https://marketplace.visualstudio.com/items?itemName=fill-labs.dependi)                          | `crates.io` dependency resolution |
 | [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) | `.editorconfig` support           |
 
-> [!Note]
+> [!NOTE]
 > <details>
 > <summary>About the included rust-analyzer settings</summary>
 >
