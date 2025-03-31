@@ -109,68 +109,51 @@ By returning `EntityCommands`, you can easily chain multiple widgets together an
 
 ### Pattern
 
-Define your assets with a resource that maps asset paths to `Handle`s.
-If you're defining the assets in code, add their paths as constants.
-Otherwise, load them dynamically from e.g. a file.
+Define an asset collection resource to load and store your asset `Handle`s:
 
 ```rust
-#[derive(Resource, Debug, Deref, DerefMut, Reflect)]
+#[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-pub struct ImageHandles(HashMap<String, Handle<Image>>);
-
-impl ImageHandles {
-    pub const PATH_PLAYER: &'static str = "images/player.png";
-    pub const PATH_ENEMY: &'static str = "images/enemy.png";
-    pub const PATH_POWERUP: &'static str = "images/powerup.png";
+struct ActorAssets {
+    // This #[dependency] attribute marks the field as a dependency of the Asset.
+    // This means that it will not finish loading until the labeled asset is also loaded.
+    #[dependency]
+    player: Handle<Image>,
+    #[dependency]
+    enemies: Vec<Handle<Image>>,
 }
 
-impl FromWorld for ImageHandles {
+impl FromWorld for ActorAssets {
     fn from_world(world: &mut World) -> Self {
-        let asset_server = world.resource::<AssetServer>();
-
-        let paths = [
-            ImageHandles::PATH_PLAYER,
-            ImageHandles::PATH_ENEMY,
-            ImageHandles::PATH_POWERUP,
-        ];
-        let map = paths
-            .into_iter()
-            .map(|path| (path.to_string(), asset_server.load(path)))
-            .collect();
-
-        Self(map)
+        let assets = world.resource::<AssetServer>();
+        Self {
+            player: assets.load("images/player.png"),
+            enemies: vec![
+                assets.load("images/enemy1.png"),
+                assets.load("images/enemy2.png"),
+                assets.load("images/enemy3.png"),
+            ],
+        }
     }
 }
 ```
 
-Then start preloading in the `assets::plugin`:
+Then start preloading in `assets::plugin`:
 
 ```rust
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<ImageHandles>();
-    app.init_resource::<ImageHandles>();
+    app.register_type::<ActorAssets>();
+    app.load_resource::<ActorAssets>();
 }
 ```
 
-And finally add a loading check to the `screens::loading::plugin`:
-
-```rust
-fn all_assets_loaded(
-    image_handles: Res<ImageHandles>,
-) -> bool {
-    image_handles.all_loaded(&asset_server)
-}
-```
+Note that `app.load_resource` comes from an extension trait defined in [src/asset_tracking.rs](../src/asset_tracking.rs)
 
 ### Reasoning
 
 This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
 By preloading your assets, you can avoid hitches during gameplay.
-We start loading as soon as the app starts and wait for all assets to be loaded in the loading screen.
-
-By using strings as keys, you can dynamically load assets based on input data such as a level file.
-If you prefer a purely static approach, you can also use an `enum YourAssetHandleKey` and `impl AsRef<str> for YourAssetHandleKey`.
-You can also mix the dynamic and static approach according to your needs.
+Assets will begin loading immediately at startup, and the loading screen will wait until they're done.
 
 ## Spawn Commands
 

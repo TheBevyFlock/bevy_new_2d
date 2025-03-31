@@ -7,9 +7,10 @@ use crate::{asset_tracking::LoadResource, audio::Music, screens::Screen, theme::
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), spawn_credits_screen);
 
+    app.register_type::<CreditsMusic>();
     app.load_resource::<CreditsMusic>();
-    app.add_systems(OnEnter(Screen::Credits), play_credits_music);
-    app.add_systems(OnExit(Screen::Credits), stop_music);
+    app.add_systems(OnEnter(Screen::Credits), start_credits_music);
+    app.add_systems(OnExit(Screen::Credits), stop_credits_music);
 }
 
 fn spawn_credits_screen(mut commands: Commands) {
@@ -35,8 +36,9 @@ fn enter_title_screen(_: Trigger<Pointer<Pressed>>, mut next_screen: ResMut<Next
     next_screen.set(Screen::Title);
 }
 
-#[derive(Resource, Asset, Reflect, Clone)]
-pub struct CreditsMusic {
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+struct CreditsMusic {
     #[dependency]
     music: Handle<AudioSource>,
     entity: Option<Entity>,
@@ -52,7 +54,7 @@ impl FromWorld for CreditsMusic {
     }
 }
 
-fn play_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
+fn start_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     music.entity = Some(
         commands
             .spawn((
@@ -64,7 +66,7 @@ fn play_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     );
 }
 
-fn stop_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
+fn stop_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
     if let Some(entity) = music.entity.take() {
         commands.entity(entity).despawn();
     }
