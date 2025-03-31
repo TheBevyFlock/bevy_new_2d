@@ -23,10 +23,10 @@ env:
   assets_path: assets
 
   # Whether to build and package a release for a given target platform.
+  build_for_web: true
+  build_for_linux: true
   build_for_windows: true
   build_for_macos: true
-  build_for_linux: true
-  build_for_web: true
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
@@ -73,6 +73,21 @@ env:
   use_github_cache: false
 
 jobs:
+  # Forward some environment variables as outputs of this job.
+  # This is needed because the `env` context can't be used in the `if:` condition of a job:
+  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+  forward-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do nothing
+        run: "true"
+    outputs:
+      build_for_web: ${{ env.build_for_web }}
+      build_for_linux: ${{ env.build_for_linux }}
+      build_for_windows: ${{ env.build_for_windows }}
+      build_for_macos: ${{ env.build_for_macos }}
+      upload_to_itch: ${{ env.upload_to_itch }}
+
   # Determine the version number for this workflow.
   get-version:
     runs-on: ubuntu-latest
@@ -87,6 +102,7 @@ jobs:
   # Build and package a release for each platform.
   build:
     needs:
+      - forward-env
       - get-version
     env:
       version: ${{ needs.get-version.outputs.version }}
@@ -99,7 +115,6 @@ jobs:
             binary_ext: .wasm
             package_ext: .zip
             runner: ubuntu-latest
-            enabled: ${{ env.build_for_web == 'true' }}
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
@@ -107,7 +122,6 @@ jobs:
             features: bevy/wayland
             package_ext: .zip
             runner: ubuntu-latest
-            enabled: ${{ env.build_for_linux == 'true' }}
 
           - platform: windows
             targets: x86_64-pc-windows-msvc
@@ -115,7 +129,6 @@ jobs:
             binary_ext: .exe
             package_ext: .zip
             runner: windows-latest
-            enabled: ${{ env.build_for_windows == 'true' }}
 
           - platform: macos
             targets: x86_64-apple-darwin aarch64-apple-darwin
@@ -123,8 +136,7 @@ jobs:
             app_suffix: .app/Contents/MacOS
             package_ext: .dmg
             runner: macos-latest
-            enabled: ${{ env.build_for_macos == 'true' }}
-    if: ${{ matrix.enabled }}
+    if: ${{ (matrix.platform == 'web' && needs.forward-env.outputs.build_for_web == 'true') || (matrix.platform == 'linux' && needs.forward-env.outputs.build_for_linux == 'true') || (matrix.platform == 'windows' && needs.forward-env.outputs.build_for_windows == 'true') || (matrix.platform == 'macos' && needs.forward-env.outputs.build_for_macos == 'true') }}
     runs-on: ${{ matrix.runner }}
     permissions:
       # Required to create a GitHub release: https://docs.github.com/en/rest/releases/releases#create-a-release
@@ -275,25 +287,14 @@ jobs:
           tag: ${{ env.version }}
           overwrite: true
 
-  # Check if upload to itch.io is enabled.
-  # This is needed because the `env` context can't be used in the `if:` condition of a job:
-  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
-  check-upload-to-itch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Do nothing
-        run: "true"
-    outputs:
-      target: ${{ env.upload_to_itch }}
-
   # Upload all packages to itch.io.
   upload-to-itch:
     runs-on: ubuntu-latest
     needs:
+      - forward-env
       - get-version
-      - check-upload-to-itch
       - build
-    if: ${{ needs.check-upload-to-itch.outputs.target != '' }}
+    if: ${{ needs.forward-env.outputs.upload_to_itch != '' }}
 
     steps:
       - name: Download all packages

@@ -54,10 +54,10 @@ The release workflow can be configured by tweaking the environment variables in 
   assets_path: assets
 
   # Whether to build and package a release for a given target platform.
+  build_for_web: true
+  build_for_linux: true
   build_for_windows: true
   build_for_macos: true
-  build_for_linux: true
-  build_for_web: true
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
