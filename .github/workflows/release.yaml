@@ -82,10 +82,6 @@ jobs:
       - name: Do nothing
         run: "true"
     outputs:
-      build_for_web: ${{ env.build_for_web }}
-      build_for_linux: ${{ env.build_for_linux }}
-      build_for_windows: ${{ env.build_for_windows }}
-      build_for_macos: ${{ env.build_for_macos }}
       upload_to_itch: ${{ env.upload_to_itch }}
 
   # Determine the version number for this workflow.
@@ -102,7 +98,6 @@ jobs:
   # Build and package a release for each platform.
   build:
     needs:
-      - forward-env
       - get-version
     env:
       version: ${{ needs.get-version.outputs.version }}
@@ -136,7 +131,6 @@ jobs:
             app_suffix: .app/Contents/MacOS
             package_ext: .dmg
             runner: macos-latest
-    if: ${{ (matrix.platform == 'web' && needs.forward-env.outputs.build_for_web == 'true') || (matrix.platform == 'linux' && needs.forward-env.outputs.build_for_linux == 'true') || (matrix.platform == 'windows' && needs.forward-env.outputs.build_for_windows == 'true') || (matrix.platform == 'macos' && needs.forward-env.outputs.build_for_macos == 'true') }}
     runs-on: ${{ matrix.runner }}
     permissions:
       # Required to create a GitHub release: https://docs.github.com/en/rest/releases/releases#create-a-release
@@ -164,41 +158,52 @@ jobs:
             echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
           fi
 
+          # Check if building for this platform is enabled.
+          echo 'is_platform_enabled=${{
+            (matrix.platform == 'web' && env.build_for_web == 'true') ||
+            (matrix.platform == 'linux' && env.build_for_linux == 'true') ||
+            (matrix.platform == 'windows' && env.build_for_windows == 'true') ||
+            (matrix.platform == 'macos' && env.build_for_macos == 'true')
+          }}' >> "${GITHUB_ENV}"
+
       - name: Checkout repository
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: actions/checkout@v4
         with:
           lfs: ${{ env.git_lfs }}
 
       - name: Install Rust toolchain
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.targets }}
 
       - name: Populate cargo cache
-        if: ${{ env.use_github_cache == 'true' }}
+        if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
         uses: Leafwing-Studios/cargo-cache@v2
         with:
           sweep-cache: true
 
       - name: Install dependencies (Linux)
-        if: ${{ matrix.platform == 'linux' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Prepare output directories
+        if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
       - name: Install and run Bevy CLI (Web)
-        if: ${{ matrix.platform == 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
           cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
           bevy build --locked --release --yes web --bundle
 
       - name: Move web bundle (Web)
-        if: ${{ matrix.platform == 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
       - name: Build binaries (non-Web)
-        if: ${{ matrix.platform != 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
             cargo build --locked --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
@@ -206,7 +211,7 @@ jobs:
           done
 
       - name: Add binaries to app (non-Web)
-        if: ${{ matrix.platform != 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
@@ -215,11 +220,11 @@ jobs:
           fi
 
       - name: Add assets to app (non-Web)
-        if: ${{ matrix.platform != 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
 
       - name: Add metadata to app (macOS)
-        if: ${{ matrix.platform == 'macos' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'macos' }}
         run: |
           cat >'${{ env.app }}/../Info.plist' <<EOF
             <?xml version="1.0" encoding="UTF-8"?>
@@ -253,7 +258,7 @@ jobs:
           EOF
 
       - name: Package app (non-Windows)
-        if: ${{ matrix.platform != 'windows' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'windows' }}
         working-directory: tmp/app
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
@@ -264,12 +269,13 @@ jobs:
           fi
 
       - name: Package app (Windows)
-        if: ${{ matrix.platform == 'windows' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'windows' }}
         working-directory: tmp/app
         shell: pwsh
         run: Compress-Archive -Path '${{ env.app_package_name }}' -DestinationPath '${{ env.package }}'
 
       - name: Upload package to workflow artifacts
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           path: tmp/app/${{ env.package }}
@@ -277,7 +283,7 @@ jobs:
           retention-days: 1
 
       - name: Upload package to GitHub release
-        if: ${{ env.upload_to_github == 'true' }}
+        if: ${{ env.is_platform_enabled == 'true' && env.upload_to_github == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
