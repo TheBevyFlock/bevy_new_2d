@@ -106,28 +106,28 @@ jobs:
         include:
           - platform: web
             targets: wasm32-unknown-unknown
-            profile: release
+            profile: web-release
             binary_ext: .wasm
             package_ext: .zip
             runner: ubuntu-latest
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
-            profile: release-native
+            profile: release
             features: bevy/wayland
             package_ext: .zip
             runner: ubuntu-latest
 
           - platform: windows
             targets: x86_64-pc-windows-msvc
-            profile: release-native
+            profile: release
             binary_ext: .exe
             package_ext: .zip
             runner: windows-latest
 
           - platform: macos
             targets: x86_64-apple-darwin aarch64-apple-darwin
-            profile: release-native
+            profile: release
             app_suffix: .app/Contents/MacOS
             package_ext: .dmg
             runner: macos-latest

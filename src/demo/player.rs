@@ -19,6 +19,8 @@ use crate::{
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Player>();
+
+    app.register_type::<PlayerAssets>();
     app.load_resource::<PlayerAssets>();
 
     // Record directional input as movement controls.
@@ -112,22 +114,13 @@ fn record_player_directional_input(
     }
 }
 
-#[derive(Resource, Asset, Reflect, Clone)]
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
 pub struct PlayerAssets {
-    // This #[dependency] attribute marks the field as a dependency of the Asset.
-    // This means that it will not finish loading until the labeled asset is also loaded.
     #[dependency]
-    pub ducky: Handle<Image>,
+    ducky: Handle<Image>,
     #[dependency]
     pub steps: Vec<Handle<AudioSource>>,
-}
-
-impl PlayerAssets {
-    pub const PATH_DUCKY: &'static str = "images/ducky.png";
-    pub const PATH_STEP_1: &'static str = "audio/sound_effects/step1.ogg";
-    pub const PATH_STEP_2: &'static str = "audio/sound_effects/step2.ogg";
-    pub const PATH_STEP_3: &'static str = "audio/sound_effects/step3.ogg";
-    pub const PATH_STEP_4: &'static str = "audio/sound_effects/step4.ogg";
 }
 
 impl FromWorld for PlayerAssets {
@@ -135,17 +128,17 @@ impl FromWorld for PlayerAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             ducky: assets.load_with_settings(
-                PlayerAssets::PATH_DUCKY,
+                "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
                     // Use `nearest` image sampling to preserve the pixel art style.
                     settings.sampler = ImageSampler::nearest();
                 },
             ),
             steps: vec![
-                assets.load(PlayerAssets::PATH_STEP_1),
-                assets.load(PlayerAssets::PATH_STEP_2),
-                assets.load(PlayerAssets::PATH_STEP_3),
-                assets.load(PlayerAssets::PATH_STEP_4),
+                assets.load("audio/sound_effects/step1.ogg"),
+                assets.load("audio/sound_effects/step2.ogg"),
+                assets.load("audio/sound_effects/step3.ogg"),
+                assets.load("audio/sound_effects/step4.ogg"),
             ],
         }
     }

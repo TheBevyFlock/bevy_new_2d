@@ -10,9 +10,10 @@ use crate::{
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Gameplay), spawn_level);
 
+    app.register_type::<GameplayMusic>();
     app.load_resource::<GameplayMusic>();
-    app.add_systems(OnEnter(Screen::Gameplay), play_gameplay_music);
-    app.add_systems(OnExit(Screen::Gameplay), stop_music);
+    app.add_systems(OnEnter(Screen::Gameplay), start_gameplay_music);
+    app.add_systems(OnExit(Screen::Gameplay), stop_gameplay_music);
 
     app.add_systems(
         Update,
@@ -25,10 +26,11 @@ fn spawn_level(mut commands: Commands) {
     commands.queue(spawn_level_command);
 }
 
-#[derive(Resource, Asset, Reflect, Clone)]
-pub struct GameplayMusic {
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+struct GameplayMusic {
     #[dependency]
-    handle: Handle<AudioSource>,
+    music: Handle<AudioSource>,
     entity: Option<Entity>,
 }
 
@@ -36,17 +38,17 @@ impl FromWorld for GameplayMusic {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            handle: assets.load("audio/music/Fluffing A Duck.ogg"),
+            music: assets.load("audio/music/Fluffing A Duck.ogg"),
             entity: None,
         }
     }
 }
 
-fn play_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
+fn start_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     music.entity = Some(
         commands
             .spawn((
-                AudioPlayer(music.handle.clone()),
+                AudioPlayer(music.music.clone()),
                 PlaybackSettings::LOOP,
                 Music,
             ))
@@ -54,7 +56,7 @@ fn play_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>)
     );
 }
 
-fn stop_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
+fn stop_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
     if let Some(entity) = music.entity.take() {
         commands.entity(entity).despawn();
     }
