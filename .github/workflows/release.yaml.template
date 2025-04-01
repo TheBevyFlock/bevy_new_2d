@@ -10,17 +10,23 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number in the format `v1.2.3`'
+        description: "Version number in the format `v1.2.3`"
         required: true
         type: string
 
-# Configure the release workflow by editing these values.
+# Configure the release workflow by editing the following values.
 env:
   # The base filename of the binary produced by `cargo build`.
   cargo_build_binary_name: {{project-name}}
 
   # The path to the assets directory.
   assets_path: assets
+
+  # Whether to build and package a release for a given target platform.
+  build_for_web: true
+  build_for_linux: true
+  build_for_windows: true
+  build_for_macos: true
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
@@ -70,8 +76,23 @@ env:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   git_lfs: false
 
+  # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
+  # See: https://github.com/orgs/community/discussions/27059
+  use_github_cache: false
+
 {%- raw %}
 jobs:
+  # Forward some environment variables as outputs of this job.
+  # This is needed because the `env` context can't be used in the `if:` condition of a job:
+  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+  forward-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do nothing
+        run: "true"
+    outputs:
+      upload_to_itch: ${{ env.upload_to_itch }}
+
   # Determine the version number for this workflow.
   get-version:
     runs-on: ubuntu-latest
@@ -94,28 +115,28 @@ jobs:
         include:
           - platform: web
             targets: wasm32-unknown-unknown
-            profile: release
+            profile: web-release
             binary_ext: .wasm
             package_ext: .zip
             runner: ubuntu-latest
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
-            profile: release-native
+            profile: release
             features: bevy/wayland
             package_ext: .zip
             runner: ubuntu-latest
 
           - platform: windows
             targets: x86_64-pc-windows-msvc
-            profile: release-native
+            profile: release
             binary_ext: .exe
             package_ext: .zip
             runner: windows-latest
 
           - platform: macos
             targets: x86_64-apple-darwin aarch64-apple-darwin
-            profile: release-native
+            profile: release
             app_suffix: .app/Contents/MacOS
             package_ext: .dmg
             runner: macos-latest
@@ -146,40 +167,52 @@ jobs:
             echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
           fi
 
+          # Check if building for this platform is enabled.
+          echo 'is_platform_enabled=${{
+            (matrix.platform == 'web' && env.build_for_web == 'true') ||
+            (matrix.platform == 'linux' && env.build_for_linux == 'true') ||
+            (matrix.platform == 'windows' && env.build_for_windows == 'true') ||
+            (matrix.platform == 'macos' && env.build_for_macos == 'true')
+          }}' >> "${GITHUB_ENV}"
+
       - name: Checkout repository
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: actions/checkout@v4
         with:
           lfs: ${{ env.git_lfs }}
 
       - name: Install Rust toolchain
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.targets }}
 
       - name: Populate cargo cache
+        if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
         uses: Leafwing-Studios/cargo-cache@v2
         with:
           sweep-cache: true
 
       - name: Install dependencies (Linux)
-        if: ${{ matrix.platform == 'linux' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Prepare output directories
+        if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
       - name: Install and run Bevy CLI (Web)
-        if: ${{ matrix.platform == 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
           cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
           bevy build --locked --release --yes web --bundle
 
       - name: Move web bundle (Web)
-        if: ${{ matrix.platform == 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
       - name: Build binaries (non-Web)
-        if: ${{ matrix.platform != 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
             cargo build --locked --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
@@ -187,7 +220,7 @@ jobs:
           done
 
       - name: Add binaries to app (non-Web)
-        if: ${{ matrix.platform != 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
@@ -196,11 +229,11 @@ jobs:
           fi
 
       - name: Add assets to app (non-Web)
-        if: ${{ matrix.platform != 'web' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
 
       - name: Add metadata to app (macOS)
-        if: ${{ matrix.platform == 'macos' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'macos' }}
         run: |
           cat >'${{ env.app }}/../Info.plist' <<EOF
             <?xml version="1.0" encoding="UTF-8"?>
@@ -234,7 +267,7 @@ jobs:
           EOF
 
       - name: Package app (non-Windows)
-        if: ${{ matrix.platform != 'windows' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'windows' }}
         working-directory: tmp/app
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
@@ -245,12 +278,13 @@ jobs:
           fi
 
       - name: Package app (Windows)
-        if: ${{ matrix.platform == 'windows' }}
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'windows' }}
         working-directory: tmp/app
         shell: pwsh
         run: Compress-Archive -Path '${{ env.app_package_name }}' -DestinationPath '${{ env.package }}'
 
       - name: Upload package to workflow artifacts
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           path: tmp/app/${{ env.package }}
@@ -258,7 +292,7 @@ jobs:
           retention-days: 1
 
       - name: Upload package to GitHub release
-        if: ${{ env.upload_to_github == 'true' }}
+        if: ${{ env.is_platform_enabled == 'true' && env.upload_to_github == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -268,25 +302,14 @@ jobs:
           tag: ${{ env.version }}
           overwrite: true
 
-  # Check if upload to itch.io is enabled.
-  # This is needed because the `env` context can't be used in the `if:` condition of a job:
-  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
-  check-upload-to-itch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Do nothing
-        run: 'true'
-    outputs:
-      target: ${{ env.upload_to_itch }}
-
   # Upload all packages to itch.io.
   upload-to-itch:
     runs-on: ubuntu-latest
     needs:
+      - forward-env
       - get-version
-      - check-upload-to-itch
       - build
-    if: ${{ needs.check-upload-to-itch.outputs.target != '' }}
+    if: ${{ needs.forward-env.outputs.upload_to_itch != '' }}
 
     steps:
       - name: Download all packages

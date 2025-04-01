@@ -43,7 +43,7 @@ This template comes with a basic project structure that you may find useful:
 
 Feel free to move things around however you want, though.
 
-> [!Tip]
+> [!TIP]
 > Be sure to check out the [3rd-party tools](./docs/tooling.md) we recommend!
 
 ## Run your game

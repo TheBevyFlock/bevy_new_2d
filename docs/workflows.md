@@ -11,7 +11,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 - Check formatting.
 - Check documentation.
 
-> [!Tip]
+> [!TIP]
 > <details>
 >   <summary>You may want to set up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI.</summary>
 >
@@ -36,7 +36,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
   Enter a version number in the format `v1.2.3`, then hit the green `Run workflow` button.
 </details>
 
-> [!Important]
+> [!IMPORTANT]
 > Using this workflow requires some setup. We will go through this now.
 
 ### Configure environment variables
@@ -52,6 +52,12 @@ The release workflow can be configured by tweaking the environment variables in 
 
   # The path to the assets directory.
   assets_path: assets
+
+  # Whether to build and package a release for a given target platform.
+  build_for_web: true
+  build_for_linux: true
+  build_for_windows: true
+  build_for_macos: true
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
@@ -92,10 +98,17 @@ The release workflow can be configured by tweaking the environment variables in 
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
   git_lfs: false
+
+  # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
+  # See: https://github.com/orgs/community/discussions/27059
+  use_github_cache: false
   ```
 </details>
 
 The initial values are set automatically by `bevy new`, but you can edit them yourself and push a commit.
+
+> [!WARNING]
+> GitHub puts a limit on free CI usage for [private repositories](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for--private-repositories), so tune your workflows accordingly!
 
 ### Set up itch.io upload
 
