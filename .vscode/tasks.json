@@ -31,6 +31,7 @@
             "args": [
                 "run",
                 "--release",
+                "--no-default-features"
             ],
             "presentation": {
                 "clear": true
@@ -47,6 +48,7 @@
             "args": [
                 "run",
                 "--yes",
+                "--no-default-features",
                 "web"
             ],
             "options": {
@@ -70,6 +72,7 @@
                 "run",
                 "--yes",
                 "--release",
+                "--no-default-features",
                 "web"
             ],
             "presentation": {
