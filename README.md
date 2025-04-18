@@ -53,15 +53,15 @@ We recommend running your game with the [Bevy CLI](https://github.com/TheBevyFlo
 Running your game locally is very simple:
 
 - Use `bevy run` to run a native dev build.
-- Use `bevy run --no-default-features web` to run a web dev build.
+- Use `bevy run web` to run a web dev build.
 
 If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](./.vscode/tasks.json) file.
 
 <details>
   <summary>Run release builds</summary>
 
-- Use `bevy run --release --no-default-features` to run a native release build.
-- Use `bevy run --release --no-default-features web` to run a web release build.
+- Use `bevy run --release` to run a native release build.
+- Use `bevy run --release web` to run a web release build.
 
 </details>
 

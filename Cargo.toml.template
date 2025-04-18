@@ -38,6 +38,16 @@ dev_native = [
 ]
 
 
+[package.metadata.bevy_cli.release]
+# Disable debug functionality in release builds
+default_features = false
+
+[package.metadata.bevy_cli.web.dev]
+# Disable native-only debug functionality in web builds
+default_features = false
+features = ["dev"]
+
+
 [lints.clippy]
 # Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
 # request more than 7 arguments, which would undesirably trigger this lint.
