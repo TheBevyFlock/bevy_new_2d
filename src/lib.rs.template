@@ -16,7 +16,7 @@ pub struct AppPlugin;
 
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
-        // Order new `AppStep` variants by adding them here:
+        // Order new `AppSet` variants by adding them here:
         app.configure_sets(
             Update,
             (AppSet::TickTimers, AppSet::RecordInput, AppSet::Update).chain(),
@@ -56,13 +56,11 @@ impl Plugin for AppPlugin {
         app.add_plugins((
             asset_tracking::plugin,
             demo::plugin,
+            #[cfg(feature = "dev")]
+            dev_tools::plugin,
             screens::plugin,
             theme::plugin,
         ));
-
-        // Enable dev tools for dev builds.
-        #[cfg(feature = "dev")]
-        app.add_plugins(dev_tools::plugin);
     }
 }
 
@@ -80,15 +78,5 @@ enum AppSet {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn((
-        Name::new("Camera"),
-        Camera2d,
-        // Render all UI to this camera.
-        // Not strictly necessary since we only use one camera,
-        // but if we don't use this component, our UI will disappear as soon
-        // as we add another camera. This includes indirect ways of adding cameras like using
-        // [ui node outlines](https://bevyengine.org/news/bevy-0-14/#ui-node-outline-gizmos)
-        // for debugging. So it's good to have this here for future-proofing.
-        IsDefaultUiCamera,
-    ));
+    commands.spawn((Name::new("Camera"), Camera2d));
 }
