@@ -56,21 +56,20 @@ If you're using [VS Code](https://code.visualstudio.com/), the following extensi
 > If that is an issue for you, you can set it to `false` or remove the setting entirely.
 > </details>
 
-## RustRover/JetBrains Live Templates
+## RustRover Live Templates
 
-If you're using [RustRover](https://www.jetbrains.com/rust/), you might want to use Live Templates, which are a form of autocomplete template,
-which might make things easier. The documentation on how Live Settings work in RustRover can be found (here)[https://www.jetbrains.com/help/rust/using-live-templates.html]
+If you're using [RustRover](https://www.jetbrains.com/rust/), you may want to set up [Live Templates](https://www.jetbrains.com/help/rust/using-live-templates.html) to provide autocomplete for common boilerplate code.
 
 Unfortunately, it is not really possible at this time to share Live Templates on a per-project basis, as they are global, however you can still set them up yourself.
 
-If you wish to have a quick guide for porting the existing snippets from vscode, then you can easily port the live snippets over by doing the following:
+Here's a quick guide for porting this template's [VS Code snippets](../.vscode/bevy.code-snippets) to Live Templates:
 
-- Replace any instances of $0 in the template with $END$
-- Replace any instances of $1 in the template with $NAME$ or something similar.
+- Replace any instances of `$0` in the template with `$END$`
+- Replace any instances of `$1` in the template with `$NAME$` or something similar.
 - For the `plugin` template, you might want to set the applicability to rust modules.
 - For the other templates, you might want to set the applicability to rust modules, statements, and expressions.
 
-to make it easier to enable/disable if you use RustRover for non-bevy applications you can also create a template group called Bevy and put the live templates under the group.
+To make it easier to enable or disable these live templates for different projects, you can put them in a template group called `Bevy`.
 
 ## Other templates
 
