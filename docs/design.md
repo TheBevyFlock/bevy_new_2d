@@ -37,14 +37,13 @@ see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy
 ## Pattern Table of Contents
 
 - [Plugin Organization](#plugin-organization)
-- [Widgets](#widgets)
-- [Asset Preloading](#asset-preloading)
-- [Spawn Commands](#spawn-commands)
-- [Dev Tools](#dev-tools)
 - [Screen States](#screen-states)
+- [Bundle Functions](#bundle-functions)
+- [Asset Preloading](#asset-preloading)
+- [Dev Tools](#dev-tools)
 
-When talking about these, use their name followed by "pattern",
-e.g. "the widgets pattern", or "the plugin organization pattern".
+When referring to one of these patterns, you can use their name followed by "pattern",
+like "the plugin organization pattern", or "the screen states pattern".
 
 ## Plugin Organization
 
@@ -81,156 +80,6 @@ By splitting your code like this, you can easily keep all your systems and resou
 
 A good rule of thumb is to have one plugin per file,
 but feel free to leave out a plugin if your file does not need to do anything with the `App`.
-
-## Widgets
-
-### Pattern
-
-Spawn your UI elements by extending the [`Widgets` trait](../src/theme/widgets.rs):
-
-```rust
-pub trait Widgets {
-    fn button(&mut self, text: impl Into<String>) -> EntityCommands;
-    fn header(&mut self, text: impl Into<String>) -> EntityCommands;
-    fn label(&mut self, text: impl Into<String>) -> EntityCommands;
-    fn text_input(&mut self, text: impl Into<String>) -> EntityCommands;
-    fn image(&mut self, texture: Handle<Texture>) -> EntityCommands;
-    fn progress_bar(&mut self, progress: f32) -> EntityCommands;
-}
-```
-
-### Reasoning
-
-`Widgets` is implemented for `Commands` and similar, so you can easily spawn UI elements in your systems.
-By encapsulating a widget inside a function, you save on a lot of boilerplate code and can easily change the appearance of all widgets of a certain type.
-By returning `EntityCommands`, you can easily chain multiple widgets together and insert children into a parent widget.
-
-## Asset Preloading
-
-### Pattern
-
-Define an asset collection resource to load and store your asset `Handle`s:
-
-```rust
-#[derive(Resource, Asset, Clone, Reflect)]
-#[reflect(Resource)]
-struct ActorAssets {
-    // This #[dependency] attribute marks the field as a dependency of the Asset.
-    // This means that it will not finish loading until the labeled asset is also loaded.
-    #[dependency]
-    player: Handle<Image>,
-    #[dependency]
-    enemies: Vec<Handle<Image>>,
-}
-
-impl FromWorld for ActorAssets {
-    fn from_world(world: &mut World) -> Self {
-        let assets = world.resource::<AssetServer>();
-        Self {
-            player: assets.load("images/player.png"),
-            enemies: vec![
-                assets.load("images/enemy1.png"),
-                assets.load("images/enemy2.png"),
-                assets.load("images/enemy3.png"),
-            ],
-        }
-    }
-}
-```
-
-Then start preloading in `assets::plugin`:
-
-```rust
-pub(super) fn plugin(app: &mut App) {
-    app.register_type::<ActorAssets>();
-    app.load_resource::<ActorAssets>();
-}
-```
-
-Note that `app.load_resource` comes from an extension trait defined in [src/asset_tracking.rs](../src/asset_tracking.rs)
-
-### Reasoning
-
-This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
-By preloading your assets, you can avoid hitches during gameplay.
-Assets will begin loading immediately at startup, and the loading screen will wait until they're done.
-
-## Spawn Commands
-
-### Pattern
-
-Spawn a game object by using a custom command. Inside the command,
-run the spawning code with `world.run_system_cached` or  `world.run_system_cached_with`:
-
-```rust
-// monster.rs
-
-#[derive(Debug)]
-pub struct SpawnMonster {
-    pub health: u32,
-    pub transform: Transform,
-}
-
-impl Command for SpawnMonster {
-    fn apply(self, world: &mut World) {
-        let _ = world.run_system_cached_with(spawn_monster, self);
-    }
-}
-
-fn spawn_monster(
-    spawn_monster: In<SpawnMonster>,
-    mut commands: Commands,
-) {
-    commands.spawn((
-        Name::new("Monster"),
-        Health::new(spawn_monster.health),
-        spawn_monster.transform,
-        Visibility::default(),
-        // other components
-    ));
-}
-```
-
-And then to use a spawn command, add it to `Commands`:
-
-```rust
-// dangerous_forest.rs
-
-fn spawn_forest_goblin(mut commands: Commands) {
-    commands.queue(SpawnMonster {
-        health: 100,
-        transform: Transform::from_xyz(10.0, 0.0, 0.0),
-    });
-}
-```
-
-### Reasoning
-
-By encapsulating the spawning of a game object in a custom command,
-you save on boilerplate code and can easily change the behavior of spawning.
-We use `world.run_system_once_with` to run the spawning code with the same syntax as a regular system.
-That way you can easily add system parameters to access things like assets and resources while spawning the entity.
-
-A limitation of this approach is that calling code cannot extend the spawn call with additional components or children,
-as custom commands don't return `Entity` or `EntityCommands`. This kind of usage will be possible in future Bevy versions.
-
-## Dev Tools
-
-### Pattern
-
-Add all systems that are only relevant while developing the game to the [`dev_tools` plugin](../src/dev_tools.rs):
-
-```rust
-// dev_tools.rs
-pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, (draw_debug_lines, show_debug_console, show_fps_counter));
-}
-```
-
-### Reasoning
-
-The `dev_tools` plugin is only included in dev builds.
-By adding your dev tools here, you automatically guarantee that they are not included in release builds.
 
 ## Screen States
 
@@ -288,3 +137,143 @@ These screens usually correspond to different logical states of your game that h
 
 By using dedicated `State`s for each screen, you can easily manage systems and entities that are only relevant for a certain screen.
 This allows you to flexibly transition between screens whenever your game logic requires it.
+
+## Bundle Functions
+
+### Pattern
+
+Write functions that return `impl Bundle` to define simple entity templates.
+
+```rust
+pub fn monster(health: u32, transform: Transform) -> impl Bundle {
+    (
+        Name::new("Monster"),
+        Health::new(health),
+        transform,
+        // other components
+    )
+}
+```
+
+You can extend a bundle function with additional components that are not present in the original bundle:
+
+```rust
+pub fn boss_monster(transform: Transform) -> impl Bundle {
+    (
+        monster(1000, transform),
+        Better,
+        Faster,
+        Stronger,
+    )
+}
+```
+
+You can compose bundle functions to define simple entity hierarchies:
+
+```rust
+pub fn dangerous_forest() -> impl Bundle {
+    (
+        Name::new("Dangerous Forest"),
+        Transform::default(),
+        children![
+            monster(100, Transform::from_xyz(10.0, 0.0, 0.0)),
+            monster(200, Transform::from_xyz(20.0, 0.0, 0.0)),
+            boss_monster(Transform::from_xyz(30.0, 0.0, 0.0)),
+        ],
+    )
+}
+```
+
+And finally, you can spawn entities using your bundle functions:
+
+```rust
+fn spawn_dangerous_forest(mut commands: Commands) {
+    commands.spawn(dangerous_forest());
+}
+```
+
+### Reasoning
+
+By encapsulating the definition of an entity in a bundle function, you can save on boilerplate
+and make it easier to change its behavior, even if you spawn it in many different places in your code.
+
+This approach comes with a few limitations, however:
+
+- **No dependency injection:** If you want to use data from the world when creating a bundle, you have to pass it as an argument (e.g. `&AssetServer`)
+  all the way down the entity hierarchy to the particular bundle function that needs it.
+- **No replacing components:** If you want to extend a bundle function by _replacing_ one of its components (e.g. to modify its `Node::width`),
+  you have to add an argument to the function to explicitly allow for it, or remove `Node` from the returned bundle, or use `Commands` access for `insert`, like
+  `commands.spawn(foo()).insert(Replacement)`, which is not compatible with `children![]`-style composition.
+- **No observers:** If you want an entity template to include an observer, you can't add it in the bundle function itself.
+  Instead, the calling code must have access to `Commands` and do something like `commands.spawn(button()).observe(on_click)`, which is not compatible with
+  `children![]`-style composition.
+
+These limitations are expected to be lifted in future Bevy versions.
+
+## Asset Preloading
+
+### Pattern
+
+Define an asset collection resource to load and store your asset `Handle`s:
+
+```rust
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+struct ActorAssets {
+    // This #[dependency] attribute marks the field as a dependency of the Asset.
+    // This means that it will not finish loading until the labeled asset is also loaded.
+    #[dependency]
+    player: Handle<Image>,
+    #[dependency]
+    enemies: Vec<Handle<Image>>,
+}
+
+impl FromWorld for ActorAssets {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            player: assets.load("images/player.png"),
+            enemies: vec![
+                assets.load("images/enemy1.png"),
+                assets.load("images/enemy2.png"),
+                assets.load("images/enemy3.png"),
+            ],
+        }
+    }
+}
+```
+
+Then start preloading in `assets::plugin`:
+
+```rust
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<ActorAssets>();
+    app.load_resource::<ActorAssets>();
+}
+```
+
+Note that `app.load_resource` comes from an extension trait defined in [src/asset_tracking.rs](../src/asset_tracking.rs)
+
+### Reasoning
+
+This pattern is inspired by [bevy_asset_loader](https://github.com/NiklasEi/bevy_asset_loader).
+By preloading your assets, you can avoid hitches during gameplay.
+Assets will begin loading immediately at startup, and the loading screen will wait until they're done.
+
+## Dev Tools
+
+### Pattern
+
+Add all systems that are only relevant while developing the game to the [`dev_tools` plugin](../src/dev_tools.rs):
+
+```rust
+// dev_tools.rs
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(Update, (draw_debug_lines, show_debug_console, show_fps_counter));
+}
+```
+
+### Reasoning
+
+The `dev_tools` plugin is only included in dev builds.
+By adding your dev tools here, you automatically guarantee that they are not included in release builds.
