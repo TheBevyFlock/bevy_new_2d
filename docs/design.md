@@ -105,7 +105,7 @@ pub enum Screen {
 For each screen, create a plugin that handles the setup and teardown in the
 [`OnEnter`](https://docs.rs/bevy/latest/bevy/prelude/struct.OnEnter.html) and
 [`OnExit`](https://docs.rs/bevy/latest/bevy/prelude/struct.OnExit.html) schedules.
-You can also mark an entity to despawn on exit by giving it the
+You should mark the screen's entities to despawn on exit by giving them the
 [`StateScoped`](https://docs.rs/bevy/latest/bevy/prelude/struct.StateScoped.html) component.
 
 ```rust
