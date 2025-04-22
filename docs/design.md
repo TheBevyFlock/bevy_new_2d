@@ -218,7 +218,7 @@ This approach comes with a few limitations, however:
   Instead, the calling code must have access to `Commands` and do something like `commands.spawn(button()).observe(on_click)`, which is not compatible with
   `children![]`-style composition.
 
-These limitations are expected to be lifted in future Bevy versions (for more information, see https://github.com/bevyengine/bevy/discussions/9538).
+These limitations are expected to be [lifted in future Bevy versions](https://github.com/bevyengine/bevy/discussions/9538).
 
 ## Asset Preloading
 
