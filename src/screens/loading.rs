@@ -15,15 +15,11 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_loading_screen(mut commands: Commands) {
-    commands
-        .ui_root()
-        .insert(StateScoped(Screen::Loading))
-        .with_children(|parent| {
-            parent.label("Loading...").insert(Node {
-                justify_content: JustifyContent::Center,
-                ..default()
-            });
-        });
+    commands.spawn((
+        widget::ui_root(),
+        StateScoped(Screen::Loading),
+        children![widget::label("Loading...")],
+    ));
 }
 
 fn continue_to_title_screen(mut next_screen: ResMut<NextState<Screen>>) {
