@@ -99,30 +99,28 @@ pub enum Screen {
     Victory,
     Leaderboard,
     MultiplayerLobby,
-    SecretMinigame,
 }
 ```
 
-Constrain entities that should only be present in a certain screen to that screen by adding a
-[`StateScoped`](https://docs.rs/bevy/latest/bevy/prelude/struct.StateScoped.html) component to them.
-Transition between screens by setting the [`NextState<Screen>`](https://docs.rs/bevy/latest/bevy/prelude/enum.NextState.html) resource.
-
-For each screen, create a plugin that handles the setup and teardown of the screen with `OnEnter` and `OnExit`:
+For each screen, create a plugin that handles the setup and teardown of the screen with
+[`OnEnter`](https://docs.rs/bevy/latest/bevy/prelude/struct.OnEnter.html) and [`OnExit`](https://docs.rs/bevy/latest/bevy/prelude/struct.OnExit.html):
 
 ```rust
-// game_over.rs
+// victory.rs
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Victory), show_victory_screen);
+    app.add_systems(OnEnter(Screen::Victory), spawn_victory_screen);
     app.add_systems(OnExit(Screen::Victory), reset_highscore);
 }
 
-fn show_victory_screen(mut commands: Commands) {
-    commands.
-        .ui_root()
-        .insert((Name::new("Victory screen"), StateScoped(Screen::Victory)))
-        .with_children(|parent| {
-            // Spawn UI elements.
-        });
+fn spawn_victory_screen(mut commands: Commands) {
+    commands.spawn((
+        widget::ui_root("Victory Screen"),
+        // Set this entity to despawn when exiting the victory screen.
+        StateScoped(Screen::Victory),
+        children![
+            // UI elements.
+        ],
+    ));
 }
 
 fn reset_highscore(mut highscore: ResMut<Highscore>) {
@@ -130,13 +128,25 @@ fn reset_highscore(mut highscore: ResMut<Highscore>) {
 }
 ```
 
+Transition between screens by setting the [`NextState<Screen>`](https://docs.rs/bevy/latest/bevy/prelude/enum.NextState.html) resource:
+
+```rust
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(Update, enter_title_screen.run_if(input_just_pressed(KeyCode::Escape)));
+}
+
+fn enter_title_screen(mut next_state: ResMut<NextState<Screen>>) {
+    next_state.set(Screen::Title);
+}
+```
+
 ### Reasoning
 
-"Screen" is not meant as a physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the credits screen, the victory screen, etc.
+"Screen" is not meant as the physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the credits screen, the victory screen, etc.
 These screens usually correspond to different logical states of your game that have different systems running.
 
-By using dedicated `State`s for each screen, you can easily manage systems and entities that are only relevant for a certain screen.
-This allows you to flexibly transition between screens whenever your game logic requires it.
+By using a dedicated `State` type for your screens, you can easily manage systems and entities that are only relevant for a specific screen and flexibly transition between
+them whenever your game logic requires it.
 
 ## Bundle Functions
 
