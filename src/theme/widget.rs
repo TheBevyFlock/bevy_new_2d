@@ -4,8 +4,7 @@ use bevy::{prelude::*, ui::Val::*};
 
 use crate::theme::{interaction::InteractionPalette, palette::*};
 
-/// Spawn a root node that covers the full screen
-/// and centers its content horizontally and vertically.
+/// A root UI node that fills the window and centers its content.
 pub fn ui_root() -> impl Bundle {
     (
         Name::new("UI Root"),
@@ -22,7 +21,9 @@ pub fn ui_root() -> impl Bundle {
     )
 }
 
-/// Spawn a simple button with text.
+/// A simple button with text.
+///
+/// Add a [`Pointer<Released>`] observer to the button to make it do something on click.
 pub fn button(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Button"),
@@ -50,7 +51,7 @@ pub fn button(text: impl Into<String>) -> impl Bundle {
     )
 }
 
-/// Spawn a simple header label. Bigger than [`label`].
+/// A simple header label. Bigger than [`label`].
 pub fn header(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Header"),
@@ -60,7 +61,7 @@ pub fn header(text: impl Into<String>) -> impl Bundle {
     )
 }
 
-/// Spawn a simple text label.
+/// A simple text label.
 pub fn label(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Label"),
