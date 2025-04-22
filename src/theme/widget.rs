@@ -1,13 +1,15 @@
 //! Helper functions for creating common widgets.
 
+use std::borrow::Cow;
+
 use bevy::{prelude::*, ui::Val::*};
 
 use crate::theme::{interaction::InteractionPalette, palette::*};
 
 /// A root UI node that fills the window and centers its content.
-pub fn ui_root() -> impl Bundle {
+pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
     (
-        Name::new("UI Root"),
+        Name::new(name),
         Node {
             position_type: PositionType::Absolute,
             width: Percent(100.0),

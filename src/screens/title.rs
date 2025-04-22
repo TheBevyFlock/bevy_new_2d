@@ -10,7 +10,7 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_title_screen(mut commands: Commands) {
     commands
-        .spawn((widget::ui_root(), StateScoped(Screen::Title)))
+        .spawn((widget::ui_root("Title Screen"), StateScoped(Screen::Title)))
         .with_children(|parent| {
             parent
                 .spawn(widget::button("Play"))
