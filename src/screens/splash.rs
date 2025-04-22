@@ -49,8 +49,8 @@ const SPLASH_DURATION_SECS: f32 = 1.8;
 const SPLASH_FADE_DURATION_SECS: f32 = 0.6;
 
 fn spawn_splash_screen(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.ui_root().insert((
-        Name::new("Splash screen"),
+    commands.spawn((
+        widget::ui_root(),
         BackgroundColor(SPLASH_BACKGROUND_COLOR),
         StateScoped(Screen::Splash),
         children![(
