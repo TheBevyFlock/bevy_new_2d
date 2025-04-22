@@ -202,8 +202,8 @@ This approach comes with a few limitations, however:
 - **No dependency injection:** If you want to use data from the world when creating a bundle, you have to pass it as an argument (e.g. `&AssetServer`)
   all the way down the entity hierarchy to the particular bundle function that needs it.
 - **No replacing components:** If you want to extend a bundle function by _replacing_ one of its components (e.g. to modify its `Node::width`),
-  you have to add an argument to the function to explicitly allow for it, or remove `Node` from the returned bundle, or use `Commands` access for `insert`, like
-  `commands.spawn(foo()).insert(Replacement)`, which is not compatible with `children![]`-style composition.
+  you have to add an argument to the function to explicitly allow for it, or remove the component from the original bundle, or use `Commands` to access `insert` (like
+  `commands.spawn(foo()).insert(Replacement)`), which is not compatible with `children![]`-style composition.
 - **No observers:** If you want an entity template to include an observer, you can't add it in the bundle function itself.
   Instead, the calling code must have access to `Commands` and do something like `commands.spawn(button()).observe(on_click)`, which is not compatible with
   `children![]`-style composition.
