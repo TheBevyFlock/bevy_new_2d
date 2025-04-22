@@ -9,19 +9,16 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_title_screen(mut commands: Commands) {
-    commands
-        .spawn((widget::ui_root("Title Screen"), StateScoped(Screen::Title)))
-        .with_children(|parent| {
-            parent
-                .spawn(widget::button("Play"))
-                .observe(enter_gameplay_screen);
-            parent
-                .spawn(widget::button("Credits"))
-                .observe(enter_credits_screen);
-
+    commands.spawn((
+        widget::ui_root("Title Screen"),
+        StateScoped(Screen::Title),
+        children![
+            widget::button("Play", enter_gameplay_screen),
+            widget::button("Credits", enter_credits_screen),
             #[cfg(not(target_family = "wasm"))]
-            parent.spawn(widget::button("Exit")).observe(exit_app);
-        });
+            widget::button("Exit", exit_app),
+        ],
+    ));
 }
 
 fn enter_gameplay_screen(

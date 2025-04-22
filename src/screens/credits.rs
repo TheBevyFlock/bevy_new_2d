@@ -14,22 +14,17 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_credits_screen(mut commands: Commands) {
-    commands
-        .spawn((
-            widget::ui_root("Credits Screen"),
-            StateScoped(Screen::Credits),
-            children![
-                widget::header("Created by"),
-                created_by(),
-                widget::header("Assets"),
-                assets(),
-            ],
-        ))
-        .with_children(|parent| {
-            parent
-                .spawn(widget::button("Back"))
-                .observe(enter_title_screen);
-        });
+    commands.spawn((
+        widget::ui_root("Credits Screen"),
+        StateScoped(Screen::Credits),
+        children![
+            widget::header("Created by"),
+            created_by(),
+            widget::header("Assets"),
+            assets(),
+            widget::button("Back", enter_title_screen),
+        ],
+    ));
 }
 
 fn created_by() -> impl Bundle {
