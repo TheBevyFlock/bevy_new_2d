@@ -79,7 +79,7 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
     )
 }
 
-fn enter_title_screen(_: Trigger<Pointer<Released>>, mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
 }
 

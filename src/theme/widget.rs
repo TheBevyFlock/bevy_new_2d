@@ -25,7 +25,7 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
 
 /// A simple button with text.
 ///
-/// Add a [`Pointer<Released>`] observer to the button to make it do something on click.
+/// Add a [`Pointer<Click>`] observer to the button to make it do something on click.
 pub fn button(text: impl Into<String>) -> impl Bundle {
     (
         Name::new("Button"),

@@ -24,18 +24,15 @@ fn spawn_title_screen(mut commands: Commands) {
         });
 }
 
-fn enter_gameplay_screen(
-    _: Trigger<Pointer<Released>>,
-    mut next_screen: ResMut<NextState<Screen>>,
-) {
+fn enter_gameplay_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Gameplay);
 }
 
-fn enter_credits_screen(_: Trigger<Pointer<Released>>, mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_credits_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Credits);
 }
 
 #[cfg(not(target_family = "wasm"))]
-fn exit_app(_: Trigger<Pointer<Released>>, mut app_exit: EventWriter<AppExit>) {
+fn exit_app(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
     app_exit.write(AppExit::Success);
 }
