@@ -82,13 +82,14 @@ pub fn button<E: Event, B: Bundle, M, I: IntoObserverSystem<E, B, M>>(
 }
 
 /// A [`SpawnableList`] that spawns an [`Observer`] as a child entity.
-struct SpawnObserver(pub Observer);
+struct SpawnObserver(Observer);
 
 impl SpawnableList<ChildOf> for SpawnObserver {
     fn spawn(self, world: &mut World, entity: Entity) {
         world.spawn(self.0.with_entity(entity));
     }
 
+    // Size hint is not important for this simple use case, so return 0.
     fn size_hint(&self) -> usize {
         0
     }
