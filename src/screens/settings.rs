@@ -2,9 +2,13 @@
 //! We can add all manner of settings and accessibility options here.
 //! For 3D, we'd also place the camera sensitivity and FOV here.
 
-use std::borrow::Cow;
+use std::{borrow::Cow, marker::PhantomData};
 
-use bevy::{ecs::spawn::SpawnIter, prelude::*, ui::Val::*};
+use bevy::{
+    ecs::{spawn::SpawnIter, system::IntoObserverSystem},
+    prelude::*,
+    ui::Val::*,
+};
 
 use crate::{screens::Screen, theme::prelude::*};
 
@@ -13,12 +17,19 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_settings_screen(mut commands: Commands) {
+    let volume_settings = PercentageSettings {
+        name: "Music Volume".into(),
+        value: get_volume,
+        on_minus: lower_volume,
+        on_plus: raise_volume,
+        _marker: PhantomData,
+    };
     commands.spawn((
         widget::ui_root("Settings Screen"),
         StateScoped(Screen::Settings),
         children![
             widget::header("Settings"),
-            settings("Music Volume"),
+            settings(volume_settings),
             widget::button("Back", enter_title_screen),
         ],
     ));
@@ -36,12 +47,33 @@ fn assets() -> impl Bundle {
     ])
 }
 
-struct PercentageSettings {
+struct PercentageSettings<E, B1, B2, M1, M2, I1, I2, M3, V>
+where
+    E: Event,
+    B1: Bundle,
+    B2: Bundle,
+    I1: IntoObserverSystem<E, B1, M1> + Sync,
+    I2: IntoObserverSystem<E, B2, M2> + Sync,
+    V: IntoSystem<(), f32, M3> + Sync,
+{
     name: String,
-    value: f32,
+    value: V,
+    on_minus: I1,
+    on_plus: I2,
+    _marker: PhantomData<(E, B1, B2, M1, M2, M3)>,
 }
 
-fn settings(name: impl Into<String>) -> impl Bundle {
+fn settings<E, B1, B2, M1, M2, I1, I2, M3, V>(
+    config: PercentageSettings<E, B1, B2, M1, M2, I1, I2, M3, V>,
+) -> impl Bundle
+where
+    E: Event,
+    B1: Bundle,
+    B2: Bundle,
+    I1: IntoObserverSystem<E, B1, M1> + Sync,
+    I2: IntoObserverSystem<E, B2, M2> + Sync,
+    V: IntoSystem<(), f32, M3> + Sync,
+{
     (
         Name::new("Settings"),
         Node {
@@ -53,7 +85,7 @@ fn settings(name: impl Into<String>) -> impl Bundle {
         },
         children![
             (
-                widget::label(format!("{}:", name.into())),
+                widget::label(format!("{}:", config.name)),
                 Node {
                     justify_self: JustifySelf::End,
                     ..default()
@@ -65,7 +97,7 @@ fn settings(name: impl Into<String>) -> impl Bundle {
                     ..default()
                 },
                 children![
-                    widget::button_small("-", enter_title_screen),
+                    widget::button_small("-", config.on_minus),
                     (
                         Node {
                             padding: UiRect::horizontal(Val::Px(10.0)),
@@ -74,7 +106,7 @@ fn settings(name: impl Into<String>) -> impl Bundle {
                         },
                         children![widget::label("0")],
                     ),
-                    widget::button_small("+", enter_title_screen),
+                    widget::button_small("+", config.on_plus),
                 ],
             ),
         ],
@@ -111,4 +143,16 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
 
 fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Title);
+}
+
+fn lower_volume(_: Trigger<Pointer<Click>>) {
+    println!("Lower volume");
+}
+
+fn raise_volume(_: Trigger<Pointer<Click>>) {
+    println!("Raise volume");
+}
+
+fn get_volume() -> f32 {
+    0.0
 }
