@@ -55,15 +55,9 @@ pub struct Music;
 #[derive(Component, Debug, Default)]
 pub struct SoundEffect;
 
-#[derive(Resource, Debug, Reflect, Deref, DerefMut)]
+#[derive(Resource, Debug, Reflect, Deref, DerefMut, Default)]
 #[reflect(Resource)]
-pub struct GlobalMusicVolumeScale(pub f32);
-impl Default for GlobalMusicVolumeScale {
-    fn default() -> Self {
-        Self(1.0)
-    }
-}
-
+pub struct GlobalMusicVolumeScale(pub Volume);
 #[derive(Component, Debug, Reflect, Deref, DerefMut, Default)]
 #[reflect(Component)]
 pub struct UnscaledVolume(pub Volume);
@@ -74,11 +68,8 @@ fn scale_music(
 ) {
     for (mut sink, mut unscaled_volume) in &mut sinks {
         let sink = sink.bypass_change_detection();
-        println!("Updating unscaled music volume to: {:?}", sink.volume());
         unscaled_volume.0 = sink.volume();
-        sink.set_volume(Volume::Linear(
-            music_volume_scale.0 * unscaled_volume.0.to_linear(),
-        ));
+        sink.set_volume(music_volume_scale.0 * unscaled_volume.0);
     }
 }
 
@@ -88,10 +79,6 @@ fn scale_music_volume(
 ) {
     for (mut sink, unscaled_volume) in &mut sinks {
         let sink = sink.bypass_change_detection();
-        println!(
-            "Scaling music volume to: {:?} * {:?}",
-            music_volume_factor.0, unscaled_volume.0
-        );
-        sink.set_volume(unscaled_volume.0 * Volume::Linear(music_volume_factor.0));
+        sink.set_volume(music_volume_factor.0 * unscaled_volume.0);
     }
 }

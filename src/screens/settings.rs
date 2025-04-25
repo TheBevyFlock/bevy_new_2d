@@ -18,6 +18,9 @@ use crate::{
     theme::prelude::*,
 };
 
+const MIN_VOLUME: f32 = 0.0;
+const MAX_VOLUME: f32 = 3.0;
+
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<DebugMusic>();
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
@@ -163,18 +166,21 @@ fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextSt
 }
 
 fn lower_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalMusicVolumeScale>) {
-    music_factor.0 = (music_factor.0 - 0.1).max(0.0);
+    let new_factor = music_factor.0.to_linear() - 0.1;
+    music_factor.0 = Volume::Linear(new_factor.max(MIN_VOLUME));
 }
 
 fn raise_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalMusicVolumeScale>) {
-    music_factor.0 = (music_factor.0 + 0.1).min(2.0);
+    let new_factor = music_factor.0.to_linear() + 0.1;
+    music_factor.0 = Volume::Linear(new_factor.min(MAX_VOLUME));
 }
 
 fn update_volume_label(
     mut label: Single<&mut Text, With<MusicVolumeLabel>>,
     music_factor: Res<GlobalMusicVolumeScale>,
 ) {
-    let percent = (music_factor.0 * 100.0).round() as u8;
+    let factor = music_factor.0.to_linear();
+    let percent = (factor * 100.0).round();
     let text = format!("{}%", percent);
     label.0 = text;
 }
