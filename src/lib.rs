@@ -60,6 +60,7 @@ impl Plugin for AppPlugin {
             dev_tools::plugin,
             screens::plugin,
             theme::plugin,
+            audio::plugin,
         ));
     }
 }

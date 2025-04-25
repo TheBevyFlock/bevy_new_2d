@@ -5,24 +5,38 @@
 use std::{borrow::Cow, marker::PhantomData};
 
 use bevy::{
+    audio::Volume,
     ecs::{spawn::SpawnIter, system::IntoObserverSystem},
     prelude::*,
     ui::Val::*,
 };
 
-use crate::{screens::Screen, theme::prelude::*};
+use crate::{
+    asset_tracking::LoadResource,
+    audio::{Music, MusicVolumeFactor},
+    screens::Screen,
+    theme::prelude::*,
+};
 
 pub(super) fn plugin(app: &mut App) {
+    app.load_resource::<DebugMusic>();
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
+    app.add_systems(Update, debug_print_volume);
+    app.add_systems(
+        Update,
+        update_volume_label.run_if(in_state(Screen::Settings)),
+    );
+    app.add_systems(OnEnter(Screen::Settings), start_debug_music);
+    app.add_systems(OnExit(Screen::Settings), stop_debug_music);
 }
 
 #[derive(Component)]
-struct Volume;
+struct MusicVolumeLabel;
 
 fn spawn_settings_screen(mut commands: Commands) {
     let volume_settings = PercentageSettings {
         name: "Music Volume".into(),
-        value_marker: Volume,
+        value_marker: MusicVolumeLabel,
         on_minus: lower_volume,
         on_plus: raise_volume,
         _marker: PhantomData,
@@ -148,14 +162,72 @@ fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextSt
     next_screen.set(Screen::Title);
 }
 
-fn lower_volume(_: Trigger<Pointer<Click>>) {
-    println!("Lower volume");
+fn lower_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<MusicVolumeFactor>) {
+    let new_factor = music_factor.0 - Volume::Linear(0.1);
+    if new_factor < Volume::Linear(0.0) {
+        music_factor.0 = Volume::Linear(0.0);
+    } else {
+        music_factor.0 = new_factor;
+    }
 }
 
-fn raise_volume(_: Trigger<Pointer<Click>>) {
-    println!("Raise volume");
+fn raise_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<MusicVolumeFactor>) {
+    let new_factor = music_factor.0 + Volume::Linear(0.1);
+    if new_factor > Volume::Linear(2.0) {
+        music_factor.0 = Volume::Linear(2.0);
+    } else {
+        music_factor.0 = new_factor;
+    }
 }
 
-fn get_volume() -> f32 {
-    0.0
+fn update_volume_label(
+    mut label: Single<&mut Text, With<MusicVolumeLabel>>,
+    music_factor: Res<MusicVolumeFactor>,
+) {
+    let factor = music_factor.0.to_linear();
+    let percent = (factor * 100.0).round() as u8;
+    let text = format!("{}%", percent);
+    label.0 = text;
+}
+
+fn debug_print_volume(music: Query<&AudioSink, With<Music>>) {
+    for sink in &music {
+        println!("Music volume: {:?}", sink.volume());
+    }
+}
+
+fn start_debug_music(mut commands: Commands, mut music: ResMut<DebugMusic>) {
+    music.entity = Some(
+        commands
+            .spawn((
+                AudioPlayer(music.music.clone()),
+                PlaybackSettings::LOOP,
+                Music,
+            ))
+            .id(),
+    );
+}
+
+fn stop_debug_music(mut commands: Commands, mut music: ResMut<DebugMusic>) {
+    if let Some(entity) = music.entity.take() {
+        commands.entity(entity).despawn();
+    }
+}
+
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+struct DebugMusic {
+    #[dependency]
+    music: Handle<AudioSource>,
+    entity: Option<Entity>,
+}
+
+impl FromWorld for DebugMusic {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            music: assets.load("audio/music/Monkeys Spinning Monkeys.ogg"),
+            entity: None,
+        }
+    }
 }
