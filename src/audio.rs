@@ -7,8 +7,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         PostUpdate,
         (
-            scale_music,
-            scale_music_volume.run_if(resource_changed::<GlobalMusicVolumeScale>),
+            scale_mutated_music,
+            update_music_for_new_global_scale.run_if(resource_changed::<GlobalMusicVolumeScale>),
         )
             .chain(),
     );
@@ -58,7 +58,7 @@ pub struct GlobalMusicVolumeScale(pub Volume);
 #[reflect(Component)]
 pub struct UnscaledVolume(pub Volume);
 
-fn scale_music(
+fn scale_mutated_music(
     mut sinks: Query<(Mut<AudioSink>, &mut UnscaledVolume), (Changed<AudioSink>, With<Music>)>,
     music_volume_scale: Res<GlobalMusicVolumeScale>,
 ) {
@@ -69,7 +69,7 @@ fn scale_music(
     }
 }
 
-fn scale_music_volume(
+fn update_music_for_new_global_scale(
     music_volume_factor: Res<GlobalMusicVolumeScale>,
     mut sinks: Query<(&mut AudioSink, &UnscaledVolume), With<Music>>,
 ) {

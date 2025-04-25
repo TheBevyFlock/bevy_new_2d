@@ -15,7 +15,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
     app.add_systems(
         Update,
-        update_volume_label.run_if(in_state(Screen::Settings)),
+        update_music_volume_label.run_if(in_state(Screen::Settings)),
     );
 }
 
@@ -23,11 +23,11 @@ pub(super) fn plugin(app: &mut App) {
 struct MusicVolumeLabel;
 
 fn spawn_settings_screen(mut commands: Commands) {
-    let volume_settings = PercentageSettings {
+    let music_settings = PercentageSettings {
         name: "Music Volume".into(),
         value_marker: MusicVolumeLabel,
-        on_minus: lower_volume,
-        on_plus: raise_volume,
+        on_minus: lower_music_volume,
+        on_plus: raise_music_volume,
         _marker: PhantomData,
     };
     commands.spawn((
@@ -35,7 +35,7 @@ fn spawn_settings_screen(mut commands: Commands) {
         StateScoped(Screen::Settings),
         children![
             widget::header("Settings"),
-            settings(volume_settings),
+            settings(music_settings),
             widget::button("Back", enter_title_screen),
         ],
     ));
@@ -107,21 +107,23 @@ where
     )
 }
 
-fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Title);
-}
-
-fn lower_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalMusicVolumeScale>) {
+fn lower_music_volume(
+    _: Trigger<Pointer<Click>>,
+    mut music_factor: ResMut<GlobalMusicVolumeScale>,
+) {
     let new_factor = music_factor.0.to_linear() - 0.1;
     music_factor.0 = Volume::Linear(new_factor.max(MIN_VOLUME));
 }
 
-fn raise_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalMusicVolumeScale>) {
+fn raise_music_volume(
+    _: Trigger<Pointer<Click>>,
+    mut music_factor: ResMut<GlobalMusicVolumeScale>,
+) {
     let new_factor = music_factor.0.to_linear() + 0.1;
     music_factor.0 = Volume::Linear(new_factor.min(MAX_VOLUME));
 }
 
-fn update_volume_label(
+fn update_music_volume_label(
     mut label: Single<&mut Text, With<MusicVolumeLabel>>,
     music_factor: Res<GlobalMusicVolumeScale>,
 ) {
@@ -129,4 +131,8 @@ fn update_volume_label(
     let percent = (factor * 100.0).round();
     let text = format!("{}%", percent);
     label.0 = text;
+}
+
+fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Title);
 }
