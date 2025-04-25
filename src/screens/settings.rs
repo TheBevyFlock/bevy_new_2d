@@ -16,10 +16,13 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
 }
 
+#[derive(Component)]
+struct Volume;
+
 fn spawn_settings_screen(mut commands: Commands) {
     let volume_settings = PercentageSettings {
         name: "Music Volume".into(),
-        value: get_volume,
+        value_marker: Volume,
         on_minus: lower_volume,
         on_plus: raise_volume,
         _marker: PhantomData,
@@ -47,24 +50,24 @@ fn assets() -> impl Bundle {
     ])
 }
 
-struct PercentageSettings<E, B1, B2, M1, M2, I1, I2, M3, V>
+struct PercentageSettings<E, B1, B2, M1, M2, I1, I2, C>
 where
     E: Event,
     B1: Bundle,
     B2: Bundle,
     I1: IntoObserverSystem<E, B1, M1> + Sync,
     I2: IntoObserverSystem<E, B2, M2> + Sync,
-    V: IntoSystem<(), f32, M3> + Sync,
+    C: Component,
 {
     name: String,
-    value: V,
+    value_marker: C,
     on_minus: I1,
     on_plus: I2,
-    _marker: PhantomData<(E, B1, B2, M1, M2, M3)>,
+    _marker: PhantomData<(E, B1, B2, M1, M2)>,
 }
 
-fn settings<E, B1, B2, M1, M2, I1, I2, M3, V>(
-    config: PercentageSettings<E, B1, B2, M1, M2, I1, I2, M3, V>,
+fn settings<E, B1, B2, M1, M2, I1, I2, C>(
+    config: PercentageSettings<E, B1, B2, M1, M2, I1, I2, C>,
 ) -> impl Bundle
 where
     E: Event,
@@ -72,7 +75,7 @@ where
     B2: Bundle,
     I1: IntoObserverSystem<E, B1, M1> + Sync,
     I2: IntoObserverSystem<E, B2, M2> + Sync,
-    V: IntoSystem<(), f32, M3> + Sync,
+    C: Component,
 {
     (
         Name::new("Settings"),
@@ -104,7 +107,7 @@ where
                             justify_content: JustifyContent::Center,
                             ..default()
                         },
-                        children![widget::label("0")],
+                        children![(widget::label("0"), config.value_marker)],
                     ),
                     widget::button_small("+", config.on_plus),
                 ],
