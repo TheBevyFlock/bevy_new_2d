@@ -13,7 +13,7 @@ fn spawn_title_screen(mut commands: Commands) {
         widget::ui_root("Title Screen"),
         StateScoped(Screen::Title),
         children![
-            widget::button("Play", enter_gameplay_screen),
+            widget::button("Play", enter_loading_screen),
             widget::button("Credits", enter_credits_screen),
             #[cfg(not(target_family = "wasm"))]
             widget::button("Exit", exit_app),
@@ -21,8 +21,8 @@ fn spawn_title_screen(mut commands: Commands) {
     ));
 }
 
-fn enter_gameplay_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Gameplay);
+fn enter_loading_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Loading);
 }
 
 fn enter_credits_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
