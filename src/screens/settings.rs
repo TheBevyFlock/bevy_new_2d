@@ -13,7 +13,7 @@ use bevy::{
 
 use crate::{
     asset_tracking::LoadResource,
-    audio::{Music, MusicVolumeFactor},
+    audio::{GlobalMusicVolumeScale, Music},
     screens::Screen,
     theme::prelude::*,
 };
@@ -162,30 +162,19 @@ fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextSt
     next_screen.set(Screen::Title);
 }
 
-fn lower_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<MusicVolumeFactor>) {
-    let new_factor = music_factor.0 - Volume::Linear(0.1);
-    if new_factor < Volume::Linear(0.0) {
-        music_factor.0 = Volume::Linear(0.0);
-    } else {
-        music_factor.0 = new_factor;
-    }
+fn lower_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalMusicVolumeScale>) {
+    music_factor.0 = (music_factor.0 - 0.1).max(0.0);
 }
 
-fn raise_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<MusicVolumeFactor>) {
-    let new_factor = music_factor.0 + Volume::Linear(0.1);
-    if new_factor > Volume::Linear(2.0) {
-        music_factor.0 = Volume::Linear(2.0);
-    } else {
-        music_factor.0 = new_factor;
-    }
+fn raise_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalMusicVolumeScale>) {
+    music_factor.0 = (music_factor.0 + 0.1).min(2.0);
 }
 
 fn update_volume_label(
     mut label: Single<&mut Text, With<MusicVolumeLabel>>,
-    music_factor: Res<MusicVolumeFactor>,
+    music_factor: Res<GlobalMusicVolumeScale>,
 ) {
-    let factor = music_factor.0.to_linear();
-    let percent = (factor * 100.0).round() as u8;
+    let percent = (music_factor.0 * 100.0).round() as u8;
     let text = format!("{}%", percent);
     label.0 = text;
 }

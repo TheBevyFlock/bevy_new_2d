@@ -6,13 +6,13 @@ use bevy::prelude::*;
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.init_resource::<MusicVolumeFactor>();
-    app.register_type::<MusicVolumeFactor>();
+    app.init_resource::<GlobalMusicVolumeScale>();
+    app.register_type::<GlobalMusicVolumeScale>();
     app.add_systems(
         PostUpdate,
         (
-            update_unscaled_music_volume,
-            scale_music_volume.run_if(resource_changed::<MusicVolumeFactor>),
+            scale_music,
+            scale_music_volume.run_if(resource_changed::<GlobalMusicVolumeScale>),
         )
             .chain(),
     );
@@ -35,7 +35,6 @@ pub(super) fn plugin(app: &mut App) {
 /// ```
 #[derive(Component, Debug, Default)]
 #[require(UnscaledVolume)]
-#[component(on_add = init_unscaled_music_volume)]
 pub struct Music;
 
 /// An organizational marker component that should be added to a spawned [`AudioPlayer`] if it is in the
@@ -56,43 +55,43 @@ pub struct Music;
 #[derive(Component, Debug, Default)]
 pub struct SoundEffect;
 
-#[derive(Resource, Debug, Reflect, Deref, DerefMut, Default)]
+#[derive(Resource, Debug, Reflect, Deref, DerefMut)]
 #[reflect(Resource)]
-pub struct MusicVolumeFactor(pub Volume);
+pub struct GlobalMusicVolumeScale(pub f32);
+impl Default for GlobalMusicVolumeScale {
+    fn default() -> Self {
+        Self(1.0)
+    }
+}
 
 #[derive(Component, Debug, Reflect, Deref, DerefMut, Default)]
 #[reflect(Component)]
 pub struct UnscaledVolume(pub Volume);
 
-fn update_unscaled_music_volume(
-    mut sinks: Query<(&AudioSink, &mut UnscaledVolume), (Changed<AudioSink>, With<Music>)>,
+fn scale_music(
+    mut sinks: Query<(Mut<AudioSink>, &mut UnscaledVolume), (Changed<AudioSink>, With<Music>)>,
+    music_volume_scale: Res<GlobalMusicVolumeScale>,
 ) {
-    for (sink, mut unscaled_volume) in &mut sinks {
+    for (mut sink, mut unscaled_volume) in &mut sinks {
+        let sink = sink.bypass_change_detection();
+        println!("Updating unscaled music volume to: {:?}", sink.volume());
         unscaled_volume.0 = sink.volume();
+        sink.set_volume(Volume::Linear(
+            music_volume_scale.0 * unscaled_volume.0.to_linear(),
+        ));
     }
-}
-
-fn init_unscaled_music_volume(mut world: DeferredWorld, ctx: HookContext) {
-    let entity = ctx.entity;
-    let Some(volume) = world.get::<AudioSink>(entity).map(|sink| sink.volume()) else {
-        error!("Music marker was added to an entity without an AudioSink");
-        return;
-    };
-    {
-        // UnscaledMusicVolume is required, so we can safely unwrap
-        let mut unscaled_volume = world.get_mut::<UnscaledVolume>(entity).unwrap();
-        unscaled_volume.0 = volume;
-    }
-    let scale = world.resource::<MusicVolumeFactor>().0;
-    let mut sink = world.get_mut::<AudioSink>(entity).unwrap();
-    sink.set_volume(scale * volume);
 }
 
 fn scale_music_volume(
-    music_volume_factor: Res<MusicVolumeFactor>,
+    music_volume_factor: Res<GlobalMusicVolumeScale>,
     mut sinks: Query<(&mut AudioSink, &UnscaledVolume), With<Music>>,
 ) {
     for (mut sink, unscaled_volume) in &mut sinks {
-        sink.set_volume(music_volume_factor.0 * unscaled_volume.0);
+        let sink = sink.bypass_change_detection();
+        println!(
+            "Scaling music volume to: {:?} * {:?}",
+            music_volume_factor.0, unscaled_volume.0
+        );
+        sink.set_volume(unscaled_volume.0 * Volume::Linear(music_volume_factor.0));
     }
 }
