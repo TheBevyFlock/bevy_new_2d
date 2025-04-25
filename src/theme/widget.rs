@@ -88,3 +88,45 @@ where
         })),
     )
 }
+
+/// A simple button with text and an action defined as an [`Observer`].
+pub fn button_small<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M> + Sync,
+{
+    let text = text.into();
+    (
+        Name::new("Button"),
+        Node::default(),
+        Children::spawn(SpawnWith(|parent: &mut RelatedSpawner<ChildOf>| {
+            parent
+                .spawn((
+                    Name::new("Button Inner"),
+                    Button,
+                    Node {
+                        width: Px(30.0),
+                        height: Px(30.0),
+                        align_items: AlignItems::Center,
+                        justify_content: JustifyContent::Center,
+                        ..default()
+                    },
+                    BorderRadius::ZERO,
+                    BackgroundColor(BUTTON_BACKGROUND),
+                    InteractionPalette {
+                        none: BUTTON_BACKGROUND,
+                        hovered: BUTTON_HOVERED_BACKGROUND,
+                        pressed: BUTTON_PRESSED_BACKGROUND,
+                    },
+                    children![(
+                        Name::new("Button Text"),
+                        Text(text),
+                        TextFont::from_font_size(40.0),
+                        TextColor(BUTTON_TEXT),
+                    )],
+                ))
+                .observe(action);
+        })),
+    )
+}
