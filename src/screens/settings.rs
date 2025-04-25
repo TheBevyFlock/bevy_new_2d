@@ -6,26 +6,17 @@ use std::marker::PhantomData;
 
 use bevy::{audio::Volume, ecs::system::IntoObserverSystem, prelude::*, ui::Val::*};
 
-use crate::{
-    asset_tracking::LoadResource,
-    audio::{GlobalMusicVolumeScale, Music},
-    screens::Screen,
-    theme::prelude::*,
-};
+use crate::{audio::GlobalMusicVolumeScale, screens::Screen, theme::prelude::*};
 
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
 pub(super) fn plugin(app: &mut App) {
-    app.load_resource::<DebugMusic>();
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
-    app.add_systems(Update, debug_print_volume);
     app.add_systems(
         Update,
         update_volume_label.run_if(in_state(Screen::Settings)),
     );
-    app.add_systems(OnEnter(Screen::Settings), start_debug_music);
-    app.add_systems(OnExit(Screen::Settings), stop_debug_music);
 }
 
 #[derive(Component)]
@@ -138,46 +129,4 @@ fn update_volume_label(
     let percent = (factor * 100.0).round();
     let text = format!("{}%", percent);
     label.0 = text;
-}
-
-fn debug_print_volume(music: Query<&AudioSink, With<Music>>) {
-    for sink in &music {
-        println!("Music volume: {:?}", sink.volume());
-    }
-}
-
-fn start_debug_music(mut commands: Commands, mut music: ResMut<DebugMusic>) {
-    music.entity = Some(
-        commands
-            .spawn((
-                AudioPlayer(music.music.clone()),
-                PlaybackSettings::LOOP,
-                Music,
-            ))
-            .id(),
-    );
-}
-
-fn stop_debug_music(mut commands: Commands, mut music: ResMut<DebugMusic>) {
-    if let Some(entity) = music.entity.take() {
-        commands.entity(entity).despawn();
-    }
-}
-
-#[derive(Resource, Asset, Clone, Reflect)]
-#[reflect(Resource)]
-struct DebugMusic {
-    #[dependency]
-    music: Handle<AudioSource>,
-    entity: Option<Entity>,
-}
-
-impl FromWorld for DebugMusic {
-    fn from_world(world: &mut World) -> Self {
-        let assets = world.resource::<AssetServer>();
-        Self {
-            music: assets.load("audio/music/Monkeys Spinning Monkeys.ogg"),
-            entity: None,
-        }
-    }
 }
