@@ -2,14 +2,9 @@
 //! We can add all manner of settings and accessibility options here.
 //! For 3D, we'd also place the camera sensitivity and FOV here.
 
-use std::{borrow::Cow, marker::PhantomData};
+use std::marker::PhantomData;
 
-use bevy::{
-    audio::Volume,
-    ecs::{spawn::SpawnIter, system::IntoObserverSystem},
-    prelude::*,
-    ui::Val::*,
-};
+use bevy::{audio::Volume, ecs::system::IntoObserverSystem, prelude::*, ui::Val::*};
 
 use crate::{
     asset_tracking::LoadResource,
@@ -53,18 +48,6 @@ fn spawn_settings_screen(mut commands: Commands) {
             widget::button("Back", enter_title_screen),
         ],
     ));
-}
-
-fn assets() -> impl Bundle {
-    grid(vec![
-        ["Ducky sprite", "CC0 by Caz Creates Games"],
-        ["Button SFX", "CC0 by Jaszunio15"],
-        ["Music", "CC BY 3.0 by Kevin MacLeod"],
-        [
-            "Bevy logo",
-            "All rights reserved by the Bevy Foundation, permission granted for splash screen use when unmodified",
-        ],
-    ])
 }
 
 struct PercentageSettings<E, B1, B2, M1, M2, I1, I2, C>
@@ -130,34 +113,6 @@ where
                 ],
             ),
         ],
-    )
-}
-
-fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
-    (
-        Name::new("Grid"),
-        Node {
-            display: Display::Grid,
-            row_gap: Px(10.0),
-            column_gap: Px(30.0),
-            grid_template_columns: RepeatedGridTrack::px(2, 400.0),
-            ..default()
-        },
-        Children::spawn(SpawnIter(content.into_iter().flatten().enumerate().map(
-            |(i, text)| {
-                (
-                    widget::label(text),
-                    Node {
-                        justify_self: if i % 2 == 0 {
-                            JustifySelf::End
-                        } else {
-                            JustifySelf::Start
-                        },
-                        ..default()
-                    },
-                )
-            },
-        ))),
     )
 }
 
