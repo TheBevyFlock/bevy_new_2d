@@ -6,9 +6,6 @@ use bevy::{audio::Volume, prelude::*, ui::Val::*};
 
 use crate::{screens::Screen, theme::prelude::*};
 
-const MIN_VOLUME: f32 = 0.0;
-const MAX_VOLUME: f32 = 3.0;
-
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
 
@@ -70,6 +67,9 @@ fn volume_widget() -> impl Bundle {
         ],
     )
 }
+
+const MIN_VOLUME: f32 = 0.0;
+const MAX_VOLUME: f32 = 3.0;
 
 fn lower_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
     let new_factor = global_volume.volume.to_linear() - 0.1;
