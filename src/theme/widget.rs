@@ -106,7 +106,7 @@ where
     (
         Name::new("Button"),
         Node::default(),
-        Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
+        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
             parent
                 .spawn((
                     Name::new("Button Inner"),
