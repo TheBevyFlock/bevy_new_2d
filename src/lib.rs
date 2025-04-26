@@ -6,11 +6,7 @@ mod dev_tools;
 mod screens;
 mod theme;
 
-use bevy::{
-    asset::AssetMetaCheck,
-    audio::{AudioPlugin, Volume},
-    prelude::*,
-};
+use bevy::{asset::AssetMetaCheck, prelude::*};
 
 pub struct AppPlugin;
 
