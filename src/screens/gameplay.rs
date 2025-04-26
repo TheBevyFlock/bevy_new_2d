@@ -3,7 +3,9 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use crate::{
-    asset_tracking::LoadResource, audio::Music, demo::level::spawn_level as spawn_level_command,
+    asset_tracking::LoadResource,
+    audio::Music,
+    demo::{level::level, player::PlayerAssets},
     screens::Screen,
 };
 
@@ -22,8 +24,12 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn spawn_level(mut commands: Commands) {
-    commands.queue(spawn_level_command);
+fn spawn_level(
+    mut commands: Commands,
+    player_assets: Res<PlayerAssets>,
+    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+) {
+    commands.spawn(level(&player_assets, &mut texture_atlas_layouts));
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
