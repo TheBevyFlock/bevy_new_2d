@@ -27,7 +27,7 @@ fn spawn_settings_screen(mut commands: Commands) {
         children![
             widget::header("Settings"),
             (
-                Name::new("Settings"),
+                Name::new("Settings Grid"),
                 Node {
                     display: Display::Grid,
                     row_gap: Px(10.0),
