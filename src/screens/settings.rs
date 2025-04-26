@@ -52,7 +52,7 @@ fn spawn_settings_screen(mut commands: Commands) {
                             widget::button_small("-", lower_volume),
                             (
                                 Node {
-                                    padding: UiRect::horizontal(Val::Px(10.0)),
+                                    padding: UiRect::horizontal(Px(10.0)),
                                     justify_content: JustifyContent::Center,
                                     ..default()
                                 },
