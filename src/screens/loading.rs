@@ -10,7 +10,7 @@ pub(super) fn plugin(app: &mut App) {
 
     app.add_systems(
         Update,
-        continue_to_gameplay_screen.run_if(in_state(Screen::Loading).and(all_assets_loaded)),
+        enter_gameplay_screen.run_if(in_state(Screen::Loading).and(all_assets_loaded)),
     );
 }
 
@@ -22,7 +22,7 @@ fn spawn_loading_screen(mut commands: Commands) {
     ));
 }
 
-fn continue_to_gameplay_screen(mut next_screen: ResMut<NextState<Screen>>) {
+fn enter_gameplay_screen(mut next_screen: ResMut<NextState<Screen>>) {
     next_screen.set(Screen::Gameplay);
 }
 
