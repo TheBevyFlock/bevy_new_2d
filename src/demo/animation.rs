@@ -10,7 +10,7 @@ use std::time::Duration;
 
 use crate::{
     AppSet,
-    audio::SoundEffect,
+    audio::sound_effect,
     demo::{movement::MovementController, player::PlayerAssets},
 };
 
@@ -84,12 +84,8 @@ fn trigger_step_sound_effect(
             && (animation.frame == 2 || animation.frame == 5)
         {
             let rng = &mut rand::thread_rng();
-            let random_step = player_assets.steps.choose(rng).unwrap();
-            commands.spawn((
-                AudioPlayer(random_step.clone()),
-                PlaybackSettings::DESPAWN,
-                SoundEffect,
-            ));
+            let random_step = player_assets.steps.choose(rng).unwrap().clone();
+            commands.spawn(sound_effect(random_step));
         }
     }
 }

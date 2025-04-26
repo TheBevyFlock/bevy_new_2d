@@ -1,5 +1,5 @@
 mod asset_tracking;
-pub mod audio;
+mod audio;
 mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
