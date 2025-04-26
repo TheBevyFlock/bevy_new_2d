@@ -43,12 +43,6 @@ impl Plugin for AppPlugin {
                     }
                     .into(),
                     ..default()
-                })
-                .set(AudioPlugin {
-                    global_volume: GlobalVolume {
-                        volume: Volume::Linear(0.3),
-                    },
-                    ..default()
                 }),
         );
 
@@ -60,7 +54,6 @@ impl Plugin for AppPlugin {
             dev_tools::plugin,
             screens::plugin,
             theme::plugin,
-            audio::plugin,
         ));
     }
 }

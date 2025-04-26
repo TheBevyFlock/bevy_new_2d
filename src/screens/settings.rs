@@ -6,7 +6,7 @@ use std::marker::PhantomData;
 
 use bevy::{audio::Volume, ecs::system::IntoObserverSystem, prelude::*, ui::Val::*};
 
-use crate::{audio::GlobalMusicVolumeScale, screens::Screen, theme::prelude::*};
+use crate::{screens::Screen, theme::prelude::*};
 
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
@@ -98,7 +98,7 @@ where
                             justify_content: JustifyContent::Center,
                             ..default()
                         },
-                        children![(widget::label("0"), config.value_marker)],
+                        children![(widget::label(""), config.value_marker)],
                     ),
                     widget::button_small("+", config.on_plus),
                 ],
@@ -107,27 +107,21 @@ where
     )
 }
 
-fn lower_music_volume(
-    _: Trigger<Pointer<Click>>,
-    mut music_factor: ResMut<GlobalMusicVolumeScale>,
-) {
-    let new_factor = music_factor.0.to_linear() - 0.1;
-    music_factor.0 = Volume::Linear(new_factor.max(MIN_VOLUME));
+fn lower_music_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalVolume>) {
+    let new_factor = music_factor.volume.to_linear() - 0.1;
+    music_factor.volume = Volume::Linear(new_factor.max(MIN_VOLUME));
 }
 
-fn raise_music_volume(
-    _: Trigger<Pointer<Click>>,
-    mut music_factor: ResMut<GlobalMusicVolumeScale>,
-) {
-    let new_factor = music_factor.0.to_linear() + 0.1;
-    music_factor.0 = Volume::Linear(new_factor.min(MAX_VOLUME));
+fn raise_music_volume(_: Trigger<Pointer<Click>>, mut music_factor: ResMut<GlobalVolume>) {
+    let new_factor = music_factor.volume.to_linear() + 0.1;
+    music_factor.volume = Volume::Linear(new_factor.min(MAX_VOLUME));
 }
 
 fn update_music_volume_label(
     mut label: Single<&mut Text, With<MusicVolumeLabel>>,
-    music_factor: Res<GlobalMusicVolumeScale>,
+    music_factor: Res<GlobalVolume>,
 ) {
-    let factor = music_factor.0.to_linear();
+    let factor = music_factor.volume.to_linear();
     let percent = (factor * 100.0).round();
     let text = format!("{}%", percent);
     label.0 = text;
