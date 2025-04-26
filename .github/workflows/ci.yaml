@@ -64,7 +64,7 @@ jobs:
 
       - name: Build for Wasm
         run: |
-          bevy build web
+          bevy build --locked --workspace --all-targets web
 
   # Run clippy lints.
   clippy:
