@@ -75,7 +75,7 @@ pub fn button_small<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bund
 where
     E: Event,
     B: Bundle,
-    I: IntoObserverSystem<E, B, M> + Sync,
+    I: IntoObserverSystem<E, B, M>,
 {
     button_base(
         text,
