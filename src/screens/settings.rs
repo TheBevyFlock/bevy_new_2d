@@ -24,7 +24,26 @@ fn spawn_settings_screen(mut commands: Commands) {
         StateScoped(Screen::Settings),
         children![
             widget::header("Settings"),
-            volume_widget(),
+            (
+                Name::new("Settings Grid"),
+                Node {
+                    display: Display::Grid,
+                    row_gap: Px(10.0),
+                    column_gap: Px(30.0),
+                    grid_template_columns: RepeatedGridTrack::px(2, 400.0),
+                    ..default()
+                },
+                children![
+                    (
+                        widget::label("Audio Volume"),
+                        Node {
+                            justify_self: JustifySelf::End,
+                            ..default()
+                        }
+                    ),
+                    volume_widget(),
+                ],
+            ),
             widget::button("Back", enter_title_screen),
         ],
     ));
@@ -32,40 +51,21 @@ fn spawn_settings_screen(mut commands: Commands) {
 
 fn volume_widget() -> impl Bundle {
     (
-        Name::new("Settings Grid"),
         Node {
-            display: Display::Grid,
-            row_gap: Px(10.0),
-            column_gap: Px(30.0),
-            grid_template_columns: RepeatedGridTrack::px(2, 400.0),
+            justify_self: JustifySelf::Start,
             ..default()
         },
         children![
-            (
-                widget::label("Audio Volume"),
-                Node {
-                    justify_self: JustifySelf::End,
-                    ..default()
-                }
-            ),
+            widget::button_small("-", lower_volume),
             (
                 Node {
-                    justify_self: JustifySelf::Start,
+                    padding: UiRect::horizontal(Px(10.0)),
+                    justify_content: JustifyContent::Center,
                     ..default()
                 },
-                children![
-                    widget::button_small("-", lower_volume),
-                    (
-                        Node {
-                            padding: UiRect::horizontal(Px(10.0)),
-                            justify_content: JustifyContent::Center,
-                            ..default()
-                        },
-                        children![(widget::label(""), GlobalVolumeLabel)],
-                    ),
-                    widget::button_small("+", raise_volume),
-                ],
+                children![(widget::label(""), GlobalVolumeLabel)],
             ),
+            widget::button_small("+", raise_volume),
         ],
     )
 }
