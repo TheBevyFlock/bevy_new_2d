@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use crate::{screens::Screen, theme::prelude::*};
+use crate::{asset_tracking::ResourceHandles, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Title), spawn_title_screen);
@@ -13,7 +13,7 @@ fn spawn_title_screen(mut commands: Commands) {
         widget::ui_root("Title Screen"),
         StateScoped(Screen::Title),
         children![
-            widget::button("Play", enter_gameplay_screen),
+            widget::button("Play", enter_loading_screen),
             widget::button("Credits", enter_credits_screen),
             #[cfg(not(target_family = "wasm"))]
             widget::button("Exit", exit_app),
@@ -21,8 +21,16 @@ fn spawn_title_screen(mut commands: Commands) {
     ));
 }
 
-fn enter_gameplay_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Gameplay);
+fn enter_loading_screen(
+    _: Trigger<Pointer<Click>>,
+    resource_handles: Res<ResourceHandles>,
+    mut next_screen: ResMut<NextState<Screen>>,
+) {
+    if resource_handles.is_all_done() {
+        next_screen.set(Screen::Gameplay);
+    } else {
+        next_screen.set(Screen::Loading);
+    }
 }
 
 fn enter_credits_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
