@@ -117,7 +117,6 @@ where
                         hovered: BUTTON_HOVERED_BACKGROUND,
                         pressed: BUTTON_PRESSED_BACKGROUND,
                     },
-                    button_bundle,
                     children![(
                         Name::new("Button Text"),
                         Text(text),
@@ -125,6 +124,7 @@ where
                         TextColor(BUTTON_TEXT),
                     )],
                 ))
+                .insert(button_bundle)
                 .observe(action);
         })),
     )
