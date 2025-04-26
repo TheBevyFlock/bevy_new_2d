@@ -2,7 +2,10 @@
 
 use bevy::prelude::*;
 
-use crate::demo::player::{PlayerAssets, player};
+use crate::{
+    demo::player::{PlayerAssets, player},
+    screens::Screen,
+};
 
 /// A system that spawns the main level.
 pub fn spawn_level(
@@ -10,18 +13,11 @@ pub fn spawn_level(
     player_assets: Res<PlayerAssets>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    commands.spawn(level(&player_assets, &mut texture_atlas_layouts));
-}
-
-/// The main level.
-fn level(
-    player_assets: &PlayerAssets,
-    texture_atlas_layouts: &mut Assets<TextureAtlasLayout>,
-) -> impl Bundle {
-    (
+    commands.spawn((
         Name::new("Level"),
         Transform::default(),
         Visibility::default(),
-        children![player(400.0, player_assets, texture_atlas_layouts)],
-    )
+        StateScoped(Screen::Gameplay),
+        children![player(400.0, &player_assets, &mut texture_atlas_layouts)],
+    ));
 }

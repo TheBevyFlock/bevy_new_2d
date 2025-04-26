@@ -12,7 +12,6 @@ use crate::{
         animation::PlayerAnimation,
         movement::{MovementController, ScreenWrap},
     },
-    screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -27,10 +26,6 @@ pub(super) fn plugin(app: &mut App) {
         record_player_directional_input.in_set(AppSet::RecordInput),
     );
 }
-
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
-#[reflect(Component)]
-pub struct Player;
 
 /// The player character.
 pub fn player(
@@ -62,9 +57,12 @@ pub fn player(
         },
         ScreenWrap,
         player_animation,
-        StateScoped(Screen::Gameplay),
     )
 }
+
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
+#[reflect(Component)]
+struct Player;
 
 fn record_player_directional_input(
     input: Res<ButtonInput<KeyCode>>,
