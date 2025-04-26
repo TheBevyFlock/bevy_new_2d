@@ -47,8 +47,55 @@ pub fn label(text: impl Into<String>) -> impl Bundle {
     )
 }
 
-/// A simple button with text and an action defined as an [`Observer`].
+/// A large rounded button with text and an action defined as an [`Observer`].
 pub fn button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M>,
+{
+    button_base(
+        text,
+        action,
+        (
+            Node {
+                width: Px(300.0),
+                height: Px(80.0),
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::Center,
+                ..default()
+            },
+            BorderRadius::MAX,
+        ),
+    )
+}
+
+/// A small square button with text and an action defined as an [`Observer`].
+pub fn button_small<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M> + Sync,
+{
+    button_base(
+        text,
+        action,
+        Node {
+            width: Px(30.0),
+            height: Px(30.0),
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            ..default()
+        },
+    )
+}
+
+/// A simple button with text and an action defined as an [`Observer`]. The button's components will be overridden by the components in `button_bundle`.
+pub fn button_base<E, B, M, I>(
+    text: impl Into<String>,
+    action: I,
+    button_bundle: impl Bundle,
+) -> impl Bundle
 where
     E: Event,
     B: Bundle,
@@ -59,19 +106,11 @@ where
     (
         Name::new("Button"),
         Node::default(),
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
+        Children::spawn(SpawnWith(move |parent: &mut ChildSpawner| {
             parent
                 .spawn((
                     Name::new("Button Inner"),
                     Button,
-                    Node {
-                        width: Px(300.0),
-                        height: Px(80.0),
-                        align_items: AlignItems::Center,
-                        justify_content: JustifyContent::Center,
-                        ..default()
-                    },
-                    BorderRadius::MAX,
                     BackgroundColor(BUTTON_BACKGROUND),
                     InteractionPalette {
                         none: BUTTON_BACKGROUND,
@@ -85,48 +124,7 @@ where
                         TextColor(BUTTON_TEXT),
                     )],
                 ))
-                .observe(action);
-        })),
-    )
-}
-
-/// A simple button with text and an action defined as an [`Observer`].
-pub fn button_small<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
-where
-    E: Event,
-    B: Bundle,
-    I: IntoObserverSystem<E, B, M> + Sync,
-{
-    let text = text.into();
-    (
-        Name::new("Button"),
-        Node::default(),
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
-            parent
-                .spawn((
-                    Name::new("Button Inner"),
-                    Button,
-                    Node {
-                        width: Px(30.0),
-                        height: Px(30.0),
-                        align_items: AlignItems::Center,
-                        justify_content: JustifyContent::Center,
-                        ..default()
-                    },
-                    BorderRadius::ZERO,
-                    BackgroundColor(BUTTON_BACKGROUND),
-                    InteractionPalette {
-                        none: BUTTON_BACKGROUND,
-                        hovered: BUTTON_HOVERED_BACKGROUND,
-                        pressed: BUTTON_PRESSED_BACKGROUND,
-                    },
-                    children![(
-                        Name::new("Button Text"),
-                        Text(text),
-                        TextFont::from_font_size(40.0),
-                        TextColor(BUTTON_TEXT),
-                    )],
-                ))
+                .insert(button_bundle)
                 .observe(action);
         })),
     )
