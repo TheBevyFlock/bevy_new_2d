@@ -3,7 +3,7 @@
 use std::borrow::Cow;
 
 use bevy::{
-    ecs::{relationship::RelatedSpawner, spawn::SpawnWith, system::IntoObserverSystem},
+    ecs::{spawn::SpawnWith, system::IntoObserverSystem},
     prelude::*,
     ui::Val::*,
 };
@@ -52,13 +52,14 @@ pub fn button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
     B: Bundle,
-    I: IntoObserverSystem<E, B, M> + Sync,
+    I: IntoObserverSystem<E, B, M>,
 {
     let text = text.into();
+    let action = IntoObserverSystem::into_system(action);
     (
         Name::new("Button"),
         Node::default(),
-        Children::spawn(SpawnWith(|parent: &mut RelatedSpawner<ChildOf>| {
+        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
             parent
                 .spawn((
                     Name::new("Button Inner"),

@@ -2,7 +2,7 @@
 
 use bevy::{ecs::spawn::SpawnIter, prelude::*, ui::Val::*};
 
-use crate::{asset_tracking::LoadResource, audio::Music, screens::Screen, theme::prelude::*};
+use crate::{asset_tracking::LoadResource, audio::music, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Credits), spawn_credits_screen);
@@ -82,7 +82,7 @@ fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextSt
 #[reflect(Resource)]
 struct CreditsMusic {
     #[dependency]
-    music: Handle<AudioSource>,
+    handle: Handle<AudioSource>,
     entity: Option<Entity>,
 }
 
@@ -90,26 +90,19 @@ impl FromWorld for CreditsMusic {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            music: assets.load("audio/music/Monkeys Spinning Monkeys.ogg"),
+            handle: assets.load("audio/music/Monkeys Spinning Monkeys.ogg"),
             entity: None,
         }
     }
 }
 
-fn start_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
-    music.entity = Some(
-        commands
-            .spawn((
-                AudioPlayer(music.music.clone()),
-                PlaybackSettings::LOOP,
-                Music,
-            ))
-            .id(),
-    );
+fn start_credits_music(mut commands: Commands, mut credits_music: ResMut<CreditsMusic>) {
+    let handle = credits_music.handle.clone();
+    credits_music.entity = Some(commands.spawn(music(handle)).id());
 }
 
-fn stop_credits_music(mut commands: Commands, mut music: ResMut<CreditsMusic>) {
-    if let Some(entity) = music.entity.take() {
+fn stop_credits_music(mut commands: Commands, mut credits_music: ResMut<CreditsMusic>) {
+    if let Some(entity) = credits_music.entity.take() {
         commands.entity(entity).despawn();
     }
 }
