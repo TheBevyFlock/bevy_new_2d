@@ -39,8 +39,7 @@ jobs:
           # Setting LD_LIBRARY_PATH is a workaround for https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350
           LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
 
-
-  # Run tests.
+  # Check that the game builds for Wasm.
   build-wasm:
     name: Build for Wasm
     runs-on: ubuntu-latest
