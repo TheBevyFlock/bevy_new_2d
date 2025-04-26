@@ -45,7 +45,8 @@ impl FromWorld for GameplayMusic {
 }
 
 fn start_gameplay_music(mut commands: Commands, mut gameplay_music: ResMut<GameplayMusic>) {
-    gameplay_music.entity = Some(commands.spawn(music(gameplay_music.handle.clone())).id());
+    let handle = gameplay_music.handle.clone();
+    gameplay_music.entity = Some(commands.spawn(music(handle)).id());
 }
 
 fn stop_gameplay_music(mut commands: Commands, mut gameplay_music: ResMut<GameplayMusic>) {

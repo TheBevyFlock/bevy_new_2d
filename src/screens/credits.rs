@@ -97,7 +97,8 @@ impl FromWorld for CreditsMusic {
 }
 
 fn start_credits_music(mut commands: Commands, mut credits_music: ResMut<CreditsMusic>) {
-    credits_music.entity = Some(commands.spawn(music(credits_music.handle.clone())).id());
+    let handle = credits_music.handle.clone();
+    credits_music.entity = Some(commands.spawn(music(handle)).id());
 }
 
 fn stop_credits_music(mut commands: Commands, mut credits_music: ResMut<CreditsMusic>) {
