@@ -64,7 +64,7 @@ jobs:
       - name: Install Bevy CLI
         run: cargo install --git https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
 
-      - name: Build for Wasm
+      - name: Build for web
         run: |
           bevy build --locked --workspace --all-targets web
 
