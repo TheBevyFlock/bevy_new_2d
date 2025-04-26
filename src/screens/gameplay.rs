@@ -3,8 +3,7 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use crate::{
-    asset_tracking::LoadResource, audio::music, demo::level::spawn_level as spawn_level_command,
-    screens::Screen,
+    asset_tracking::LoadResource, audio::music, demo::level::spawn_level, screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -20,10 +19,6 @@ pub(super) fn plugin(app: &mut App) {
         return_to_title_screen
             .run_if(in_state(Screen::Gameplay).and(input_just_pressed(KeyCode::Escape))),
     );
-}
-
-fn spawn_level(mut commands: Commands) {
-    commands.queue(spawn_level_command);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]

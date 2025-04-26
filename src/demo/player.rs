@@ -1,6 +1,4 @@
-//! Plugin handling the player character in particular.
-//! Note that this is separate from the `movement` module as that could be used
-//! for other characters as well.
+//! Player-specific behavior.
 
 use bevy::{
     image::{ImageLoaderSettings, ImageSampler},
@@ -14,7 +12,6 @@ use crate::{
         animation::PlayerAnimation,
         movement::{MovementController, ScreenWrap},
     },
-    screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -30,59 +27,42 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
-#[reflect(Component)]
-pub struct Player;
-
-/// A command to spawn the player character.
-#[derive(Debug)]
-pub struct SpawnPlayer {
-    /// See [`MovementController::max_speed`].
-    pub max_speed: f32,
-}
-
-impl Command for SpawnPlayer {
-    fn apply(self, world: &mut World) {
-        let _ = world.run_system_cached_with(spawn_player, self);
-    }
-}
-
-fn spawn_player(
-    In(config): In<SpawnPlayer>,
-    mut commands: Commands,
-    player_assets: Res<PlayerAssets>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-) {
-    // A texture atlas is a way to split one image with a grid into multiple
-    // sprites. By attaching it to a [`SpriteBundle`] and providing an index, we
-    // can specify which section of the image we want to see. We will use this
-    // to animate our player character. You can learn more about texture atlases in
-    // this example: https://github.com/bevyengine/bevy/blob/latest/examples/2d/texture_atlas.rs
+/// The player character.
+pub fn player(
+    max_speed: f32,
+    player_assets: &PlayerAssets,
+    texture_atlas_layouts: &mut Assets<TextureAtlasLayout>,
+) -> impl Bundle {
+    // A texture atlas is a way to split a single image into a grid of related images.
+    // You can learn more in this example: https://github.com/bevyengine/bevy/blob/latest/examples/2d/texture_atlas.rs
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(32), 6, 2, Some(UVec2::splat(1)), None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let player_animation = PlayerAnimation::new();
 
-    commands.spawn((
+    (
         Name::new("Player"),
         Player,
         Sprite {
             image: player_assets.ducky.clone(),
             texture_atlas: Some(TextureAtlas {
-                layout: texture_atlas_layout.clone(),
+                layout: texture_atlas_layout,
                 index: player_animation.get_atlas_index(),
             }),
             ..default()
         },
         Transform::from_scale(Vec2::splat(8.0).extend(1.0)),
         MovementController {
-            max_speed: config.max_speed,
+            max_speed,
             ..default()
         },
         ScreenWrap,
         player_animation,
-        StateScoped(Screen::Gameplay),
-    ));
+    )
 }
+
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Default, Reflect)]
+#[reflect(Component)]
+struct Player;
 
 fn record_player_directional_input(
     input: Res<ButtonInput<KeyCode>>,
@@ -103,8 +83,7 @@ fn record_player_directional_input(
         intent.x += 1.0;
     }
 
-    // Normalize so that diagonal movement has the same speed as
-    // horizontal and vertical movement.
+    // Normalize intent so that diagonal movement is the same speed as horizontal / vertical.
     // This should be omitted if the input comes from an analog stick instead.
     let intent = intent.normalize_or_zero();
 
@@ -130,7 +109,7 @@ impl FromWorld for PlayerAssets {
             ducky: assets.load_with_settings(
                 "images/ducky.png",
                 |settings: &mut ImageLoaderSettings| {
-                    // Use `nearest` image sampling to preserve the pixel art style.
+                    // Use `nearest` image sampling to preserve pixel art style.
                     settings.sampler = ImageSampler::nearest();
                 },
             ),

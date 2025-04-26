@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Native Debug" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <!-- We use -\-no-default-features here because otherwise debugging will fail with dynamic linking.-->
+    <option name="command" value="run --no-default-features" />
+    <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+    <envs />
+    <option name="emulateTerminal" value="true" />
+    <option name="channel" value="DEFAULT" />
+    <option name="requiredFeatures" value="true" />
+    <option name="allFeatures" value="false" />
+    <option name="withSudo" value="false" />
+    <option name="buildTarget" value="REMOTE" />
+    <option name="backtrace" value="SHORT" />
+    <option name="isRedirectInput" value="false" />
+    <option name="redirectInputPath" value="" />
+    <method v="2">
+      <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+    </method>
+  </configuration>
+</component>
