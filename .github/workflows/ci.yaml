@@ -62,7 +62,7 @@ jobs:
           sweep-cache: true
 
       - name: Install Bevy CLI
-        run: cargo install --git https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
+        run: cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
 
       - name: Build for web
         run: |
