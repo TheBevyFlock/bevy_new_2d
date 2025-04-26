@@ -10,8 +10,9 @@ const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<GlobalVolumeLabel>();
     app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
+    
+    app.register_type::<GlobalVolumeLabel>();
     app.add_systems(
         Update,
         update_volume_label.run_if(in_state(Screen::Settings)),
