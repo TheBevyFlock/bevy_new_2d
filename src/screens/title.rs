@@ -12,12 +12,18 @@ fn spawn_title_screen(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Title Screen"),
         StateScoped(Screen::Title),
+        #[cfg(not(target_family = "wasm"))]
         children![
             widget::button("Play", enter_loading_or_gameplay_screen),
             widget::button("Settings", enter_settings_screen),
             widget::button("Credits", enter_credits_screen),
-            #[cfg(not(target_family = "wasm"))]
             widget::button("Exit", exit_app),
+        ],
+        #[cfg(target_family = "wasm")]
+        children![
+            widget::button("Play", enter_loading_or_gameplay_screen),
+            widget::button("Settings", enter_settings_screen),
+            widget::button("Credits", enter_credits_screen),
         ],
     ));
 }
