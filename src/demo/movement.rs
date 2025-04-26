@@ -18,7 +18,8 @@ use bevy::{prelude::*, window::PrimaryWindow};
 use crate::AppSet;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<(MovementController, ScreenWrap)>();
+    app.register_type::<MovementController>();
+    app.register_type::<ScreenWrap>();
 
     app.add_systems(
         Update,
@@ -38,8 +39,7 @@ pub struct MovementController {
     pub intent: Vec2,
 
     /// Maximum speed in world units per second.
-    /// 1 world unit = 1 pixel when using the default 2D camera and no physics
-    /// engine.
+    /// 1 world unit = 1 pixel when using the default 2D camera and no physics engine.
     pub max_speed: f32,
 }
 
@@ -68,12 +68,9 @@ fn apply_movement(
 pub struct ScreenWrap;
 
 fn apply_screen_wrap(
-    window_query: Query<&Window, With<PrimaryWindow>>,
+    window: Single<&Window, With<PrimaryWindow>>,
     mut wrap_query: Query<&mut Transform, With<ScreenWrap>>,
 ) {
-    let Ok(window) = window_query.single() else {
-        return;
-    };
     let size = window.size() + 256.0;
     let half_size = size / 2.0;
     for mut transform in &mut wrap_query {

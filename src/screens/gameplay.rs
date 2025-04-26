@@ -3,7 +3,7 @@
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
 use crate::{
-    asset_tracking::LoadResource, audio::Music, demo::level::spawn_level, screens::Screen,
+    asset_tracking::LoadResource, audio::music, demo::level::spawn_level, screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -25,7 +25,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 struct GameplayMusic {
     #[dependency]
-    music: Handle<AudioSource>,
+    handle: Handle<AudioSource>,
     entity: Option<Entity>,
 }
 
@@ -33,26 +33,19 @@ impl FromWorld for GameplayMusic {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            music: assets.load("audio/music/Fluffing A Duck.ogg"),
+            handle: assets.load("audio/music/Fluffing A Duck.ogg"),
             entity: None,
         }
     }
 }
 
-fn start_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
-    music.entity = Some(
-        commands
-            .spawn((
-                AudioPlayer(music.music.clone()),
-                PlaybackSettings::LOOP,
-                Music,
-            ))
-            .id(),
-    );
+fn start_gameplay_music(mut commands: Commands, mut gameplay_music: ResMut<GameplayMusic>) {
+    let handle = gameplay_music.handle.clone();
+    gameplay_music.entity = Some(commands.spawn(music(handle)).id());
 }
 
-fn stop_gameplay_music(mut commands: Commands, mut music: ResMut<GameplayMusic>) {
-    if let Some(entity) = music.entity.take() {
+fn stop_gameplay_music(mut commands: Commands, mut gameplay_music: ResMut<GameplayMusic>) {
+    if let Some(entity) = gameplay_music.entity.take() {
         commands.entity(entity).despawn();
     }
 }
