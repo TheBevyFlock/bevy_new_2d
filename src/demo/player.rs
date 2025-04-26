@@ -32,7 +32,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Player;
 
-/// A player ducky.
+/// The player character.
 pub fn player(
     max_speed: f32,
     player_assets: &PlayerAssets,
