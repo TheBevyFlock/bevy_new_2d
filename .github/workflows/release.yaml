@@ -180,9 +180,7 @@ jobs:
 
       - name: Populate cargo cache
         if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
-        uses: Leafwing-Studios/cargo-cache@v2
-        with:
-          sweep-cache: true
+        uses: Swatinem/rust-cache@v2
 
       - name: Install dependencies (Linux)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
