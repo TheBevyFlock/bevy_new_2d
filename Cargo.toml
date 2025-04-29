@@ -5,7 +5,7 @@ edition = "2024"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 
 [dependencies]
-bevy = { version = "0.16", features = ["wayland", "track_location"] }
+bevy = { version = "0.16", features = ["wayland"] }
 rand = "0.8"
 # Compile low-severity logs out of native builds for performance.
 log = { version = "0.4", features = [
@@ -28,6 +28,8 @@ dev = [
     "bevy/dynamic_linking",
     "bevy/bevy_dev_tools",
     "bevy/bevy_ui_debug",
+    # Improve error messages coming from Bevy
+    "bevy/track_location",
 ]
 dev_native = [
     "dev",
