@@ -178,7 +178,7 @@ jobs:
         with:
           targets: ${{ matrix.targets }}
 
-      - name: Populate cargo cache
+      - name: Restore Rust cache
         if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
         uses: Swatinem/rust-cache@v2
         with:
@@ -192,10 +192,14 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
-      - name: Install and run Bevy CLI (Web)
+      - name: Install cargo-binstall (Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
+        uses: cargo-bins/cargo-binstall@v1.12.3
+
+      - name: Install Bevy CLI and build bundle (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
-          cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
+          cargo binstall --no-confirm --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
           bevy build --locked --profile='${{ matrix.profile }}' --features='${{ matrix.features }}' --yes web --bundle
 
       - name: Add web bundle to app (Web)
