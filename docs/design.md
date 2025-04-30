@@ -1,38 +1,32 @@
 # Design philosophy
 
-The high-level goal of this template is to feel like the official template that is currently missing from Bevy.
-There exists an [official CI template](https://github.com/bevyengine/bevy_github_ci_template), but, in our opinion,
-that one is currently more of an extension to the [Bevy examples](https://bevyengine.org/examples/) than an actual template.
-We say this because it is extremely bare-bones and as such does not provide things that in practice are necessary for game development.
+The high-level goal of this template is to feel like the official template that Bevy is currently missing.
+There's an [official CI template](https://github.com/bevyengine/bevy_github_ci_template), but its goal is to
+demonstrate how to accomplish a particular task with Bevy (setting up CI), which makes it better aligned to
+serve as an [example](https://bevyengine.org/examples/) than as a template.
 
 ## Principles
 
-So, how would an official template that is built for real-world game development look like?
+So, what would an official template built for real-world game development look like?
 The Bevy Jam working group has agreed on the following guiding design principles:
 
-- Show how to do things in pure Bevy. This means using no 3rd-party dependencies.
-- Have some basic game code written out already.
-- Have everything outside of code already set up.
-  - Nice IDE support.
-  - `bevy new` template support.
-  - Workflows that provide CI and CD with an auto-publish to itch.io.
-  - Builds configured for performance by default.
-- Answer questions that will quickly come up when creating an actual game.
-  - How do I structure my code?
-  - How do I preload assets?
-  - What are best practices for creating UI?
-  - etc.
+- Have no 3rd-party dependencies besides Bevy to make it easy for users to pull in whatever they prefer.
+- Include some basic game code to give users something to work with.
+- Answer common questions like how you should structure your codebase, load assets, or write reusable UI code.
+- Configure development tools to work well out-of-the-box, for example: 
+  - Support creating a new project with [`bevy new`](https://github.com/TheBevyFlock/bevy_cli/) or [`cargo generate`](https://github.com/cargo-generate/cargo-generate).
+  - Integrate with the most common IDEs (e.g. VS Code and RustRover).
+  - Provide robust GitHub CI and CD workflows (including an option to automatically publish to [itch.io](https://itch.io)).
+  - Configure dev builds for fast compile times and release builds for performance.
 
-The last point means that in order to make this template useful for real-life projects,
-we have to make some decisions that are necessarily opinionated.
+As a result, this template has to make some decisions that are necessarily opinionated.
 
-These opinions are based on the experience of the Bevy Jam working group and
-what we have found to be useful in our own projects.
-If you disagree with any of these, it should be easy to change them.
+These opinions are based on the experience of the Bevy Jam working group from working on our own projects.
+If you disagree with any of the decisions made, please feel free to change them to your liking.
 
 Bevy is still young, and many design patterns are still being discovered and refined.
-Most do not even have an agreed name yet. For some prior work in this area that inspired us,
-see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/) and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
+For some prior work in this area that inspired us, see [the Unofficial Bevy Cheatbook](https://bevy-cheatbook.github.io/)
+and [bevy_best_practices](https://github.com/tbillington/bevy_best_practices).
 
 ## Pattern Table of Contents
 
@@ -53,14 +47,14 @@ Structure your code into plugins like so:
 
 ```rust
 // game.rs
-mod player;
 mod enemy;
+mod player;
 mod powerup;
 
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((player::plugin, enemy::plugin, powerup::plugin));
+    app.add_plugins((enemy::plugin, player::plugin, powerup::plugin));
 }
 ```
 
@@ -78,8 +72,7 @@ pub(super) fn plugin(app: &mut App) {
 Bevy is great at organizing code into plugins. The most lightweight way to do this is by using simple functions as plugins.
 By splitting your code like this, you can easily keep all your systems and resources locally grouped. Everything that belongs to the `player` is only in `player.rs`, and so on.
 
-A good rule of thumb is to have one plugin per file,
-but feel free to leave out a plugin if your file does not need to do anything with the `App`.
+A good rule of thumb is to always have one plugin per file, but feel free to omit plugins that would be empty.
 
 ## Screen States
 
@@ -216,9 +209,6 @@ This approach comes with a few limitations, however:
 - **No replacing components:** If you want to extend a bundle function by _replacing_ one of its components (e.g. to modify its `Node::width`),
   you have to add an argument to the function to explicitly allow for it, or remove the component from the original bundle, or use `Commands` to access `insert` (like
   `commands.spawn(foo()).insert(Replacement)`), which is not compatible with `children![]`-style composition.
-- **No observers:** If you want an entity template to include an observer, you can't add it in the bundle function itself.
-  Instead, the calling code must have access to `Commands` and do something like `commands.spawn(button()).observe(on_click)`, which is not compatible with
-  `children![]`-style composition.
 
 These limitations are expected to be [lifted in future Bevy versions](https://github.com/bevyengine/bevy/discussions/9538).
 
@@ -255,7 +245,7 @@ impl FromWorld for ActorAssets {
 }
 ```
 
-Then start preloading in `assets::plugin`:
+Then start preloading in `actor::plugin`:
 
 ```rust
 pub(super) fn plugin(app: &mut App) {
@@ -264,7 +254,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 ```
 
-Note that `app.load_resource` comes from an extension trait defined in [src/asset_tracking.rs](../src/asset_tracking.rs)
+Note that `app.load_resource` comes from an extension trait defined in [src/asset_tracking.rs](../src/asset_tracking.rs).
 
 ### Reasoning
 
@@ -288,4 +278,4 @@ pub(super) fn plugin(app: &mut App) {
 ### Reasoning
 
 The `dev_tools` plugin is only included in dev builds.
-By adding your dev tools here, you automatically guarantee that they are not included in release builds.
+By adding your dev tools here, you guarantee that they won't be included in release builds.
