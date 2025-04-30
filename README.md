@@ -1,12 +1,12 @@
 # Bevy New 2D
 
 This template is a great way to get started on a new 2D [Bevy](https://bevyengine.org/) game!
-Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
-You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-new-2d)
+Start with a [basic project](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
+You can [try this template in your browser!](https://the-bevy-flock.itch.io/bevy-new-2d)
 
 ## Prerequisites
 
-We assume that you know how to use Bevy already and have seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
+We assume that you're familiar with Bevy and have already seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
 
 If you're new to Bevy, the patterns used in this template may look a bit weird at first glance.
 See our [Design Document](./docs/design.md) for more information on how we structured the code and why.
@@ -23,7 +23,7 @@ Then [create a GitHub repository](https://github.com/new) and push your local re
 
 ## Write your game
 
-The best way to get started is to play around with what you find in [`src/demo/`](./src/demo).
+The best way to get started is to play around with the code you find in [`src/demo/`](./src/demo).
 
 This template comes with a basic project structure that you may find useful:
 
@@ -44,7 +44,7 @@ Feel free to move things around however you want, though.
 
 ## Run your game
 
-We recommend running your game with the [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli).
+We recommend using the [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli) to run your game.
 
 Running your game locally is very simple:
 
@@ -65,7 +65,7 @@ to help run your game from your IDE.
 <details>
   <summary>Linux dependencies</summary>
 
-If you're using Linux, make sure you take a look at Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
 Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
 Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
 
@@ -86,8 +86,8 @@ See [Workflows](./docs/workflows.md) for more information.
 
 ## Known Issues
 
-There are some known issues in Bevy that require some arcane workarounds.
-To keep this template simple, we have opted not to include those workarounds.
+There are some known issues in Bevy that can require arcane workarounds.
+To keep this template simple, we've opted to leave these workarounds out.
 You can read about them in the [Known Issues](./docs/known-issues.md) document.
 
 ## License
