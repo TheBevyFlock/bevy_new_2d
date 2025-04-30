@@ -4,10 +4,6 @@ This template is a great way to get started on a new 2D [Bevy](https://bevyengin
 Start with a [basic project structure](#write-your-game) and [CI / CD](#release-your-game) that can deploy to [itch.io](https://itch.io).
 You can [try this template in your web browser!](https://the-bevy-flock.itch.io/bevy-new-2d)
 
-[@ChristopherBiscardi](https://github.com/ChristopherBiscardi) made a video on how to use this template from start to finish:
-
-[<img src="./docs/img/thumbnail.png" width=40% height=40% alt="A video tutorial for bevy_new_2d, formerly known as bevy_quickstart"/>](https://www.youtube.com/watch?v=ESBRyXClaYc)
-
 ## Prerequisites
 
 We assume that you know how to use Bevy already and have seen the [official Quick Start Guide](https://bevyengine.org/learn/quick-start/introduction/).
@@ -55,7 +51,8 @@ Running your game locally is very simple:
 - Use `bevy run` to run a native dev build.
 - Use `bevy run web` to run a web dev build.
 
-If you're using [VS Code](https://code.visualstudio.com/), this template comes with a [`.vscode/tasks.json`](./.vscode/tasks.json) file.
+This template also comes with [VS Code tasks](./.vscode/tasks.json) and [JetBrains run configurations](./.idea/runConfigurations/)
+to help run your game within your IDE.
 
 <details>
   <summary>Run release builds</summary>
@@ -68,7 +65,7 @@ If you're using [VS Code](https://code.visualstudio.com/), this template comes w
 <details>
   <summary>Linux dependencies</summary>
 
-If you are using Linux, make sure you take a look at Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+If you're using Linux, make sure you take a look at Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
 Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
 Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
 
