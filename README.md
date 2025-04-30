@@ -52,7 +52,7 @@ Running your game locally is very simple:
 - Use `bevy run web` to run a web dev build.
 
 This template also comes with [VS Code tasks](./.vscode/tasks.json) and [JetBrains run configurations](./.idea/runConfigurations/)
-to help run your game within your IDE.
+to help run your game from your IDE.
 
 <details>
   <summary>Run release builds</summary>
