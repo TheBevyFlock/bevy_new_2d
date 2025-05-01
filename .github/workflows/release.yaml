@@ -191,27 +191,23 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
-      - name: Install and run Bevy CLI (Web)
+      - name: Install Bevy CLI
+        if: ${{ env.is_platform_enabled == 'true' }}
+        run: cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
+
+      - name: Build web bundle and add it to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
-          cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
           bevy build --locked --profile='${{ matrix.profile }}' --features='${{ matrix.features }}' --yes web --bundle
+          mv 'target/bevy_web/${{ matrix.profile }}/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
-      - name: Add web bundle to app (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        run: mv 'target/bevy_web/${{ matrix.profile }}/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
-
-      - name: Build binaries (non-Web)
+      - name: Build binaries and add them to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
             bevy build --locked --profile='${{ matrix.profile }}' --target="${target}" --features='${{ matrix.features }}'
             mv target/"${target}"/'${{ matrix.profile }}/${{ env.cargo_build_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
           done
-
-      - name: Add binaries to app (non-Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
-        run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
           else
