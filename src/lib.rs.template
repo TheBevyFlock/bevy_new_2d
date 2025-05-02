@@ -22,7 +22,12 @@ impl Plugin for AppPlugin {
         // Order new `AppSystems` variants by adding them here:
         app.configure_sets(
             Update,
-            (AppSystems::TickTimers, AppSystems::RecordInput, AppSystems::Update).chain(),
+            (
+                AppSystems::TickTimers,
+                AppSystems::RecordInput,
+                AppSystems::Update,
+            )
+                .chain(),
         );
 
         // Spawn the main camera.
