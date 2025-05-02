@@ -143,27 +143,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.LINTER_TOOLCHAIN }}
-          components: rustc-dev, llvm-tools-preview
-
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v2
+        uses: Swatinem/rust-cache@v2
         with:
-          sweep-cache: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install Bevy linter
-        run: |
-          rustup run '${{ env.LINTER_TOOLCHAIN }}' cargo install \
-            --git https://github.com/TheBevyFlock/bevy_cli.git \
-            --branch main \
-            --locked \
-            bevy_lint
+        uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
 
       - name: Run Bevy linter
         run: bevy_lint --locked --workspace --all-targets --all-features
