@@ -133,6 +133,7 @@ jobs:
       - name: Check documentation
         run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
 
+  # Run Bevy lints.
   bevy-lint:
     name: Bevy linter
     runs-on: ubuntu-latest
@@ -155,6 +156,6 @@ jobs:
         uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
 
       - name: Run Bevy linter
-        run: bevy_lint --locked --workspace --all-targets --all-features
         env:
           RUSTFLAGS: --deny warnings
+        run: bevy_lint --locked --workspace --all-targets --all-features
