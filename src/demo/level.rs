@@ -2,19 +2,22 @@
 
 use bevy::prelude::*;
 
-use crate::demo::player::SpawnPlayer;
+use crate::{
+    demo::player::{PlayerAssets, player},
+    screens::Screen,
+};
 
-pub(super) fn plugin(_app: &mut App) {
-    // No setup required for this plugin.
-    // It's still good to have a function here so that we can add some setup
-    // later if needed.
-}
-
-/// A [`Command`] to spawn the level.
-/// Functions that accept only `&mut World` as their parameter implement [`Command`].
-/// We use this style when a command requires no configuration.
-pub fn spawn_level(world: &mut World) {
-    // The only thing we have in our level is a player,
-    // but add things like walls etc. here.
-    SpawnPlayer { max_speed: 400.0 }.apply(world);
+/// A system that spawns the main level.
+pub fn spawn_level(
+    mut commands: Commands,
+    player_assets: Res<PlayerAssets>,
+    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+) {
+    commands.spawn((
+        Name::new("Level"),
+        Transform::default(),
+        Visibility::default(),
+        StateScoped(Screen::Gameplay),
+        children![player(400.0, &player_assets, &mut texture_atlas_layouts)],
+    ));
 }

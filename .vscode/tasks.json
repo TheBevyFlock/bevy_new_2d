@@ -3,10 +3,10 @@
     "tasks": [
         {
             "label": "Run native dev",
-            "type": "shell",
+            "type": "process",
             "command": "bevy",
             "args": [
-                "run",
+                "run"
             ],
             "options": {
                 "env": {
@@ -26,11 +26,11 @@
         },
         {
             "label": "Run native release",
-            "type": "shell",
+            "type": "process",
             "command": "bevy",
             "args": [
                 "run",
-                "--release",
+                "--release"
             ],
             "presentation": {
                 "clear": true

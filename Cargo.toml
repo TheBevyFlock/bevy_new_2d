@@ -5,7 +5,7 @@ edition = "2024"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 
 [dependencies]
-bevy = { version = "0.16.0-rc.1", features = ["wayland"] }
+bevy = { version = "0.16", features = ["wayland"] }
 rand = "0.8"
 # Compile low-severity logs out of native builds for performance.
 log = { version = "0.4", features = [
@@ -28,6 +28,8 @@ dev = [
     "bevy/dynamic_linking",
     "bevy/bevy_dev_tools",
     "bevy/bevy_ui_debug",
+    # Improve error messages coming from Bevy
+    "bevy/track_location",
 ]
 dev_native = [
     "dev",
@@ -39,11 +41,15 @@ dev_native = [
 
 
 [package.metadata.bevy_cli.release]
-# Disable debug functionality in release builds
+# Disable debug functionality in release builds.
 default_features = false
 
+[package.metadata.bevy_cli.web]
+# Tell the random providing crates to use the wasm_js backend on Web.
+rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
+
 [package.metadata.bevy_cli.web.dev]
-# Disable native-only debug functionality in web builds
+# Disable native-only debug functionality in web builds.
 default_features = false
 features = ["dev"]
 

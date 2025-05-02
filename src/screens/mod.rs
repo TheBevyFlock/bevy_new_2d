@@ -3,6 +3,7 @@
 mod credits;
 mod gameplay;
 mod loading;
+mod settings;
 mod splash;
 mod title;
 
@@ -16,6 +17,7 @@ pub(super) fn plugin(app: &mut App) {
         credits::plugin,
         gameplay::plugin,
         loading::plugin,
+        settings::plugin,
         splash::plugin,
         title::plugin,
     ));
@@ -26,8 +28,9 @@ pub(super) fn plugin(app: &mut App) {
 pub enum Screen {
     #[default]
     Splash,
-    Loading,
     Title,
     Credits,
+    Settings,
+    Loading,
     Gameplay,
 }

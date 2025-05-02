@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{asset_tracking::LoadResource, audio::SoundEffect};
+use crate::{asset_tracking::LoadResource, audio::sound_effect};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
@@ -72,6 +72,6 @@ fn trigger_interaction_sound_effect(
             Interaction::Pressed => interaction_assets.press.clone(),
             _ => continue,
         };
-        commands.spawn((AudioPlayer(source), PlaybackSettings::DESPAWN, SoundEffect));
+        commands.spawn(sound_effect(source));
     }
 }
