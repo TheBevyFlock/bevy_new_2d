@@ -9,7 +9,7 @@ use rand::prelude::*;
 use std::time::Duration;
 
 use crate::{
-    AppSet,
+    AppSystems,
     audio::sound_effect,
     demo::{movement::MovementController, player::PlayerAssets},
 };
@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
-            update_animation_timer.in_set(AppSet::TickTimers),
+            update_animation_timer.in_set(AppSystems::TickTimers),
             (
                 update_animation_movement,
                 update_animation_atlas,
@@ -28,7 +28,7 @@ pub(super) fn plugin(app: &mut App) {
             )
                 .chain()
                 .run_if(resource_exists::<PlayerAssets>)
-                .in_set(AppSet::Update),
+                .in_set(AppSystems::Update),
         ),
     );
 }
