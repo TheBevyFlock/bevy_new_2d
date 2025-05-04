@@ -24,6 +24,7 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
             row_gap: Px(20.0),
             ..default()
         },
+        Pickable::IGNORE,
     )
 }
 
@@ -122,6 +123,7 @@ where
                         Text(text),
                         TextFont::from_font_size(40.0),
                         TextColor(BUTTON_TEXT),
+                        Pickable::IGNORE,
                     )],
                 ))
                 .insert(button_bundle)
