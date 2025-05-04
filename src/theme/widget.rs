@@ -123,6 +123,7 @@ where
                         Text(text),
                         TextFont::from_font_size(40.0),
                         TextColor(BUTTON_TEXT),
+                        // Don't bubble pointer events up to the button.
                         Pickable::IGNORE,
                     )],
                 ))
