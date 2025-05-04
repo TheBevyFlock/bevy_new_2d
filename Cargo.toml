@@ -42,7 +42,7 @@ dev_native = [
 
 [package.metadata.bevy_cli.release]
 # Disable debug functionality in release builds.
-default_features = false
+default-features = false
 
 [package.metadata.bevy_cli.web]
 # Tell the random providing crates to use the wasm_js backend on Web.
@@ -50,7 +50,7 @@ rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
 
 [package.metadata.bevy_cli.web.dev]
 # Disable native-only debug functionality in web builds.
-default_features = false
+default-features = false
 features = ["dev"]
 
 
