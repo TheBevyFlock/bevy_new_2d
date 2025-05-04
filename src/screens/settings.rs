@@ -1,6 +1,6 @@
-//! The settings screen accessible from the title screen.
-//! We can add all manner of settings and accessibility options here.
-//! For 3D, we'd also place the camera sensitivity and FOV here.
+//! A settings screen that can be accessed from the title screen.
+//!
+//! Settings and accessibility options should go here.
 
 use bevy::{audio::Volume, prelude::*, ui::Val::*};
 
@@ -22,33 +22,38 @@ fn spawn_settings_screen(mut commands: Commands) {
         StateScoped(Screen::Settings),
         children![
             widget::header("Settings"),
-            (
-                Name::new("Settings Grid"),
-                Node {
-                    display: Display::Grid,
-                    row_gap: Px(10.0),
-                    column_gap: Px(30.0),
-                    grid_template_columns: RepeatedGridTrack::px(2, 400.0),
-                    ..default()
-                },
-                children![
-                    (
-                        widget::label("Audio Volume"),
-                        Node {
-                            justify_self: JustifySelf::End,
-                            ..default()
-                        }
-                    ),
-                    volume_widget(),
-                ],
-            ),
+            settings_grid(),
             widget::button("Back", enter_title_screen),
         ],
     ));
 }
 
+fn settings_grid() -> impl Bundle {
+    (
+        Name::new("Settings Grid"),
+        Node {
+            display: Display::Grid,
+            row_gap: Px(10.0),
+            column_gap: Px(30.0),
+            grid_template_columns: RepeatedGridTrack::px(2, 400.0),
+            ..default()
+        },
+        children![
+            (
+                widget::label("Audio Volume"),
+                Node {
+                    justify_self: JustifySelf::End,
+                    ..default()
+                }
+            ),
+            volume_widget(),
+        ],
+    )
+}
+
 fn volume_widget() -> impl Bundle {
     (
+        Name::new("Volume Widget"),
         Node {
             justify_self: JustifySelf::Start,
             ..default()
@@ -56,6 +61,7 @@ fn volume_widget() -> impl Bundle {
         children![
             widget::button_small("-", lower_volume),
             (
+                Name::new("Current Volume"),
                 Node {
                     padding: UiRect::horizontal(Px(10.0)),
                     justify_content: JustifyContent::Center,
@@ -86,13 +92,11 @@ fn raise_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolu
 struct GlobalVolumeLabel;
 
 fn update_volume_label(
-    mut label: Single<&mut Text, With<GlobalVolumeLabel>>,
     global_volume: Res<GlobalVolume>,
+    mut label: Single<&mut Text, With<GlobalVolumeLabel>>,
 ) {
-    let factor = global_volume.volume.to_linear();
-    let percent = (factor * 100.0).round();
-    let text = format!("{}%", percent);
-    label.0 = text;
+    let percent = 100.0 * global_volume.volume.to_linear();
+    label.0 = format!("{percent:3.0}%");
 }
 
 fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
