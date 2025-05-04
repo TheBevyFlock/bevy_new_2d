@@ -95,10 +95,9 @@ fn update_volume_label(
     mut label: Single<&mut Text, With<GlobalVolumeLabel>>,
     global_volume: Res<GlobalVolume>,
 ) {
-    let factor = global_volume.volume.to_linear();
-    let percent = (factor * 100.0).round();
-    let text = format!("{percent}%");
-    label.0 = text;
+    let linear = global_volume.volume.to_linear();
+    let percent = (linear * 100.0).round();
+    label.0 = format!("{percent}%");
 }
 
 fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
