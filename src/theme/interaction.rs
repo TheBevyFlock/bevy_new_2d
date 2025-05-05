@@ -4,15 +4,12 @@ use crate::{asset_tracking::LoadResource, audio::sound_effect};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<InteractionPalette>();
+    app.add_systems(Update, apply_interaction_palette);
+
     app.register_type::<InteractionAssets>();
     app.load_resource::<InteractionAssets>();
-    app.add_systems(
-        Update,
-        (
-            apply_interaction_palette,
-            trigger_interaction_sound_effect.run_if(resource_exists::<InteractionAssets>),
-        ),
-    );
+    app.add_observer(play_on_hover_sound_effect);
+    app.add_observer(play_on_click_sound_effect);
 }
 
 /// Palette for widget interactions. Add this to an entity that supports
@@ -48,7 +45,7 @@ struct InteractionAssets {
     #[dependency]
     hover: Handle<AudioSource>,
     #[dependency]
-    press: Handle<AudioSource>,
+    click: Handle<AudioSource>,
 }
 
 impl FromWorld for InteractionAssets {
@@ -56,22 +53,37 @@ impl FromWorld for InteractionAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             hover: assets.load("audio/sound_effects/button_hover.ogg"),
-            press: assets.load("audio/sound_effects/button_press.ogg"),
+            click: assets.load("audio/sound_effects/button_click.ogg"),
         }
     }
 }
 
-fn trigger_interaction_sound_effect(
-    interaction_query: Query<&Interaction, Changed<Interaction>>,
-    interaction_assets: Res<InteractionAssets>,
+fn play_on_hover_sound_effect(
+    trigger: Trigger<Pointer<Over>>,
     mut commands: Commands,
+    interaction_assets: Option<Res<InteractionAssets>>,
+    interaction_query: Query<(), With<Interaction>>,
 ) {
-    for interaction in &interaction_query {
-        let source = match interaction {
-            Interaction::Hovered => interaction_assets.hover.clone(),
-            Interaction::Pressed => interaction_assets.press.clone(),
-            _ => continue,
-        };
-        commands.spawn(sound_effect(source));
+    let Some(interaction_assets) = interaction_assets else {
+        return;
+    };
+
+    if interaction_query.contains(trigger.target()) {
+        commands.spawn(sound_effect(interaction_assets.hover.clone()));
+    }
+}
+
+fn play_on_click_sound_effect(
+    trigger: Trigger<Pointer<Click>>,
+    mut commands: Commands,
+    interaction_assets: Option<Res<InteractionAssets>>,
+    interaction_query: Query<(), With<Interaction>>,
+) {
+    let Some(interaction_assets) = interaction_assets else {
+        return;
+    };
+
+    if interaction_query.contains(trigger.target()) {
+        commands.spawn(sound_effect(interaction_assets.click.clone()));
     }
 }
