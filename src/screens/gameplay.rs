@@ -2,16 +2,10 @@
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{
-    demo::level::{spawn_level, start_gameplay_music, stop_gameplay_music},
-    screens::Screen,
-};
+use crate::{demo::level::spawn_level, screens::Screen};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Gameplay), spawn_level);
-
-    app.add_systems(OnEnter(Screen::Gameplay), start_gameplay_music);
-    app.add_systems(OnExit(Screen::Gameplay), stop_gameplay_music);
 
     app.add_systems(
         Update,
