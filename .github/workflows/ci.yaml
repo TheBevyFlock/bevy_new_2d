@@ -92,7 +92,7 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run clippy lints
-        run: cargo clippy --locked --workspace --all-targets --all-features --no-deps
+        run: cargo clippy --locked --workspace --all-targets --all-features
 
   # Check formatting.
   format:
