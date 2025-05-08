@@ -191,10 +191,13 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         uses: cargo-bins/cargo-binstall@v1.12.3
 
+      - name: Install Bevy CLI
+        if: ${{ env.is_platform_enabled == 'true' }}
+        run: cargo binstall --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' --locked bevy_cli
+
       - name: Build web bundle and add it to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
-          cargo binstall --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' --locked bevy_cli
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
           mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
