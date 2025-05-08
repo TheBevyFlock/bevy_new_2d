@@ -21,7 +21,7 @@ A few libraries that the authors of this template have vetted and think you migh
 | [`bevy_egui`](https://github.com/mvlabat/bevy_egui)                                    | UI / Debugging | UI framework (great for debug UI)     |
 | [`tiny_bail`](https://github.com/benfrankel/tiny_bail)                                 | Error handling | Error handling macros                 |
 
-In particular:.
+In particular:
 
 - `leafwing-input-manager` is very likely to be upstreamed into Bevy in the near future.
 - `bevy-inspector-egui` and `bevy_mod_debugdump` help fill the gap until Bevy has its own editor.
@@ -29,6 +29,18 @@ In particular:.
 - `bevy_cobweb_ui` is well-aligned with `bevy_ui` and helps fill the gap until Bevy has a full collection of UI widgets and features.
 
 None of these are necessary, but they can save you a lot of time and effort.
+
+## CLI tools
+
+A few command-line tools that you may find useful:
+
+|Name|Description|
+|-|-|
+|[`bevy_lint`](https://thebevyflock.github.io/bevy_cli/bevy_lint/)|Checks for good practices and footguns specific to Bevy|
+
+> [!NOTE]
+>
+> `bevy_lint` is run in CI by default (see [workflows](./workflows.md)), but you do not need it to use this template.
 
 ## VS Code extensions
 
@@ -70,6 +82,32 @@ Here's a quick guide for porting this template's [VS Code snippets](../.vscode/b
 - For the other templates, you might want to set the applicability to rust modules, statements, and expressions.
 
 To make it easier to enable or disable these live templates for different projects, you can put them in a template group called `Bevy`.
+
+## Debugging with RustRover  
+
+This template comes with a Cargo Run Configuration that disables dynamic linking (and dev tools) so that the debugger will work out of the box. If you'd like to enable those features in the debugger, it'll require some setup:
+
+1. Run `rustc --print target-libdir` and copy the output. You can specify a channel here with e.g. `rustc +nightly --print target-libdir`
+2. Edit the Cargo Run Configuration named "Run Native Debug" (it should be the one without a terminal icon).
+3. Add the following Environment Variable:
+  a. Linux or Mac: `LD_LIBRARY_PATH` = `./target/debug/deps:<LIBDIR_PATH>` where `<LIBDIR_PATH>` is the output from step 1.
+  b. Windows: `PATH` = `.\target\debug\deps:<LIBDIR_PATH>`, where `<LIBDIR_PATH>` is the output from step 1.
+3. Remove `--no-default-features` from the command in the Run Configuration.
+4. Click Apply and then Debug, and if everything is correct it should launch the game.
+
+If you want to use multiple different channels for the same project, you will need to add in a `LIBDIR_PATH` for every channel you intend on using.
+
+If you're still having issues, please ensure that the channels in the path and the Run Configuration match, and that there are no extra spaces (especially at the beginning or end).
+
+> [!NOTE]
+> <details>
+> <summary>Attaching the debugger to a running game</summary>
+>
+> If you started your game with a Shell Script Run Configuration, you can attach the debugger to it while it's running by using `Run > Attach to Process` and selecting the process with the same name as your game (not the one named `bevy`).
+>
+> This does not work for web builds.
+> </details>
+
 
 ## Other templates
 

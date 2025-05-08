@@ -8,6 +8,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 
 - Run tests.
 - Run Clippy lints.
+- Run [Bevy lints](https://thebevyflock.github.io/bevy_cli/bevy_lint/).
 - Check formatting.
 - Check documentation.
 
@@ -22,7 +23,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 
 The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and do the following:
 
-- Create a release build for Windows, macOS, Linux, and web.
+- Create a release build for Windows, macOS, Linux, and web (configurable).
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
 - (Optional) Upload to [itch.io](https://itch.io).
 
@@ -37,7 +38,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 </details>
 
 > [!IMPORTANT]
-> Using this workflow requires some setup. We will go through this now.
+> Using this workflow requires some setup. We'll go through this now.
 
 ### Configure environment variables
 

@@ -8,15 +8,16 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  RUSTFLAGS: --deny warnings
+  RUSTFLAGS: --deny warnings -C debuginfo=1
   RUSTDOCFLAGS: --deny warnings
+  LINTER_TOOLCHAIN: nightly-2025-04-03
 
 jobs:
   # Run tests.
   test:
     name: Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,17 +34,18 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run tests
-        run: |
-          cargo test --locked --workspace --all-features --all-targets
-          # Running doc tests separately is a workaround for https://github.com/rust-lang/cargo/issues/6669
-          # Setting LD_LIBRARY_PATH is a workaround for https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350
-          LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
+        run: cargo test --locked --workspace --all-features --all-targets
+
+      # Running doc tests separately is a workaround for <https://github.com/rust-lang/cargo/issues/6669>.
+      - name: Run doctests
+        # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
+        run: LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
 
   # Check that the game builds for web.
   build-web:
     name: Build for web
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -65,17 +67,16 @@ jobs:
         uses: cargo-bins/cargo-binstall@v1.12.3
 
       - name: Install Bevy CLI
-        run: cargo binstall --no-confirm --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
+        run: cargo binstall --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' --locked bevy_cli
 
       - name: Build for web
-        run: |
-          bevy build --locked --workspace --all-targets --yes web
+        run: bevy build --locked --workspace --all-targets --yes web
 
   # Run clippy lints.
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -94,13 +95,13 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run clippy lints
-        run: cargo clippy --locked --workspace --all-targets --all-features -- --deny warnings
+        run: cargo clippy --locked --workspace --all-targets --all-features
 
   # Check formatting.
   format:
     name: Format
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -117,7 +118,7 @@ jobs:
   doc:
     name: Docs
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -135,3 +136,26 @@ jobs:
 
       - name: Check documentation
         run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
+
+  # Run Bevy lints.
+  bevy-lint:
+    name: Bevy linter
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install Bevy linter
+        uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
+
+      - name: Run Bevy linter
+        run: bevy_lint --locked --workspace --all-targets --all-features
