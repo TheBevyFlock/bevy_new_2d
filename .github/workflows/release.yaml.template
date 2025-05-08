@@ -196,8 +196,8 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
-      - name: Install cargo-binstall (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
+      - name: Install cargo-binstall
+        if: ${{ env.is_platform_enabled == 'true' }}
         uses: cargo-bins/cargo-binstall@v1.12.3
 
       - name: Install Bevy CLI
