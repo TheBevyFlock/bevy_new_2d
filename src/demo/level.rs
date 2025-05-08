@@ -33,8 +33,8 @@ impl FromWorld for LevelAssets {
 /// A system that spawns the main level.
 pub fn spawn_level(
     mut commands: Commands,
-    player_assets: Res<PlayerAssets>,
     level_assets: Res<LevelAssets>,
+    player_assets: Res<PlayerAssets>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     commands.spawn((
