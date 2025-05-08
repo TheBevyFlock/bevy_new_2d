@@ -42,12 +42,12 @@ pub fn spawn_level(
         Transform::default(),
         Visibility::default(),
         StateScoped(Screen::Gameplay),
-        children![player(400.0, &player_assets, &mut texture_atlas_layouts)],
-    ));
-
-    commands.spawn((
-        Name::new("Level Music"),
-        StateScoped(Screen::Gameplay),
-        music(level_assets.music.clone()),
+        children![
+            player(400.0, &player_assets, &mut texture_atlas_layouts),
+            (
+                Name::new("Gameplay Music"),
+                music(level_assets.music.clone())
+            )
+        ],
     ));
 }
