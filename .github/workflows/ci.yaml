@@ -8,7 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  RUSTFLAGS: --deny warnings
+  RUSTFLAGS: --deny warnings -C debuginfo=1
   RUSTDOCFLAGS: --deny warnings
   LINTER_TOOLCHAIN: nightly-2025-04-03
 
@@ -28,17 +28,18 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
+      - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run tests
-        run: |
-          cargo test --locked --workspace --all-features --all-targets
-          # Running doc tests separately is a workaround for https://github.com/rust-lang/cargo/issues/6669
-          # Setting LD_LIBRARY_PATH is a workaround for https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350
-          LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
+        run: cargo test --locked --workspace --all-features --all-targets
+
+      # Running doc tests separately is a workaround for <https://github.com/rust-lang/cargo/issues/6669>.
+      - name: Run doctests
+        # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
+        run: LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
 
   # Check that the game builds for web.
   build-web:
@@ -57,17 +58,16 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
+      - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install Bevy CLI
-        run: cargo install --git=https://github.com/TheBevyFlock/bevy_cli --locked bevy_cli
+        run: cargo install --git='https://github.com/TheBevyFlock/bevy_cli' --locked bevy_cli
 
       - name: Build for web
-        run: |
-          bevy build --locked --workspace --all-targets --yes web
+        run: bevy build --locked --workspace --all-targets --yes web
 
   # Run clippy lints.
   clippy:
@@ -86,13 +86,13 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
+      - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run clippy lints
-        run: cargo clippy --locked --workspace --all-targets --all-features -- --deny warnings
+        run: cargo clippy --locked --workspace --all-targets --all-features --no-deps
 
   # Check formatting.
   format:
@@ -126,7 +126,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
+      - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
@@ -146,7 +146,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
+      - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}

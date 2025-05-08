@@ -182,7 +182,7 @@ jobs:
         with:
           targets: ${{ matrix.targets }}
 
-      - name: Populate cargo cache
+      - name: Restore Rust cache
         if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
         uses: Swatinem/rust-cache@v2
         with:
