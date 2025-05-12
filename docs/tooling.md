@@ -47,7 +47,7 @@ There are many other Bevy templates out there.
 You can find some of them in the [templates category](https://bevyengine.org/assets/#templates) on Bevy Assets.
 
 > [!TIP]
-> Even if you don't end up using them directly, they can be very useful as learning material!
+> Even if you don't end up using them directly, they can be very helpful as learning material!
 
 # IDE integration
 
