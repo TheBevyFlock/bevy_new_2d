@@ -41,6 +41,10 @@ A few command-line tools that you may find useful:
 | [`oxipng`](https://github.com/shssoichiro/oxipng)                 | Lossless PNG compression (may help reduce file sizes for web) |
 | [`gifski`](https://github.com/ImageOptim/gifski)                  | High-quality GIF encoder (good for animated itch.io content)  |
 
+> [!NOTE]
+>
+> `bevy_lint` already runs in CI by default (see [workflows](./workflows.md)).
+
 ## Other templates
 
 There are many other Bevy templates out there.
@@ -50,10 +54,6 @@ You can find some of them in the [templates category](https://bevyengine.org/ass
 > Even if you don't end up using them directly, they can be very helpful as learning material!
 
 # IDE integration
-
-> [!NOTE]
->
-> `bevy_lint` already runs in CI by default (see [workflows](./workflows.md)).
 
 ## VS Code extensions
 
