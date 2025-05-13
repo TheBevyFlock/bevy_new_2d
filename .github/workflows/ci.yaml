@@ -38,10 +38,9 @@ jobs:
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Set LD_LIBRARY_PATH
-        id: ld_library_path
         run: |
           # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
-          echo "LD_LIBRARY_PATH=$(rustc --print target-libdir)" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$(rustc --print target-libdir)" >>"${GITHUB_ENV}"
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
