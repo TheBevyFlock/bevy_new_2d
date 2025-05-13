@@ -45,13 +45,12 @@ jobs:
         run: |
           # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
           echo "LD_LIBRARY_PATH=$(rustc --print target-libdir)" >> $GITHUB_ENV
-          echo "ld_library_path=$(rustc --print target-libdir)" >> $GITHUB_OUTPUT
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
-          cache-directories: ${{ steps.ld_library_path.outputs.ld_library_path }}
+          cache-directories: ${{ env.LD_LIBRARY_PATH }}
 
       - name: Run tests
         run: cargo nextest run --locked --workspace --all-features --all-targets --no-fail-fast --no-tests warn
