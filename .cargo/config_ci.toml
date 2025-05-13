@@ -43,6 +43,7 @@ rustflags = [
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
+    "GARBAGE",
 ]
 rustdocflags = [
     # Mold linker
