@@ -7,7 +7,7 @@ codegen-backend = true
 [profile.dev]
 codegen-backend = "cranelift"
 
-# compile deps with llvm still for runtime perf
+# Compile deps with LLVM because cranelift can crash the test runner otherwise
 [profile.dev.package."*"]
 codegen-backend = "llvm"
 
