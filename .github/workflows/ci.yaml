@@ -31,11 +31,8 @@ jobs:
       - name: Active CI cargo config
         run: mv .cargo/config_ci.toml .cargo/config.toml
 
-      - name: Install cargo binstall
-        uses: cargo-bins/cargo-binstall@main
-
       - name: Install nextest
-        run: cargo binstall cargo-nextest --secure --force
+        uses: taiki-e/install-action@nextest
 
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
