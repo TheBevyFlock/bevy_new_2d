@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-    
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -54,11 +54,11 @@ jobs:
           cache-directories: ${{ steps.ld_library_path.outputs.ld_library_path }}
 
       - name: Run tests
-        run: cargo nextest run --config 'profile.dev.package."*".opt-level=1' --locked --workspace --all-features --all-targets --no-fail-fast --no-tests warn
+        run: cargo nextest run --locked --workspace --all-features --all-targets --no-fail-fast --no-tests warn
 
       # Running doc tests separately is a workaround for <https://github.com/rust-lang/cargo/issues/6669>.
       - name: Run doctests
-        run: cargo test --config 'profile.dev.package."*".opt-level=1' --locked --workspace --all-features --doc
+        run: cargo test --locked --workspace --all-features --doc
 
   # Check that the game builds for web.
   check-web:
