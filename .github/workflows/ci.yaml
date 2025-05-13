@@ -75,7 +75,7 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Check web build
-        run: RUSTFLAGS='--deny warnings -C debuginfo=line-tables-only --cfg getrandom_backend="wasm_js"' cargo check --config 'profile.web.inherits="dev"' --features dev --no-default-features --profile web --target wasm32-unknown-unknown
+        run: cargo check --config 'profile.web.inherits="dev"' --features dev --no-default-features --profile web --target wasm32-unknown-unknown
 
 
   # Run clippy lints.
