@@ -26,7 +26,8 @@ linker = "lld"
 rustflags = [
     "-Dwarnings",
     "-Cdebuginfo=line-tables-only",
-    "-Cgetrandom_backend=\"wasm_js\"",
+    "--cfg",
+    "getrandom_backend=\"wasm_js\"",
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
