@@ -24,15 +24,15 @@ codegen-backend = "llvm"
 # so we cannot use mold either: https://github.com/flathub/org.freedesktop.Sdk.Extension.rust-stable/issues/168
 linker = "lld"
 rustflags = [
-    "-D warnings",
-    "-C debuginfo=line-tables-only",
-    "-C getrandom_backend=\"wasm_js\"",
+    "-Dwarnings",
+    "-Cdebuginfo=line-tables-only",
+    "-Cgetrandom_backend=\"wasm_js\"",
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
 ]
 rustdocflags = [
-    "-D warnings",
+    "-Dwarnings",
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
@@ -42,8 +42,8 @@ rustdocflags = [
 [target.x86_64-unknown-linux-gnu]
 linker = "clang"
 rustflags = [
-    "-D warnings",
-    "-C debuginfo=line-tables-only",
+    "-Dwarnings",
+    "-Cdebuginfo=line-tables-only",
     # Mold linker
     "-Clink-arg=-fuse-ld=mold",
     # Nightly
@@ -51,7 +51,7 @@ rustflags = [
     "-Zthreads=0",
 ]
 rustdocflags = [
-    "-D warnings",
+    "-Dwarnings",
     # Mold linker
     "-Clink-arg=-fuse-ld=mold",
     # Nightly
