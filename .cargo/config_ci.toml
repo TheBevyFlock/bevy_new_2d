@@ -27,11 +27,14 @@ rustflags = [
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
+    "--deny warnings",
+    "-C debuginfo=line-tables-only",
 ]
 rustdocflags = [
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
+    "--deny warnings",
 ]
 
 
@@ -43,6 +46,8 @@ rustflags = [
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
+    "--deny warnings",
+    "-C debuginfo=line-tables-only",
     "GARBAGE",
 ]
 rustdocflags = [
@@ -51,4 +56,5 @@ rustdocflags = [
     # Nightly
     "-Zshare-generics=y",
     "-Zthreads=0",
+    "--deny warnings",
 ]
