@@ -20,11 +20,8 @@ codegen-backend = "llvm"
 codegen-backend = "llvm"
 
 # Override the high opt-level from the dev profile for the test profile
-[profile.test]
-opt-level = 0
-
 [profile.test.package."*"]
-opt-level = 0
+opt-level = 1
 
 [target.wasm32-unknown-unknown]
 # Clang does not support wasm32-unknown-unknown,
