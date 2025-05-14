@@ -10,6 +10,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  # Reduce compile time and cache size.
+  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0 -Cincremental=no -Cdebuginfo=line-tables-only
+  RUSTDOCFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
+
 jobs:
   # Run tests.
   test:
@@ -22,14 +27,6 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
-        with:
-          components: rustc-codegen-cranelift-preview
-
-      - name: Install mold
-        uses: rui314/setup-mold@v1
-
-      - name: Active CI cargo config
-        run: mv .cargo/config_ci.toml .cargo/config.toml
 
       - name: Install nextest
         uses: taiki-e/install-action@nextest
@@ -69,9 +66,6 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Active CI cargo config
-        run: mv .cargo/config_ci.toml .cargo/config.toml
-
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev lld
 
@@ -96,13 +90,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
-          components: clippy, rustc-codegen-cranelift-preview
-
-      - name: Install mold
-        uses: rui314/setup-mold@v1
-
-      - name: Active CI cargo config
-        run: mv .cargo/config_ci.toml .cargo/config.toml
+          components: clippy
 
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
@@ -144,14 +132,6 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
-        with:
-          components: rustc-codegen-cranelift-preview
-
-      - name: Install mold
-        uses: rui314/setup-mold@v1
-
-      - name: Active CI cargo config
-        run: mv .cargo/config_ci.toml .cargo/config.toml
 
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
@@ -184,15 +164,6 @@ jobs:
 
       - name: Install Bevy linter
         uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
-
-      - name: Add cranelift to rustc
-        run: rustup component add rustc-codegen-cranelift-preview
-
-      - name: Install mold
-        uses: rui314/setup-mold@v1
-
-      - name: Active CI cargo config
-        run: mv .cargo/config_ci.toml .cargo/config.toml
 
       - name: Run Bevy linter
         run: bevy_lint --locked --workspace --all-targets --all-features
