@@ -31,13 +31,12 @@ jobs:
       - name: Install nextest
         uses: taiki-e/install-action@nextest
 
-      - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: Install Bevy dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
+      # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
       - name: Set LD_LIBRARY_PATH
-        run: |
-          # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
-          echo "LD_LIBRARY_PATH=$(rustc --print target-libdir)" >>"${GITHUB_ENV}"
+        run: echo "LD_LIBRARY_PATH=$(rustc --print target-libdir)" >>"${GITHUB_ENV}"
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
@@ -52,9 +51,9 @@ jobs:
       - name: Run doctests
         run: cargo test --locked --workspace --all-features --doc
 
-  # Check that the game builds for web.
+  # Check that the web build compiles.
   check-web:
-    name: Check web build
+    name: Check web
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -66,21 +65,21 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev lld
+      - name: Install Bevy dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Check web build
-        run: cargo check --config 'profile.web.inherits="dev"' --features dev --no-default-features --profile web --target wasm32-unknown-unknown
+      - name: Check web
+        run: cargo check --config 'profile.web.inherits="dev"' --no-default-features --features dev --profile web --target wasm32-unknown-unknown
 
 
-  # Run clippy lints.
-  clippy:
-    name: Clippy
+  # Run Clippy lints.
+  clippy-lints:
+    name: Clippy lints
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -92,8 +91,8 @@ jobs:
         with:
           components: clippy
 
-      - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: Install Bevy dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
@@ -133,8 +132,8 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
 
-      - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: Install Bevy dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
@@ -146,16 +145,16 @@ jobs:
         run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
 
   # Run Bevy lints.
-  bevy-lint:
-    name: Bevy linter
+  bevy-lints:
+    name: Bevy lints
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - name: Install Bevy dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
@@ -165,5 +164,5 @@ jobs:
       - name: Install Bevy linter
         uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
 
-      - name: Run Bevy linter
+      - name: Run Bevy lints
         run: bevy_lint --locked --workspace --all-targets --all-features
