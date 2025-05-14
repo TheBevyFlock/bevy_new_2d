@@ -14,6 +14,10 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 # Configure the release workflow by editing the following values.
 env:
   # The base filename of the binary produced by `cargo build`.
@@ -84,7 +88,7 @@ env:
 jobs:
   # Forward some environment variables as outputs of this job.
   # This is needed because the `env` context can't be used in the `if:` condition of a job:
-  # <https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability>.
+  # <https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability>
   forward-env:
     runs-on: ubuntu-latest
     steps:
@@ -97,7 +101,7 @@ jobs:
   get-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Get version number from tag
+      - name: Determine version number
         id: tag
         run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
     outputs:
@@ -120,7 +124,6 @@ jobs:
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
-            features: bevy/wayland
             package_ext: .zip
             runner: ubuntu-latest
 
@@ -189,7 +192,7 @@ jobs:
           shared-key: release
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install dependencies (Linux)
+      - name: Install Bevy dependencies (Linux)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
@@ -199,15 +202,23 @@ jobs:
 
       - name: Install Bevy CLI
         if: ${{ env.is_platform_enabled == 'true' }}
-        run: cargo install --git='https://github.com/TheBevyFlock/bevy_cli' --locked bevy_cli
+        run: cargo install --locked --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
-      - name: Build web bundle and add it to app (Web)
+      - name: Install cargo-binstall (Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Install wasm-opt (Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
+        run: cargo binstall --locked --no-confirm wasm-opt
+
+      - name: Build and add web bundle to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
           mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
-      - name: Build binaries and add them to app (non-Web)
+      - name: Build and add binaries to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
