@@ -14,11 +14,11 @@ on:
         required: true
         type: string
 
-{%- raw %}
+{% raw -%}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
-{% endraw -%}
+{%- endraw %}
 
 # Configure the release workflow by editing the following values.
 env:
@@ -86,7 +86,7 @@ env:
   # See: <https://github.com/orgs/community/discussions/27059>.
   use_github_cache: false
 
-{%- raw %}
+{% raw -%}
 jobs:
   # Forward some environment variables as outputs of this job.
   # This is needed because the `env` context can't be used in the `if:` condition of a job:
@@ -341,4 +341,4 @@ jobs:
               tmp/"${channel}"/* \
               '${{ env.upload_to_itch }}':"${channel#package-}"
           done
-{% endraw -%}
+{%- endraw %}
