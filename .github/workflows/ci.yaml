@@ -172,8 +172,7 @@ jobs:
           shared-key: web-dev
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install 
-      dependencies
+      - name: Install Bevy dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check web
