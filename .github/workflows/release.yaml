@@ -4,7 +4,7 @@ on:
   # Trigger this workflow when a tag is pushed in the format `v1.2.3`.
   push:
     tags:
-      # Pattern syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+      # Pattern syntax: <https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet>.
       - "v[0-9]+.[0-9]+.[0-9]+*"
   # Trigger this workflow manually via workflow dispatch.
   workflow_dispatch:
@@ -13,6 +13,10 @@ on:
         description: "Version number in the format `v1.2.3`"
         required: true
         type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
 
 # Configure the release workflow by editing the following values.
 env:
@@ -41,7 +45,7 @@ env:
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
-  # Must contain only A-Z, a-z, 0-9, hyphen, and period: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
+  # Must contain only A-Z, a-z, 0-9, hyphen, and period: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier>.
   app_id: the-bevy-flock.bevy-new-2d
 
   # The base filename of the binary in the package produced by this workflow.
@@ -60,22 +64,22 @@ env:
 
   # The short display name of the app produced by this workflow.
   # Applies to macOS releases.
-  # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
+  # Must be 15 or fewer characters: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename>.
   # Defaults to `app_display_name` if commented out.
   #app_short_name: Bevy New 2D
 
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
-  # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
+  # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
 
   # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
-  # See: https://github.com/orgs/community/discussions/27059
+  # See: <https://github.com/orgs/community/discussions/27059>.
   use_github_cache: false
 
 jobs:
   # Forward some environment variables as outputs of this job.
   # This is needed because the `env` context can't be used in the `if:` condition of a job:
-  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+  # <https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability>
   forward-env:
     runs-on: ubuntu-latest
     steps:
@@ -88,7 +92,7 @@ jobs:
   get-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Get version number from tag
+      - name: Determine version number
         id: tag
         run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
     outputs:
@@ -111,7 +115,6 @@ jobs:
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
-            features: bevy/wayland
             package_ext: .zip
             runner: ubuntu-latest
 
@@ -128,7 +131,7 @@ jobs:
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
     permissions:
-      # Required to create a GitHub release: https://docs.github.com/en/rest/releases/releases#create-a-release
+      # Required to create a GitHub release: <https://docs.github.com/en/rest/releases/releases#create-a-release>.
       contents: write
     defaults:
       run:
@@ -148,7 +151,7 @@ jobs:
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
           # macOS environment:
-          if [ '${{ matrix.platform }}' == 'macos' ]; then
+          if [ '${{ matrix.platform }}' = 'macos' ]; then
             echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # macOS 11.0 Big Sur is the first version to support universal binaries.
             echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
           fi
@@ -177,9 +180,10 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
         uses: Swatinem/rust-cache@v2
         with:
+          shared-key: release
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install dependencies (Linux)
+      - name: Install Bevy dependencies (Linux)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
@@ -189,26 +193,30 @@ jobs:
 
       - name: Install cargo-binstall
         if: ${{ env.is_platform_enabled == 'true' }}
-        uses: cargo-bins/cargo-binstall@v1.12.3
+        uses: cargo-bins/cargo-binstall@main
 
       - name: Install Bevy CLI
         if: ${{ env.is_platform_enabled == 'true' }}
-        run: cargo binstall --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' --locked bevy_cli
+        run: cargo binstall --locked --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
-      - name: Build web bundle and add it to app (Web)
+      - name: Install wasm-opt (Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
+        run: cargo binstall --locked --no-confirm wasm-opt
+
+      - name: Build and add web bundle to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
           mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
-      - name: Build binaries and add them to app (non-Web)
+      - name: Build and add binaries to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
             bevy build --locked --release --target="${target}" --features='${{ matrix.features }}'
             mv target/"${target}"/release/'${{ env.cargo_build_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
           done
-          if [ '${{ matrix.platform }}' == 'macos' ]; then
+          if [ '${{ matrix.platform }}' = 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
           else
             mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
@@ -216,7 +224,7 @@ jobs:
 
       - name: Add assets to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
-        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
+        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist.
 
       - name: Add metadata to app (macOS)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'macos' }}
@@ -256,7 +264,7 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'windows' }}
         working-directory: tmp/app
         run: |
-          if [ '${{ matrix.platform }}' == 'macos' ]; then
+          if [ '${{ matrix.platform }}' = 'macos' ]; then
             ln -s /Applications .
             hdiutil create -fs HFS+ -volname '${{ env.app_package_name }}' -srcfolder . '${{ env.package }}'
           else
