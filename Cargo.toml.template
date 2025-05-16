@@ -102,5 +102,5 @@ codegen-units = 1
 # Default to release profile values.
 inherits = "release"
 # Optimize with size in mind.
-# Reduces performance slightly; significant improvements to size and build time.
+# Reduces performance slightly; significant improvements to build time and size.
 #opt-level = "s"
