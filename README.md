@@ -99,7 +99,7 @@ to help run your game from your IDE.
   dx serve --hot-patch
   ```
 
-  Edit an annotated system's code while the game is running, then save the file.
+  Now edit an annotated system's code while the game is running, and save the file.
   You'll see `Status: Hot-patching...` in the CLI if you've got it working.
 </details>
 
