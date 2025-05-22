@@ -85,7 +85,7 @@ to help run your game from your IDE.
   [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
   section and comment out the `bevy/dynamic_linking` feature in [`Cargo.toml`](./Cargo.toml)!
 
-  Next, annotate your systems to enable hot-patching for them.
+  Annotate your systems to enable hot-patching for them.
   The functions they call can be hot-patched too; no annotation required!
 
   ```rust
@@ -93,14 +93,14 @@ to help run your game from your IDE.
   fn my_system() {}
   ```
 
-  Finally, use the following command to run your game with hot-patching enabled:
+  Use the following command to run your game with hot-patching enabled:
 
   ```shell
   dx serve --hot-patch
   ```
 
   Edit one of your annotated systems while your game is running and save the file.
-  You'll see `Status: Hot-patching...` in the CLI if you've got it working.
+  If you've got it working, you'll see `Status: Hot-patching...` in the CLI.
 </details>
 
 ## Release your game
