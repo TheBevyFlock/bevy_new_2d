@@ -14,7 +14,7 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 
 > [!TIP]
 > <details>
->   <summary>You may want to set up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI.</summary>
+>   <summary>You may want to set up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI...</summary>
 >
 >   <img src="img/workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
 > </details>
@@ -28,7 +28,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 - (Optional) Upload to [itch.io](https://itch.io).
 
 <details>
-  <summary>This workflow can also be triggered manually.</summary>
+  <summary>This workflow can also be triggered manually...</summary>
 
   In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
@@ -45,7 +45,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 The release workflow can be configured by tweaking the environment variables in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
 
 <details>
-  <summary>Click here for a list of variables and how they're used.</summary>
+  <summary>List of environment variables and how they're used...</summary>
 
   ```yaml
   # The base filename of the binary produced by `cargo build`.
@@ -116,7 +116,7 @@ The initial values are set automatically by `bevy new`, but you can edit them yo
 #### Add butler credentials
 
 <details>
-  <summary>In your GitHub repository, navigate to <code>Settings > Secrets and variables > Actions</code>.</summary>
+  <summary>In your GitHub repository, navigate to <code>Settings > Secrets and variables > Actions</code>...</summary>
 
   ![A screenshot showing where to add secrets in the GitHub Actions settings](./img/workflow-secrets.png)
 </details>

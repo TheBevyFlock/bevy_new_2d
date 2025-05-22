@@ -55,28 +55,52 @@ This template also comes with [VS Code tasks](./.vscode/tasks.json) and [JetBrai
 to help run your game from your IDE.
 
 <details>
-  <summary>Run release builds</summary>
+  <summary>Installing Linux dependencies...</summary>
 
-- Use `bevy run --release` to run a native release build.
-- Use `bevy run --release web` to run a web release build.
-
+  If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+  Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
+  Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
 </details>
 
 <details>
-  <summary>Linux dependencies</summary>
+  <summary>Running release builds...</summary>
 
-If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
-Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
-Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
+  - Use `bevy run --release` to run a native release build.
+  - Use `bevy run --release web` to run a web release build.
+</details>
 
+
+<details>
+  <summary>(Optional) Improving compile times...</summary>
+
+  [`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
+  After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
 </details>
 
 <details>
-    <summary>(Optional) Improve your compile times</summary>
+  <summary>(Optional) Hot-patching with Dioxus...</summary>
 
-[`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
-After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
+  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to
+  install `dioxus-cli` and set up your linker. Make sure to read the
+  [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
+  section and comment out the `bevy/dynamic_linking` feature in [`Cargo.toml`](./Cargo.toml)!
 
+  Next, annotate your systems to enable hot-patching for them.
+  The functions they call can be hot-patched too; no annotation required!
+
+  ```rust
+  #[cfg_attr(feature = "dev_native", hot)]
+  fn my_system() {}
+  ```
+
+  Finally, use the following command to run your game with hot-patching enabled:
+
+  ```shell
+  dx serve --hot-patch
+  ```
+
+  Edit one of your annotated systems while your game is running and save the file.
+  You'll see `Status: Hot-patching...` in the CLI if you've got it working.
 </details>
 
 ## Release your game
