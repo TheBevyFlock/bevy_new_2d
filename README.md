@@ -100,7 +100,7 @@ to help run your game from your IDE.
   ```
 
   Now edit an annotated system's code while the game is running, and save the file.
-  You'll see `Status: Hot-patching...` in the CLI if you've got it working.
+  You'll see `Status: Hot-patching...` in the CLI if it's working.
 </details>
 
 ## Release your game
