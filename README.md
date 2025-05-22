@@ -55,20 +55,19 @@ This template also comes with [VS Code tasks](./.vscode/tasks.json) and [JetBrai
 to help run your game from your IDE.
 
 <details>
-  <summary>Installing Linux dependencies...</summary>
-
-  If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
-  Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
-  Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
-</details>
-
-<details>
   <summary>Running release builds...</summary>
 
   - Use `bevy run --release` to run a native release build.
   - Use `bevy run --release web` to run a web release build.
 </details>
 
+<details>
+  <summary>Installing Linux dependencies...</summary>
+
+  If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+  Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
+  Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
+</details>
 
 <details>
   <summary>(Optional) Improving compile times...</summary>
