@@ -79,9 +79,11 @@ to help run your game from your IDE.
 <details>
   <summary><ins>(Optional) Hot-patching with <code>subsecond</code></ins></summary>
 
-  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to
-  install `dioxus-cli` and set up your linker. Make sure to read the
-  [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
+  Hot-patching is an experimental feature that allows you to edit your game's code _while it's running_
+  and see the changes without having to recompile or restart.
+
+  To set this up, follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/).
+  Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
   section and comment out the `bevy/dynamic_linking` feature in [`Cargo.toml`](./Cargo.toml).
 
   Annotate your systems to enable hot-patching.
