@@ -77,7 +77,7 @@ to help run your game from your IDE.
 </details>
 
 <details>
-  <summary><ins>(Optional) Hot-patching with Dioxus</ins></summary>
+  <summary><ins>(Optional) Hot-patching with <code>subsecond</code></ins></summary>
 
   Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to
   install `dioxus-cli` and set up your linker. Make sure to read the
