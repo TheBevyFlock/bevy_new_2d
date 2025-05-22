@@ -55,14 +55,14 @@ This template also comes with [VS Code tasks](./.vscode/tasks.json) and [JetBrai
 to help run your game from your IDE.
 
 <details>
-  <summary>Running release builds...</summary>
+  <summary><ins>Running release builds</ins></summary>
 
   - Use `bevy run --release` to run a native release build.
   - Use `bevy run --release web` to run a web release build.
 </details>
 
 <details>
-  <summary>Installing Linux dependencies...</summary>
+  <summary><ins>Installing Linux dependencies</ins></summary>
 
   If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
   Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
@@ -70,14 +70,14 @@ to help run your game from your IDE.
 </details>
 
 <details>
-  <summary>(Optional) Improving compile times...</summary>
+  <summary><ins>(Optional) Improving compile times</ins></summary>
 
   [`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
   After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
 </details>
 
 <details>
-  <summary>(Optional) Hot-patching with Dioxus...</summary>
+  <summary><ins>(Optional) Hot-patching with Dioxus</ins></summary>
 
   Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to
   install `dioxus-cli` and set up your linker. Make sure to read the

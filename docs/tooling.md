@@ -69,7 +69,7 @@ If you're using [VS Code](https://code.visualstudio.com/), the following extensi
 
 > [!NOTE]
 > <details>
->   <summary>About the included <code>rust-analyzer</code> settings...</summary>
+>   <summary><ins>About the included <code>rust-analyzer</code> settings</ins></summary>
 >
 >   This template sets [`rust-analyzer.cargo.targetDir`](https://rust-analyzer.github.io/generated_config.html#rust-analyzer.cargo.targetDir)
 >   to `true` in [`.vscode/settings.json`](../.vscode/settings.json).
@@ -114,7 +114,7 @@ If you're still having issues, please ensure that the channels in the path and t
 
 > [!NOTE]
 > <details>
->   <summary>Attaching the debugger to a running game...</summary>
+>   <summary><ins>Attaching the debugger to a running game</ins></summary>
 >
 >   If you started your game with a Shell Script Run Configuration, you can attach the debugger to it while it's running by using `Run > Attach to Process` and selecting the process with the same name as your game (not the one named `bevy`).
 >
