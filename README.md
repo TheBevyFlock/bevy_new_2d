@@ -55,28 +55,67 @@ This template also comes with [VS Code tasks](./.vscode/tasks.json) and [JetBrai
 to help run your game from your IDE.
 
 <details>
-  <summary>Run release builds</summary>
+  <summary><ins>Running release builds</ins></summary>
 
-- Use `bevy run --release` to run a native release build.
-- Use `bevy run --release web` to run a web release build.
-
+  - Use `bevy run --release` to run a native release build.
+  - Use `bevy run --release web` to run a web release build.
 </details>
 
 <details>
-  <summary>Linux dependencies</summary>
+  <summary><ins>Installing Linux dependencies</ins></summary>
 
-If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
-Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
-Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
-
+  If you're using Linux, make sure you've installed Bevy's [Linux dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md).
+  Note that this template enables Wayland support, which requires additional dependencies as detailed in the link above.
+  Wayland is activated by using the `bevy/wayland` feature in the [`Cargo.toml`](./Cargo.toml).
 </details>
 
 <details>
-    <summary>(Optional) Improve your compile times</summary>
+  <summary><ins>(Optional) Improving compile times</ins></summary>
 
-[`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
-After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
+  [`.cargo/config_fast_builds.toml`](./.cargo/config_fast_builds.toml) contains documentation on how to set up your environment to improve compile times.
+  After you've fiddled with it, rename it to `.cargo/config.toml` to enable it.
+</details>
 
+<details>
+  <summary><ins>(Optional) Hot-patching with <code>subsecond</code></ins></summary>
+
+  Hot-patching is an experimental feature that allows you to edit your game's code _while it's running_
+  and see the changes without having to recompile or restart.
+
+  To set this up, follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/).
+  Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
+  section and update your [`Cargo.toml`](./Cargo.toml):
+
+  ```diff
+  [dependencies]
+  + bevy_simple_subsecond_system = { version = "0.1", optional = true }
+  
+  [features]
+  dev = [
+  -   "bevy/dynamic_linking",
+  +   #"bevy/dynamic_linking",
+  ]
+  dev_native = [
+  +   "dep:bevy_simple_subsecond_system",
+  ]
+  ```
+
+  Annotate your systems to enable hot-patching.
+  The functions they call can be hot-patched too; no additional annotations required!
+
+  ```rust
+  #[cfg_attr(feature = "dev_native", hot)]
+  fn my_system() {}
+  ```
+
+  Run your game with hot-patching enabled:
+
+  ```shell
+  dx serve --hot-patch
+  ```
+
+  Now edit an annotated system's code while the game is running, and save the file.
+  You should see `Status: Hot-patching...` in the CLI if you've got it working.
 </details>
 
 ## Release your game

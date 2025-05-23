@@ -2,33 +2,37 @@
 
 This template uses [GitHub workflows](https://docs.github.com/en/actions/using-workflows) for [CI / CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd), defined in [`.github/workflows/`](../.github/workflows).
 
+> [!WARNING]
+> GitHub puts a limit on free CI usage for [private repositories](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for--private-repositories), so tune your workflows accordingly!
+
 ## CI (testing)
 
-The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR to `main`, and do the following:
+The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR to `main`, and it will:
 
-- Run tests.
-- Run Clippy lints.
-- Run [Bevy lints](https://thebevyflock.github.io/bevy_cli/bevy_lint/).
 - Check formatting.
 - Check documentation.
+- Run Clippy lints.
+- Run [Bevy lints](https://thebevyflock.github.io/bevy_cli/bevy_lint/).
+- Run tests.
+- Check that the web build compiles.
 
 > [!TIP]
 > <details>
->   <summary>You may want to set up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI.</summary>
+>   <summary>Consider setting up a <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub ruleset</a> to require that all commits to <code>main</code> pass CI.</summary>
 >
 >   <img src="img/workflow-ruleset.png" alt="A screenshot showing a GitHub ruleset with status checks enabled" width="100%">
 > </details>
 
 ## CD (releasing)
 
-The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and do the following:
+The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and it will:
 
 - Create a release build for Windows, macOS, Linux, and web (configurable).
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
 - (Optional) Upload to [itch.io](https://itch.io).
 
 <details>
-  <summary>This workflow can also be triggered manually.</summary>
+  <summary><ins>Manually triggering this workflow</ins></summary>
 
   In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
@@ -45,7 +49,7 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushe
 The release workflow can be configured by tweaking the environment variables in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
 
 <details>
-  <summary>Click here for a list of variables and how they're used.</summary>
+  <summary><ins>List of environment variables and how they're used</ins></summary>
 
   ```yaml
   # The base filename of the binary produced by `cargo build`.
@@ -108,9 +112,6 @@ The release workflow can be configured by tweaking the environment variables in 
 
 The initial values are set automatically by `bevy new`, but you can edit them yourself and push a commit.
 
-> [!WARNING]
-> GitHub puts a limit on free CI usage for [private repositories](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for--private-repositories), so tune your workflows accordingly!
-
 ### Set up itch.io upload
 
 #### Add butler credentials
@@ -131,8 +132,8 @@ Hit `New repository secret` and enter the following values, then hit `Add secret
 Create a new itch.io project with the same user and project name as in the `upload_to_itch` variable in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
 Hit `Save & view page` at the bottom of the page.
 
-[Trigger the release workflow](#cd-releasing) for the first time. Once it's done, go back to itch.io and hit `Edit game` in the top left.
+Trigger the [release workflow](#cd-releasing) for the first time. Once it's done, go back to itch.io and hit `Edit game` in the top left.
 
-Set `Kind of project` to `HTML`, then find the newly uploaded `web` build and tick the box that says "This file will be played in the browser".
+Set `Kind of project` to `HTML`, then find the newly uploaded `web` build and tick the box that says `This file will be played in the browser`.
 
 ![A screenshot showing a web build selected in the itch.io uploads](img/workflow-itch-release.png)

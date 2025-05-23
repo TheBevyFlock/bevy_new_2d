@@ -69,16 +69,16 @@ If you're using [VS Code](https://code.visualstudio.com/), the following extensi
 
 > [!NOTE]
 > <details>
-> <summary>About the included rust-analyzer settings</summary>
+>   <summary><ins>About the included <code>rust-analyzer</code> settings</ins></summary>
 >
-> This template sets [`rust-analyzer.cargo.targetDir`](https://rust-analyzer.github.io/generated_config.html#rust-analyzer.cargo.targetDir)
-> to `true` in [`.vscode/settings.json`](../.vscode/settings.json).
+>   This template sets [`rust-analyzer.cargo.targetDir`](https://rust-analyzer.github.io/generated_config.html#rust-analyzer.cargo.targetDir)
+>   to `true` in [`.vscode/settings.json`](../.vscode/settings.json).
 >
-> This makes `rust-analyzer` use a different `target` directory than `cargo`,
-> which means that you can run commands like `cargo run` even while `rust-analyzer` is still indexing.
-> As a trade-off, this will use more disk space.
+>   This makes `rust-analyzer` use a different `target` directory than `cargo`,
+>   which means that you can run commands like `cargo run` even while `rust-analyzer` is still indexing.
+>   As a trade-off, this will use more disk space.
 >
-> If that is an issue for you, you can set it to `false` or remove the setting entirely.
+>   If that is an issue for you, you can set it to `false` or remove the setting entirely.
 > </details>
 
 ## RustRover Live Templates
@@ -114,9 +114,9 @@ If you're still having issues, please ensure that the channels in the path and t
 
 > [!NOTE]
 > <details>
-> <summary>Attaching the debugger to a running game</summary>
+>   <summary><ins>Attaching the debugger to a running game</ins></summary>
 >
-> If you started your game with a Shell Script Run Configuration, you can attach the debugger to it while it's running by using `Run > Attach to Process` and selecting the process with the same name as your game (not the one named `bevy`).
+>   If you started your game with a Shell Script Run Configuration, you can attach the debugger to it while it's running by using `Run > Attach to Process` and selecting the process with the same name as your game (not the one named `bevy`).
 >
-> This does not work for web builds.
+>   This does not work for web builds.
 > </details>

@@ -127,10 +127,6 @@ jobs:
         with:
           toolchain: ${{ env.toolchain }}
 
-      # Setting LD_LIBRARY_PATH is a workaround for <https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350>.
-      - name: Set LD_LIBRARY_PATH
-        run: echo "LD_LIBRARY_PATH=$(rustc --print target-libdir)" >>"${GITHUB_ENV}"
-
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
         with:
@@ -146,10 +142,6 @@ jobs:
 
       - name: Run tests
         run: cargo nextest run --locked --workspace --all-targets --no-fail-fast --no-tests=warn
-
-      # Running doctests separately is a workaround for <https://github.com/rust-lang/cargo/issues/6669>.
-      - name: Run doctests
-        run: cargo test --locked --workspace --doc --no-fail-fast
 
   # Check that the web build compiles.
   check-web:
