@@ -84,7 +84,21 @@ to help run your game from your IDE.
 
   To set this up, follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/).
   Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
-  section and comment out the `bevy/dynamic_linking` feature in [`Cargo.toml`](./Cargo.toml).
+  section and update your [`Cargo.toml`](./Cargo.toml):
+
+  ```diff
+  [dependencies]
+  + bevy_simple_subsecond_system = { version = "0.1", optional = true }
+  
+  [features]
+  dev = [
+  -   "bevy/dynamic_linking",
+  +   #"bevy/dynamic_linking",
+  ]
+  dev_native = [
+  +   "dep:bevy_simple_subsecond_system",
+  ]
+  ```
 
   Annotate your systems to enable hot-patching.
   The functions they call can be hot-patched too; no additional annotations required!
