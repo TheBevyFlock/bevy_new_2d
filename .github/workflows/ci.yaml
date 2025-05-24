@@ -56,7 +56,7 @@ jobs:
           shared-key: dev
           save-if: false
 
-      - name: Install Bevy dependencies
+      - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check documentation
@@ -83,7 +83,7 @@ jobs:
           shared-key: dev
           save-if: false
 
-      - name: Install Bevy dependencies
+      - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Clippy lints
@@ -107,7 +107,7 @@ jobs:
           shared-key: dev
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install Bevy dependencies
+      - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Bevy lints
@@ -134,7 +134,7 @@ jobs:
           cache-directories: ${{ env.LD_LIBRARY_PATH }}
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install Bevy dependencies
+      - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Install cargo-nextest
@@ -164,7 +164,7 @@ jobs:
           shared-key: web-dev
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install Bevy dependencies
+      - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check web

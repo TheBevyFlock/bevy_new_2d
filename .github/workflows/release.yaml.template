@@ -194,7 +194,7 @@ jobs:
           shared-key: release
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install Bevy dependencies (Linux)
+      - name: Install build dependencies (Linux)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
