@@ -8,6 +8,7 @@ mod audio;
 mod demo;
 #[cfg(feature = "dev")]
 mod dev_tools;
+mod menus;
 mod screens;
 mod theme;
 
@@ -62,6 +63,7 @@ impl Plugin for AppPlugin {
             demo::plugin,
             #[cfg(feature = "dev")]
             dev_tools::plugin,
+            menus::plugin,
             screens::plugin,
             theme::plugin,
         ));

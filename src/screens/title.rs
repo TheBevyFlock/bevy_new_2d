@@ -1,53 +1,18 @@
-//! The title screen that appears when the game starts.
+//! The title screen that appears after the splash screen.
 
 use bevy::prelude::*;
 
-use crate::{asset_tracking::ResourceHandles, screens::Screen, theme::prelude::*};
+use crate::{menus::Menu, screens::Screen};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Title), spawn_title_screen);
+    app.add_systems(OnEnter(Screen::Title), open_main_menu);
+    app.add_systems(OnExit(Screen::Title), close_menu);
 }
 
-fn spawn_title_screen(mut commands: Commands) {
-    commands.spawn((
-        widget::ui_root("Title Screen"),
-        StateScoped(Screen::Title),
-        #[cfg(not(target_family = "wasm"))]
-        children![
-            widget::button("Play", enter_loading_or_gameplay_screen),
-            widget::button("Settings", enter_settings_screen),
-            widget::button("Credits", enter_credits_screen),
-            widget::button("Exit", exit_app),
-        ],
-        #[cfg(target_family = "wasm")]
-        children![
-            widget::button("Play", enter_loading_or_gameplay_screen),
-            widget::button("Settings", enter_settings_screen),
-            widget::button("Credits", enter_credits_screen),
-        ],
-    ));
+fn open_main_menu(mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::Main);
 }
 
-fn enter_loading_or_gameplay_screen(
-    _: Trigger<Pointer<Click>>,
-    resource_handles: Res<ResourceHandles>,
-    mut next_screen: ResMut<NextState<Screen>>,
-) {
-    if resource_handles.is_all_done() {
-        next_screen.set(Screen::Gameplay);
-    } else {
-        next_screen.set(Screen::Loading);
-    }
-}
-
-fn enter_settings_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Settings);
-}
-
-fn enter_credits_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Credits);
-}
-#[cfg(not(target_family = "wasm"))]
-fn exit_app(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
-    app_exit.write(AppExit::Success);
+fn close_menu(mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::None);
 }

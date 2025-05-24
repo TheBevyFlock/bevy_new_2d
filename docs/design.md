@@ -87,7 +87,6 @@ pub enum Screen {
     Splash,
     Loading,
     Title,
-    Credits,
     Gameplay,
     Victory,
     Leaderboard,
@@ -137,7 +136,7 @@ fn enter_title_screen(mut next_state: ResMut<NextState<Screen>>) {
 
 ### Reasoning
 
-"Screen" is not meant as the physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the credits screen, the victory screen, etc.
+"Screen" is not meant as the physical screen, but as "what kind of screen is the game showing right now", e.g. the title screen, the loading screen, the victory screen, etc.
 These screens usually correspond to different logical states of your game that have different systems running.
 
 By using a dedicated `State` type for your screens, you can easily manage systems and entities that are only relevant for a specific screen and flexibly transition between
