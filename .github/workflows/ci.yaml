@@ -12,7 +12,7 @@ concurrency:
 
 env:
   # Reduce compile time and cache size.
-  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0 -Cdebuginfo=line-tables-only
+  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
   RUSTDOCFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
   # Use the same Rust toolchain across jobs so they can share a cache.
   toolchain: nightly-2025-04-03
@@ -51,16 +51,18 @@ jobs:
           toolchain: ${{ env.toolchain }}
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: dev
+          shared-key: ci
           save-if: false
 
       - name: Install build dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check documentation
-        run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
+        run: cargo doc --locked --workspace --profile ci --all-features --document-private-items --no-deps
 
   # Run Clippy lints.
   clippy-lints:
@@ -78,16 +80,18 @@ jobs:
           components: clippy
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: dev
-          save-if: false
+          shared-key: ci
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install build dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Clippy lints
-        run: cargo clippy --locked --workspace --all-targets --all-features
+        run: cargo clippy --locked --workspace --all-targets --profile ci --all-features
 
   # Run Bevy lints.
   bevy-lints:
@@ -102,16 +106,18 @@ jobs:
         uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: dev
-          save-if: ${{ github.ref == 'refs/heads/main' }}
+          shared-key: ci
+          save-if: false
 
       - name: Install build dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Bevy lints
-        run: bevy_lint --locked --workspace --all-targets --all-features
+        run: bevy_lint --locked --workspace --all-targets --profile ci --all-features
 
   # Run tests.
   tests:
@@ -122,10 +128,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up environment
+        run: echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }-Zcodegen-backend=cranelift" >> "${GITHUB_ENV}"
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.toolchain }}
+          components: rustc-codegen-cranelift-preview
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
@@ -137,11 +147,8 @@ jobs:
       - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
-      - name: Install cargo-nextest
-        uses: taiki-e/install-action@nextest
-
       - name: Run tests
-        run: cargo nextest run --locked --workspace --all-targets --no-fail-fast --no-tests=warn
+        run: cargo test --locked --workspace --all-targets --profile ci --no-fail-fast
 
   # Check that the web build compiles.
   check-web:
@@ -159,13 +166,15 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: web-dev
+          shared-key: web-ci
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install build dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check web
-        run: cargo check --config 'profile.web.inherits="dev"' --no-default-features --features dev --profile web --target wasm32-unknown-unknown
+        run: cargo check --config 'profile.web.inherits="dev"' --profile ci --no-default-features --features dev --target wasm32-unknown-unknown

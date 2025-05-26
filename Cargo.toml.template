@@ -17,6 +17,11 @@ tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
+# Tell `getrandom v0.3+` to use the `wasm_js` backend on web.
+# See: <https://github.com/rust-random/getrandom/issues/671>.
+getrandom = { version = "0.3", default-features = false, features = [
+    "wasm_js",
+], optional = true }
 
 [features]
 default = [
@@ -28,6 +33,8 @@ dev = [
     "bevy/dynamic_linking",
     "bevy/bevy_dev_tools",
     "bevy/bevy_ui_debug",
+    # Improve error messages coming from Bevy
+    "bevy/track_location",
 ]
 dev_native = [
     "dev",
@@ -39,12 +46,15 @@ dev_native = [
 
 
 [package.metadata.bevy_cli.release]
-# Disable debug functionality in release builds.
+# Disable dev features for release builds.
 default-features = false
 
-[package.metadata.bevy_cli.web.dev]
-# Disable native-only debug functionality in web builds.
+[package.metadata.bevy_cli.web]
+# Disable native features for web builds.
 default-features = false
+features = ["dep:getrandom"]
+
+[package.metadata.bevy_cli.web.dev]
 features = ["dev"]
 
 
@@ -82,3 +92,31 @@ opt-level = 3
 # Remove expensive debug assertions due to <https://github.com/bevyengine/bevy/issues/14291>
 [profile.dev.package.wgpu-types]
 debug-assertions = false
+
+[profile.release]
+# Compile the entire crate as one unit.
+# Slows compile times, marginal improvements.
+codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slows compile times, marginal improvements.
+lto = "thin"
+
+# This profile will be used by `bevy run web` automatically.
+[profile.web-release]
+# Default to release profile values.
+inherits = "release"
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
+strip = "debuginfo"
+
+# Optimize for build time in CI.
+[profile.ci]
+inherits = "dev"
+opt-level = 0
+debug = "line-tables-only"
+codegen-units = 4
+
+[profile.ci.package."*"]
+opt-level = 0
