@@ -1,29 +1,30 @@
-//! A settings screen that can be accessed from the title screen.
+//! The settings menu.
 //!
-//! Settings and accessibility options should go here.
+//! Additional settings and accessibility options should go here.
 
-use bevy::{audio::Volume, prelude::*, ui::Val::*};
+use bevy::{audio::Volume, input::common_conditions::input_just_pressed, prelude::*, ui::Val::*};
 
-use crate::{screens::Screen, theme::prelude::*};
+use crate::{menus::Menu, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Settings), spawn_settings_screen);
-
-    app.register_type::<GlobalVolumeLabel>();
+    app.add_systems(OnEnter(Menu::Settings), spawn_settings_menu);
     app.add_systems(
         Update,
-        update_volume_label.run_if(in_state(Screen::Settings)),
+        go_back.run_if(in_state(Menu::Settings).and(input_just_pressed(KeyCode::Escape))),
     );
+
+    app.register_type::<GlobalVolumeLabel>();
+    app.add_systems(Update, update_volume_label.run_if(in_state(Menu::Settings)));
 }
 
-fn spawn_settings_screen(mut commands: Commands) {
+fn spawn_settings_menu(mut commands: Commands) {
     commands.spawn((
-        widget::ui_root("Settings Screen"),
-        StateScoped(Screen::Settings),
+        widget::ui_root("Settings Menu"),
+        StateScoped(Menu::Settings),
         children![
             widget::header("Settings"),
             settings_grid(),
-            widget::button("Back", enter_title_screen),
+            widget::button("Back", go_back_on_click),
         ],
     ));
 }
@@ -99,6 +100,22 @@ fn update_volume_label(
     label.0 = format!("{percent:3.0}%");
 }
 
-fn enter_title_screen(_: Trigger<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::Title);
+fn go_back_on_click(
+    _: Trigger<Pointer<Click>>,
+    screen: Res<State<Screen>>,
+    mut next_menu: ResMut<NextState<Menu>>,
+) {
+    next_menu.set(if screen.get() == &Screen::Title {
+        Menu::Main
+    } else {
+        Menu::Pause
+    });
+}
+
+fn go_back(screen: Res<State<Screen>>, mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(if screen.get() == &Screen::Title {
+        Menu::Main
+    } else {
+        Menu::Pause
+    });
 }
