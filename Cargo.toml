@@ -52,7 +52,7 @@ default-features = false
 [package.metadata.bevy_cli.web]
 # Disable native features for web builds.
 default-features = false
-features = ["dep:getrandom"]
+features = ["getrandom"]
 
 [package.metadata.bevy_cli.web.dev]
 features = ["dev"]
