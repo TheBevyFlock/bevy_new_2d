@@ -88,7 +88,7 @@ to help run your game from your IDE.
 
   ```diff
   [dependencies]
-  + bevy_simple_subsecond_system = { version = "0.2", optional = true }
+  + bevy_simple_subsecond_system = { version = "0.1", optional = true }
   
   [features]
   dev_native = [
