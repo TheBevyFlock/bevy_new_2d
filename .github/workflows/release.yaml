@@ -76,6 +76,9 @@ env:
   # See: <https://github.com/orgs/community/discussions/27059>.
   use_github_cache: false
 
+  # Reduce compile time.
+  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
+
 jobs:
   # Forward some environment variables as outputs of this job.
   # This is needed because the `env` context can't be used in the `if:` condition of a job:
@@ -152,6 +155,11 @@ jobs:
           echo "app=tmp/app/${app_package_name}"'${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
+          # Web environment:
+          if [ '${{ matrix.platform }}' = 'web' ]; then
+            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'--cfg getrandom_backend="wasm_js"' >> "${GITHUB_ENV}"
+          fi
+
           # macOS environment:
           if [ '${{ matrix.platform }}' = 'macos' ]; then
             echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # macOS 11.0 Big Sur is the first version to support universal binaries.
@@ -174,7 +182,7 @@ jobs:
 
       - name: Install Rust toolchain
         if: ${{ env.is_platform_enabled == 'true' }}
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@nightly
         with:
           targets: ${{ matrix.targets }}
 
@@ -199,15 +207,13 @@ jobs:
 
       - name: Install Bevy CLI
         if: ${{ env.is_platform_enabled == 'true' }}
-        run: cargo binstall --locked --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
-
-      - name: Install wasm-opt (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        run: cargo binstall --locked --no-confirm wasm-opt
+        run: cargo binstall --locked --no-confirm --force --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
       - name: Build and add web bundle to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
+          cargo binstall --locked --no-confirm --force wasm-bindgen-cli
+          cargo binstall --locked --no-confirm --force wasm-opt
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
           mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
@@ -226,7 +232,7 @@ jobs:
 
       - name: Add assets to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
-        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist.
+        run: cp -R ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist.
 
       - name: Add metadata to app (macOS)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'macos' }}
