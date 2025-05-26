@@ -17,11 +17,11 @@ tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
-# Tell `getrandom v0.3+` to use the `wasm_js` backend on web.
-# See: <https://github.com/rust-random/getrandom/issues/671>.
-getrandom = { version = "0.3", default-features = false, features = [
-    "wasm_js",
-], optional = true }
+
+# Tell `getrandom v0.3+` to use the `wasm_js` backend on Wasm.
+# See: <https://docs.rs/getrandom/0.3.3/getrandom/#webassembly-support>.
+[target.wasm32-unknown-unknown.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [features]
 default = [
@@ -52,7 +52,6 @@ default-features = false
 [package.metadata.bevy_cli.web]
 # Disable native features for web builds.
 default-features = false
-features = ["getrandom"]
 
 [package.metadata.bevy_cli.web.dev]
 features = ["dev"]
