@@ -29,11 +29,11 @@ This template comes with a basic project structure that you may find useful:
 
 | Path                                               | Description                                                        |
 | -------------------------------------------------- | ------------------------------------------------------------------ |
-| [`src/lib.rs`](./src/lib.rs)                       | App setup                                                          |
+| [`src/main.rs`](./src/main.rs)                     | App setup                                                          |
 | [`src/asset_tracking.rs`](./src/asset_tracking.rs) | A high-level way to load collections of asset handles as resources |
 | [`src/audio.rs`](./src/audio.rs)                   | Marker components for sound effects and music                      |
-| [`src/demo/`](./src/demo)                          | Example game mechanics & content (replace with your own code)      |
 | [`src/dev_tools.rs`](./src/dev_tools.rs)           | Dev tools for dev builds (press \` aka backtick to toggle)         |
+| [`src/demo/`](./src/demo)                          | Example game mechanics & content (replace with your own code)      |
 | [`src/screens/`](./src/screens)                    | Splash screen, title screen, gameplay screen, etc.                 |
 | [`src/theme/`](./src/theme)                        | Reusable UI widgets & theming                                      |
 
@@ -88,7 +88,7 @@ to help run your game from your IDE.
 
   ```diff
   [dependencies]
-  + bevy_simple_subsecond_system = { version = "0.1", optional = true }
+  + bevy_simple_subsecond_system = { version = "0.2", optional = true }
   
   [features]
   dev_native = [
