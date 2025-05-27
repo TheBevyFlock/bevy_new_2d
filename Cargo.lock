@@ -915,7 +915,6 @@ name = "bevy_new_2d"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "getrandom 0.3.3",
  "log",
  "rand",
  "tracing",
@@ -2214,14 +2213,13 @@ dependencies = [
 [[package]]
 name = "getrandom"
 version = "0.3.3"
-source = "git+https://github.com/benfrankel/getrandom#8df8846f07478cc3c6ace1fe32c193efe3f8a884"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26145e563e54f2cadc477553f1ec5ee650b00862f0a58bcd12cbdc5f0ea2d2f4"
 dependencies = [
  "cfg-if",
- "js-sys",
  "libc",
  "r-efi",
  "wasi 0.14.2+wasi-0.2.4",
- "wasm-bindgen",
 ]
 
 [[package]]
@@ -3664,9 +3662,9 @@ checksum = "20675572f6f24e9e76ef639bc5552774ed45f1c30e2951e1e99c59888861c539"
 
 [[package]]
 name = "read-fonts"
-version = "0.29.1"
+version = "0.29.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e85935612710191461ec9df47b4b5880dd6359d4fad3b2f2ed696215f6f3146"
+checksum = "6f96bfbb7df43d34a2b7b8582fcbcb676ba02a763265cb90bc8aabfd62b57d64"
 dependencies = [
  "bytemuck",
  "font-types",
@@ -3945,9 +3943,9 @@ checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
 
 [[package]]
 name = "skrifa"
-version = "0.31.1"
+version = "0.31.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9c3bb8cab5196b98d70c866ce1ea81ab516104d5b396f84ae80f8766b5d5b4e"
+checksum = "9903381b30b598fe22f137ce95664208fb149f3102981a40154088e2794449bc"
 dependencies = [
  "bytemuck",
  "read-fonts",
