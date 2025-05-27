@@ -23,11 +23,12 @@ tracing = { version = "0.1", features = [
 [target.wasm32-unknown-unknown.dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }
 
+[patch.crates-io]
+getrandom = { git = "https://github.com/benfrankel/getrandom" }
+
 [features]
-default = [
-    # Default to a native dev build.
-    "dev_native",
-]
+# Default to a native dev build.
+default = ["dev_native"]
 dev = [
     # Improve compile times for dev builds by linking Bevy as a dynamic library.
     "bevy/dynamic_linking",
