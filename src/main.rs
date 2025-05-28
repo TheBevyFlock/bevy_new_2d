@@ -22,20 +22,6 @@ pub struct AppPlugin;
 
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
-        // Order new `AppSystems` variants by adding them here:
-        app.configure_sets(
-            Update,
-            (
-                AppSystems::TickTimers,
-                AppSystems::RecordInput,
-                AppSystems::Update,
-            )
-                .chain(),
-        );
-
-        // Spawn the main camera.
-        app.add_systems(Startup, spawn_camera);
-
         // Add Bevy plugins.
         app.add_plugins(
             DefaultPlugins
@@ -67,6 +53,24 @@ impl Plugin for AppPlugin {
             screens::plugin,
             theme::plugin,
         ));
+
+        // Order new `AppSystems` variants by adding them here:
+        app.configure_sets(
+            Update,
+            (
+                AppSystems::TickTimers,
+                AppSystems::RecordInput,
+                AppSystems::Update,
+            )
+                .chain(),
+        );
+
+        // Set up the `Pause` state.
+        app.init_state::<Pause>();
+        app.configure_sets(Update, PausableSystems.run_if(in_state(Pause(false))));
+
+        // Spawn the main camera.
+        app.add_systems(Startup, spawn_camera);
     }
 }
 
@@ -82,6 +86,15 @@ enum AppSystems {
     /// Do everything else (consider splitting this into further variants).
     Update,
 }
+
+/// Whether or not the game is paused.
+#[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default)]
+#[states(scoped_entities)]
+struct Pause(pub bool);
+
+/// A system set for systems that shouldn't run while the game is paused.
+#[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]
+struct PausableSystems;
 
 fn spawn_camera(mut commands: Commands) {
     commands.spawn((Name::new("Camera"), Camera2d));

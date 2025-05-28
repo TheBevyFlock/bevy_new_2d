@@ -9,7 +9,7 @@ use rand::prelude::*;
 use std::time::Duration;
 
 use crate::{
-    AppSystems,
+    AppSystems, PausableSystems,
     audio::sound_effect,
     demo::{movement::MovementController, player::PlayerAssets},
 };
@@ -29,7 +29,8 @@ pub(super) fn plugin(app: &mut App) {
                 .chain()
                 .run_if(resource_exists::<PlayerAssets>)
                 .in_set(AppSystems::Update),
-        ),
+        )
+            .in_set(PausableSystems),
     );
 }
 

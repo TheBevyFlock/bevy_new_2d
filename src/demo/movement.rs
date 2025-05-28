@@ -15,7 +15,7 @@
 
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use crate::AppSystems;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<MovementController>();
@@ -25,7 +25,8 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (apply_movement, apply_screen_wrap)
             .chain()
-            .in_set(AppSystems::Update),
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
     );
 }
 
