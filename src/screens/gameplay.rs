@@ -17,11 +17,7 @@ pub(super) fn plugin(app: &mut App) {
                     .and(in_state(Menu::None))
                     .and(input_just_pressed(KeyCode::Escape).or(input_just_pressed(KeyCode::KeyP))),
             ),
-            close_menu.run_if(
-                in_state(Screen::Gameplay)
-                    .and(in_state(Menu::Pause))
-                    .and(input_just_pressed(KeyCode::KeyP)),
-            ),
+            close_menu.run_if(in_state(Screen::Gameplay).and(input_just_pressed(KeyCode::KeyP))),
         ),
     );
 }
