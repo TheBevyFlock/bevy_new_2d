@@ -41,8 +41,6 @@ fn apply_global_volume(
     mut audio_query: Query<(&PlaybackSettings, &mut AudioSink)>,
 ) {
     for (playback, mut sink) in &mut audio_query {
-        sink.set_volume(Volume::Linear(
-            global_volume.volume.to_linear() * playback.volume.to_linear(),
-        ));
+        sink.set_volume(global_volume.volume * playback.volume);
     }
 }
