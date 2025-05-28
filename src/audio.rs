@@ -1,4 +1,4 @@
-use bevy::{audio::Volume, prelude::*};
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Music>();
@@ -36,6 +36,7 @@ pub fn sound_effect(handle: Handle<AudioSource>) -> impl Bundle {
     (AudioPlayer(handle), PlaybackSettings::DESPAWN, SoundEffect)
 }
 
+/// [`GlobalVolume`] doesn't apply to already-running audio entities, so this system will update them.
 fn apply_global_volume(
     global_volume: Res<GlobalVolume>,
     mut audio_query: Query<(&PlaybackSettings, &mut AudioSink)>,
