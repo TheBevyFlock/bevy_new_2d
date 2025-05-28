@@ -15,7 +15,7 @@
 
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use crate::{AppSystems, pause::PausableSystems};
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<MovementController>();
