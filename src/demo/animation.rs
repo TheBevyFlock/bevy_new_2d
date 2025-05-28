@@ -12,6 +12,7 @@ use crate::{
     AppSystems,
     audio::sound_effect,
     demo::{movement::MovementController, player::PlayerAssets},
+    pause::PausableSystems,
 };
 
 pub(super) fn plugin(app: &mut App) {
@@ -29,7 +30,8 @@ pub(super) fn plugin(app: &mut App) {
                 .chain()
                 .run_if(resource_exists::<PlayerAssets>)
                 .in_set(AppSystems::Update),
-        ),
+        )
+            .in_set(PausableSystems),
     );
 }
 
