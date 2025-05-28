@@ -92,10 +92,6 @@ to help run your game from your IDE.
   + bevy_simple_subsecond_system = { version = "0.1", optional = true }
   
   [features]
-  dev = [
-  -   "bevy/dynamic_linking",
-  +   #"bevy/dynamic_linking",
-  ]
   dev_native = [
   +   "dep:bevy_simple_subsecond_system",
   ]

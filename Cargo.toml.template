@@ -18,16 +18,28 @@ tracing = { version = "0.1", features = [
     "release_max_level_warn",
 ] }
 
+# Your web builds will start failing if you add a dependency that pulls in `getrandom` v0.3+.
+# To fix this, you should tell `getrandom` to use the `wasm_js` backend on Wasm.
+# See: <https://docs.rs/getrandom/0.3.3/getrandom/#webassembly-support>.
+#[target.wasm32-unknown-unknown.dependencies]
+#getrandom = { version = "0.3", features = ["wasm_js"] }
+# In addition to enabling the `wasm_js` feature, you need to include `--cfg 'getrandom_backend="wasm_js"'`
+# in your rustflags for both local and CI/CD web builds, taking into account that rustflags specified in
+# multiple places are NOT combined (see <https://github.com/rust-lang/cargo/issues/5376>).
+# Alternatively, you can opt out of the rustflags check with this patch:
+#[patch.crates-io]
+#getrandom = { git = "https://github.com/benfrankel/getrandom" }
+
 [features]
-default = [
-    # Default to a native dev build.
-    "dev_native",
-]
+# Default to a native dev build.
+default = ["dev_native"]
 dev = [
     # Improve compile times for dev builds by linking Bevy as a dynamic library.
     "bevy/dynamic_linking",
     "bevy/bevy_dev_tools",
     "bevy/bevy_ui_debug",
+    # Improve error messages coming from Bevy
+    "bevy/track_location",
 ]
 dev_native = [
     "dev",
@@ -39,12 +51,14 @@ dev_native = [
 
 
 [package.metadata.bevy_cli.release]
-# Disable debug functionality in release builds.
+# Disable dev features for release builds.
+default-features = false
+
+[package.metadata.bevy_cli.web]
+# Disable native features for web builds.
 default-features = false
 
 [package.metadata.bevy_cli.web.dev]
-# Disable native-only debug functionality in web builds.
-default-features = false
 features = ["dev"]
 
 
@@ -82,3 +96,31 @@ opt-level = 3
 # Remove expensive debug assertions due to <https://github.com/bevyengine/bevy/issues/14291>
 [profile.dev.package.wgpu-types]
 debug-assertions = false
+
+[profile.release]
+# Compile the entire crate as one unit.
+# Slows compile times, marginal improvements.
+codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slows compile times, marginal improvements.
+lto = "thin"
+
+# This profile will be used by `bevy run web` automatically.
+[profile.web-release]
+# Default to release profile values.
+inherits = "release"
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
+strip = "debuginfo"
+
+# Optimize for build time in CI.
+[profile.ci]
+inherits = "dev"
+opt-level = 0
+debug = "line-tables-only"
+codegen-units = 4
+
+[profile.ci.package."*"]
+opt-level = 0

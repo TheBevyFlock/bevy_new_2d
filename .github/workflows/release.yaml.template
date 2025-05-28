@@ -86,6 +86,9 @@ env:
   # See: <https://github.com/orgs/community/discussions/27059>.
   use_github_cache: false
 
+  # Reduce compile time.
+  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
+
 {% raw -%}
 jobs:
   # Forward some environment variables as outputs of this job.
@@ -116,6 +119,8 @@ jobs:
       - get-version
     env:
       version: ${{ needs.get-version.outputs.version }}
+      # Avoid rate-limiting. See: <https://github.com/cargo-bins/cargo-binstall/issues/2045>.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         include:
@@ -183,7 +188,7 @@ jobs:
 
       - name: Install Rust toolchain
         if: ${{ env.is_platform_enabled == 'true' }}
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@nightly
         with:
           targets: ${{ matrix.targets }}
 
@@ -194,7 +199,7 @@ jobs:
           shared-key: release
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install Bevy dependencies (Linux)
+      - name: Install build dependencies (Linux)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
@@ -202,21 +207,19 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
-      - name: Install Bevy CLI
+      - name: Install cargo-binstall
         if: ${{ env.is_platform_enabled == 'true' }}
-        run: cargo install --locked --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
-
-      - name: Install cargo-binstall (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         uses: cargo-bins/cargo-binstall@main
 
-      - name: Install wasm-opt (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        run: cargo binstall --locked --no-confirm wasm-opt
+      - name: Install Bevy CLI
+        if: ${{ env.is_platform_enabled == 'true' }}
+        run: cargo binstall --locked --no-confirm --force --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
       - name: Build and add web bundle to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
+          cargo binstall --locked --no-confirm --force wasm-bindgen-cli
+          cargo binstall --locked --no-confirm --force wasm-opt
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
           mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
@@ -235,7 +238,7 @@ jobs:
 
       - name: Add assets to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
-        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist.
+        run: cp -R ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist.
 
       - name: Add metadata to app (macOS)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'macos' }}
