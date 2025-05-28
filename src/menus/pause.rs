@@ -2,10 +2,10 @@
 
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::{menus::Menu, pause::Pause, screens::Screen, theme::widget};
+use crate::{menus::Menu, screens::Screen, theme::widget};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Menu::Pause), (spawn_pause_menu, pause_game));
+    app.add_systems(OnEnter(Menu::Pause), spawn_pause_menu);
     app.add_systems(
         Update,
         go_back.run_if(in_state(Menu::Pause).and(input_just_pressed(KeyCode::Escape))),
@@ -15,6 +15,7 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_pause_menu(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Pause Menu"),
+        GlobalZIndex(2),
         StateScoped(Menu::Pause),
         children![
             widget::header("Game paused"),
@@ -23,10 +24,6 @@ fn spawn_pause_menu(mut commands: Commands) {
             widget::button("Quit to title", quit_to_title),
         ],
     ));
-}
-
-fn pause_game(mut next_pause: ResMut<NextState<Pause>>) {
-    next_pause.set(Pause(true));
 }
 
 fn open_settings_menu(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>>) {

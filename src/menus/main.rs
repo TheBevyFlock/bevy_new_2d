@@ -11,6 +11,7 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_main_menu(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Main Menu"),
+        GlobalZIndex(2),
         StateScoped(Menu::Main),
         #[cfg(not(target_family = "wasm"))]
         children![

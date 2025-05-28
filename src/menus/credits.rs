@@ -21,6 +21,7 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_credits_menu(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Credits Menu"),
+        GlobalZIndex(2),
         StateScoped(Menu::Credits),
         children![
             widget::header("Created by"),

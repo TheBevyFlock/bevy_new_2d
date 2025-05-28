@@ -7,6 +7,7 @@ pub(super) fn plugin(app: &mut App) {
 
 /// Whether or not the game is paused.
 #[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default)]
+#[states(scoped_entities)]
 pub struct Pause(pub bool);
 
 /// A system set for systems that shouldn't run while the game is paused.
