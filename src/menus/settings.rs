@@ -13,8 +13,11 @@ pub(super) fn plugin(app: &mut App) {
         go_back.run_if(in_state(Menu::Settings).and(input_just_pressed(KeyCode::Escape))),
     );
 
-    app.register_type::<GlobalVolumeLabel>();
-    app.add_systems(Update, update_volume_label.run_if(in_state(Menu::Settings)));
+    app.register_type::<MasterVolumeLabel>();
+    app.add_systems(
+        Update,
+        update_master_volume_label.run_if(in_state(Menu::Settings)),
+    );
 }
 
 fn spawn_settings_menu(mut commands: Commands) {
@@ -42,26 +45,26 @@ fn settings_grid() -> impl Bundle {
         },
         children![
             (
-                widget::label("Audio Volume"),
+                widget::label("Master Volume"),
                 Node {
                     justify_self: JustifySelf::End,
                     ..default()
                 }
             ),
-            volume_widget(),
+            master_volume_widget(),
         ],
     )
 }
 
-fn volume_widget() -> impl Bundle {
+fn master_volume_widget() -> impl Bundle {
     (
-        Name::new("Volume Widget"),
+        Name::new("Master Volume Widget"),
         Node {
             justify_self: JustifySelf::Start,
             ..default()
         },
         children![
-            widget::button_small("-", lower_volume),
+            widget::button_small("-", lower_master_volume),
             (
                 Name::new("Current Volume"),
                 Node {
@@ -69,9 +72,9 @@ fn volume_widget() -> impl Bundle {
                     justify_content: JustifyContent::Center,
                     ..default()
                 },
-                children![(widget::label(""), GlobalVolumeLabel)],
+                children![(widget::label(""), MasterVolumeLabel)],
             ),
-            widget::button_small("+", raise_volume),
+            widget::button_small("+", raise_master_volume),
         ],
     )
 }
@@ -79,23 +82,23 @@ fn volume_widget() -> impl Bundle {
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
-fn lower_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
-    let new_factor = global_volume.volume.to_linear() - 0.1;
-    global_volume.volume = Volume::Linear(new_factor.max(MIN_VOLUME));
+fn lower_master_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+    let linear = (global_volume.volume.to_linear() - 0.1).max(MIN_VOLUME);
+    global_volume.volume = Volume::Linear(linear);
 }
 
-fn raise_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
-    let new_factor = global_volume.volume.to_linear() + 0.1;
-    global_volume.volume = Volume::Linear(new_factor.min(MAX_VOLUME));
+fn raise_master_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+    let linear = (global_volume.volume.to_linear() + 0.1).min(MAX_VOLUME);
+    global_volume.volume = Volume::Linear(linear);
 }
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-struct GlobalVolumeLabel;
+struct MasterVolumeLabel;
 
-fn update_volume_label(
+fn update_master_volume_label(
     global_volume: Res<GlobalVolume>,
-    mut label: Single<&mut Text, With<GlobalVolumeLabel>>,
+    mut label: Single<&mut Text, With<MasterVolumeLabel>>,
 ) {
     let percent = 100.0 * global_volume.volume.to_linear();
     label.0 = format!("{percent:3.0}%");
