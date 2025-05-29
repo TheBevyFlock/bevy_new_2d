@@ -1,6 +1,5 @@
 [template]
 cargo_generate_version = "0.23"
-include = ["*.template"]
 ignore = [
     "docs",
     "target",
