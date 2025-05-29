@@ -4,7 +4,6 @@ include = ["*.template"]
 ignore = [
     "docs",
     "target",
-    "Cargo.lock",
     "LICENSE-Apache-2.0.txt",
     "LICENSE-CC0-1.0.txt",
     "LICENSE-MIT.txt",
