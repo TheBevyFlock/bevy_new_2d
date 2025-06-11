@@ -25,14 +25,14 @@ The [CI workflow](.github/workflows/ci.yaml) will trigger on every commit or PR 
 
 ## CD (releasing)
 
-The [CD workflow](../.github/workflows/release.yaml) will trigger on every pushed tag in the format `v1.2.3`, and it will:
+The [CD workflow](../.github/workflows/release.yaml) will trigger on manual workflow dispatch, and it will:
 
-- Create a release build for Windows, macOS, Linux, and web (configurable).
+- (Optional) Create a release build for Windows, macOS, Linux, and web.
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
 - (Optional) Upload to [itch.io](https://itch.io).
 
 <details>
-  <summary><ins>Manually triggering this workflow</ins></summary>
+  <summary><ins>Triggering a release</ins></summary>
 
   In your GitHub repository, navigate to `Actions > Release > Run workflow`:
 
@@ -58,26 +58,13 @@ The release workflow can be configured by tweaking the environment variables in 
   # The path to the assets directory.
   assets_path: assets
 
-  # Whether to build and package a release for a given target platform.
-  build_for_web: true
-  build_for_linux: true
-  build_for_windows: true
-  build_for_macos: true
-
-  # Whether to upload the packages produced by this workflow to a GitHub release.
-  upload_to_github: true
-
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
-  upload_to_itch: the-bevy-flock/bevy-new-2d
-
-  ############
-  # ADVANCED #
-  ############
+  itch_page: the-bevy-flock/bevy-new-2d
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
-  # Must contain only A-Z, a-z, 0-9, hyphens, and periods: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
+  # Must contain only A-Z, a-z, 0-9, hyphen, and period: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier>.
   app_id: the-bevy-flock.bevy-new-2d
 
   # The base filename of the binary in the package produced by this workflow.
@@ -87,7 +74,7 @@ The release workflow can be configured by tweaking the environment variables in 
 
   # The name of the `.zip` or `.dmg` file produced by this workflow.
   # Defaults to `app_binary_name` if commented out.
-  app_package_name: bevy_new_2d
+  app_package_name: bevy-new-2d
 
   # The display name of the app produced by this workflow.
   # Applies to macOS releases.
@@ -96,16 +83,16 @@ The release workflow can be configured by tweaking the environment variables in 
 
   # The short display name of the app produced by this workflow.
   # Applies to macOS releases.
-  # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
+  # Must be 15 or fewer characters: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename>.
   # Defaults to `app_display_name` if commented out.
   app_short_name: Bevy New 2D
 
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
-  # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
+  # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
 
-  # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
-  # See: https://github.com/orgs/community/discussions/27059
+  # Enabling this only helps with consecutive releases to the same version (and takes up cache storage space).
+  # See: <https://github.com/orgs/community/discussions/27059>.
   use_github_cache: false
   ```
 </details>

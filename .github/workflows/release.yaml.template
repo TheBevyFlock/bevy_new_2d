@@ -1,20 +1,44 @@
 name: Release
 
 on:
-  # Trigger this workflow when a tag is pushed in the format `v1.2.3`.
-  push:
-    tags:
-      # Pattern syntax: <https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet>.
-      - "v[0-9]+.[0-9]+.[0-9]+*"
-  # Trigger this workflow manually via workflow dispatch.
+  # Trigger this workflow on a manual workflow dispatch.
   workflow_dispatch:
     inputs:
       version:
         description: "Version number in the format `v1.2.3`"
         required: true
         type: string
+      build_for_windows:
+        description: "Build for Windows? (WARNING: very slow!)"
+        default: false
+        type: boolean
+      build_for_macos:
+        description: "Build for macOS?"
+        default: false
+        type: boolean
+      build_for_linux:
+        description: "Build for Linux?"
+        default: false
+        type: boolean
+      build_for_web:
+        description: "Build for web?"
+        default: false
+        type: boolean
+      upload_to_github:
+        description: "Upload to GitHub releases?"
+        default: true
+        type: boolean
+      upload_to_itch:
+        description: "Upload to itch.io?"
+        default: true
+        type: boolean
+      deny_warnings:
+        description: "Deny warnings?"
+        default: false
+        type: boolean
 
 {% raw -%}
+# Cancel the release workflow when a more recent workflow begins.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
@@ -28,30 +52,17 @@ env:
   # The path to the assets directory.
   assets_path: assets
 
-  # Whether to build and package a release for a given target platform.
-  build_for_web: true
-  build_for_linux: true
-  build_for_windows: true
-  build_for_macos: true
-
-  # Whether to upload the packages produced by this workflow to a GitHub release.
-  upload_to_github: true
-
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
   {%- if itch_username != "" %}
   {%- if itch_project != "" %}
-  upload_to_itch: {{itch_username}}/{{itch_project}}
+  itch_page: {{itch_username}}/{{itch_project}}
   {%- else %}
-  upload_to_itch: {{itch_username}}/{{project-name}}
+  itch_page: {{itch_username}}/{{project-name}}
   {%- endif %}
   {%- else %}
-  #upload_to_itch: your-itch-username/{{project-name}}
+  #itch_page: your-itch-username/{{project-name}}
   {%- endif %}
-
-  ############
-  # ADVANCED #
-  ############
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
@@ -82,12 +93,9 @@ env:
   # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
 
-  # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
+  # Enabling this only helps with consecutive releases to the same version (and takes up cache storage space).
   # See: <https://github.com/orgs/community/discussions/27059>.
   use_github_cache: false
-
-  # Reduce compile time.
-  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
 
 {% raw -%}
 jobs:
@@ -100,7 +108,7 @@ jobs:
       - name: Do nothing
         run: "true"
     outputs:
-      upload_to_itch: ${{ env.upload_to_itch }}
+      itch_page: ${{ env.itch_page }}
 
   # Determine the version number for this workflow.
   get-version:
@@ -108,10 +116,10 @@ jobs:
     steps:
       - name: Determine version number
         id: tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
+        run: echo "ref=${GITHUB_REF#refs/*/}" >> "${GITHUB_OUTPUT}"
     outputs:
-      # Use the input from workflow dispatch, or fall back to the git tag.
-      version: ${{ inputs.version || steps.tag.outputs.tag }}
+      # Use the input from workflow dispatch, or fall back to the git ref.
+      version: ${{ inputs.version || steps.ref.outputs.ref }}
 
   # Build and package a release for each platform.
   build:
@@ -166,6 +174,15 @@ jobs:
           echo "app=tmp/app/${app_package_name}"'${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
+          # Rustflags:
+          echo 'RUSTFLAGS=-Zthreads=0' >> "${GITHUB_ENV}"
+          if [ '${{ matrix.platform }}' != 'windows' ]; then
+            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y' >> "${GITHUB_ENV}"
+          fi
+          if [ '${{ inputs.deny_warnings }}' = 'true' ]; then
+            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Dwarnings' >> "${GITHUB_ENV}"
+          fi
+
           # macOS environment:
           if [ '${{ matrix.platform }}' = 'macos' ]; then
             echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # macOS 11.0 Big Sur is the first version to support universal binaries.
@@ -174,10 +191,10 @@ jobs:
 
           # Check if building for this platform is enabled.
           echo 'is_platform_enabled=${{
-            (matrix.platform == 'web' && env.build_for_web == 'true') ||
-            (matrix.platform == 'linux' && env.build_for_linux == 'true') ||
-            (matrix.platform == 'windows' && env.build_for_windows == 'true') ||
-            (matrix.platform == 'macos' && env.build_for_macos == 'true')
+            (matrix.platform == 'web' && inputs.build_for_web == 'true') ||
+            (matrix.platform == 'linux' && inputs.build_for_linux == 'true') ||
+            (matrix.platform == 'windows' && inputs.build_for_windows == 'true') ||
+            (matrix.platform == 'macos' && inputs.build_for_macos == 'true')
           }}' >> "${GITHUB_ENV}"
 
       - name: Checkout repository
@@ -317,7 +334,7 @@ jobs:
       - forward-env
       - get-version
       - build
-    if: ${{ needs.forward-env.outputs.upload_to_itch != '' }}
+    if: ${{ inputs.upload_to_itch && needs.forward-env.outputs.itch_page != '' }}
 
     steps:
       - name: Download all packages
@@ -342,6 +359,6 @@ jobs:
               --fix-permissions \
               --userversion='${{ needs.get-version.outputs.version }}' \
               tmp/"${channel}"/* \
-              '${{ env.upload_to_itch }}':"${channel#package-}"
+              '${{ env.itch_page }}':"${channel#package-}"
           done
 {%- endraw %}
