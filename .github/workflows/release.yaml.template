@@ -175,13 +175,14 @@ jobs:
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
           # Rustflags:
-          echo 'RUSTFLAGS=-Zthreads=0' >> "${GITHUB_ENV}"
+          RUSTFLAGS='-Zthreads=0'
           if [ '${{ matrix.platform }}' != 'windows' ]; then
-            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y' >> "${GITHUB_ENV}"
+            RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y'
           fi
           if [ '${{ inputs.deny_warnings }}' = 'true' ]; then
-            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Dwarnings' >> "${GITHUB_ENV}"
+            RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }"'-Dwarnings'
           fi
+          echo "RUSTFLAGS=${RUSTFLAGS}" >> "${GITHUB_ENV}"
 
           # macOS environment:
           if [ '${{ matrix.platform }}' = 'macos' ]; then
