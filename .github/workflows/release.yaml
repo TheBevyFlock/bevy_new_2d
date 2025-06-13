@@ -10,26 +10,26 @@ on:
         type: string
       build_for_windows:
         description: "Build for Windows? (WARNING: very slow!)"
-        default: false
+        default: true
         type: boolean
       build_for_macos:
         description: "Build for macOS?"
-        default: false
+        default: true
         type: boolean
       build_for_linux:
         description: "Build for Linux?"
-        default: false
+        default: true
         type: boolean
       build_for_web:
         description: "Build for web?"
-        default: false
+        default: true
         type: boolean
       upload_to_github:
         description: "Upload to GitHub releases?"
         default: true
         type: boolean
       upload_to_itch:
-        description: "Upload to itch.io?"
+        description: "Upload to itch.io? (if configured)"
         default: true
         type: boolean
       deny_warnings:
