@@ -9,31 +9,31 @@ on:
         required: true
         type: string
       build_for_windows:
-        description: "Build for Windows? (WARNING: very slow!)"
+        description: "Build for Windows (WARNING: slow!)"
         default: true
         type: boolean
       build_for_macos:
-        description: "Build for macOS?"
+        description: "Build for macOS"
         default: true
         type: boolean
       build_for_linux:
-        description: "Build for Linux?"
+        description: "Build for Linux"
         default: true
         type: boolean
       build_for_web:
-        description: "Build for web?"
+        description: "Build for web"
         default: true
         type: boolean
       upload_to_github:
-        description: "Upload to GitHub releases?"
+        description: "Upload to GitHub releases"
         default: true
         type: boolean
       upload_to_itch:
-        description: "Upload to itch.io? (if configured)"
+        description: "Upload to itch.io (if configured)"
         default: true
         type: boolean
       deny_warnings:
-        description: "Deny warnings?"
+        description: "Deny warnings"
         default: false
         type: boolean
 
@@ -191,10 +191,10 @@ jobs:
 
           # Check if building for this platform is enabled.
           echo 'is_platform_enabled=${{
-            (matrix.platform == 'web' && inputs.build_for_web == 'true') ||
-            (matrix.platform == 'linux' && inputs.build_for_linux == 'true') ||
-            (matrix.platform == 'windows' && inputs.build_for_windows == 'true') ||
-            (matrix.platform == 'macos' && inputs.build_for_macos == 'true')
+            (matrix.platform == 'web' && inputs.build_for_web) ||
+            (matrix.platform == 'linux' && inputs.build_for_linux) ||
+            (matrix.platform == 'windows' && inputs.build_for_windows) ||
+            (matrix.platform == 'macos' && inputs.build_for_macos)
           }}' >> "${GITHUB_ENV}"
 
       - name: Checkout repository
