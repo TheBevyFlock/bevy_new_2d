@@ -15,7 +15,7 @@ env:
   RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
   RUSTDOCFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
   # Use the same Rust toolchain across jobs so they can share a cache.
-  toolchain: nightly-2025-05-14
+  toolchain: nightly-2025-06-26
 
 jobs:
   # Check formatting.
@@ -123,7 +123,7 @@ jobs:
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Install Bevy CLI + Lint
-        run: cargo install --git https://github.com/TheBevyFlock/bevy_cli --rev 9a24ac4a555f028f9d32017e95fcd1efcee1d3d3 --branch main --locked bevy_lint
+        run: cargo install --git https://github.com/TheBevyFlock/bevy_cli --rev 949b808e6bbf11be0f61b236fbbc4e35854698af --locked bevy_lint
 
       - name: Run Bevy lints
         run: bevy_lint --locked --workspace --all-targets --profile ci --all-features
