@@ -67,7 +67,7 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
                 (
                     widget::label(text),
                     Node {
-                        justify_self: if i % 2 == 0 {
+                        justify_self: if i.is_multiple_of(2) {
                             JustifySelf::End
                         } else {
                             JustifySelf::Start
