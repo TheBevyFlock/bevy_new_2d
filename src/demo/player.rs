@@ -44,14 +44,13 @@ pub fn player(
     (
         Name::new("Player"),
         Player,
-        Sprite {
-            image: player_assets.ducky.clone(),
-            texture_atlas: Some(TextureAtlas {
+        Sprite::from_atlas_image(
+            player_assets.ducky.clone(),
+            TextureAtlas {
                 layout: texture_atlas_layout,
                 index: player_animation.get_atlas_index(),
-            }),
-            ..default()
-        },
+            },
+        ),
         Transform::from_scale(Vec2::splat(8.0).extend(1.0)),
         MovementController {
             max_speed,
