@@ -123,7 +123,10 @@ jobs:
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Install Bevy Lint
-        run: cargo install --git https://github.com/TheBevyFlock/bevy_cli --rev 949b808e6bbf11be0f61b236fbbc4e35854698af --locked bevy_lint
+        uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.4.0
+        with:
+          cache: true
+          save-cache-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run Bevy lints
         run: bevy_lint --locked --workspace --all-targets --profile ci --all-features
