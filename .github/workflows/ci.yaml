@@ -102,14 +102,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up environment
-        run: echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }-Zcodegen-backend=cranelift" >> "${GITHUB_ENV}"
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@master
+      - name: Install Rust toolchain (plus bevy_lint)
+        uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.4.0
         with:
-          components: rustc-codegen-cranelift-preview, rustc-dev, llvm-tools-preview
-          toolchain: ${{ env.toolchain }}
+          cache: true
+          save-cache-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Restore Rust cache
         id: cache
@@ -121,12 +118,6 @@ jobs:
       - name: Install build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
-
-      - name: Install Bevy Lint
-        uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.4.0
-        with:
-          cache: true
-          save-cache-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run Bevy lints
         run: bevy_lint --locked --workspace --all-targets --profile ci --all-features
