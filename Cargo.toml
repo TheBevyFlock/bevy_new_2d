@@ -26,7 +26,7 @@ tracing = { version = "0.1", features = [
 # In addition to enabling the `wasm_js` feature, you need to include `--cfg 'getrandom_backend="wasm_js"'`
 # in your rustflags for both local and CI/CD web builds, taking into account that rustflags specified in
 # multiple places are NOT combined (see <https://github.com/rust-lang/cargo/issues/5376>).
-# Alternatively, you can opt out of the rustflags check with this patch:
+# Alternatively, you can opt out of the rustflags check with this additional patch:
 #[patch.crates-io]
 #getrandom = { git = "https://github.com/benfrankel/getrandom" }
 
