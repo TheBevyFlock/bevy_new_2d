@@ -5,7 +5,6 @@ use std::borrow::Cow;
 use bevy::{
     ecs::{spawn::SpawnWith, system::IntoObserverSystem},
     prelude::*,
-    ui::Val::*,
 };
 
 use crate::theme::{interaction::InteractionPalette, palette::*};
@@ -16,12 +15,12 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
         Name::new(name),
         Node {
             position_type: PositionType::Absolute,
-            width: Percent(100.0),
-            height: Percent(100.0),
+            width: percent(100.0),
+            height: percent(100.0),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
-            row_gap: Px(20.0),
+            row_gap: px(20.0),
             ..default()
         },
         // Don't block picking events for other UI roots.
@@ -61,8 +60,8 @@ where
         action,
         (
             Node {
-                width: Px(380.0),
-                height: Px(80.0),
+                width: px(380.0),
+                height: px(80.0),
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
                 ..default()
@@ -83,8 +82,8 @@ where
         text,
         action,
         Node {
-            width: Px(30.0),
-            height: Px(30.0),
+            width: px(30.0),
+            height: px(30.0),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             ..default()

@@ -1,8 +1,6 @@
 //! The credits menu.
 
-use bevy::{
-    ecs::spawn::SpawnIter, input::common_conditions::input_just_pressed, prelude::*, ui::Val::*,
-};
+use bevy::{ecs::spawn::SpawnIter, input::common_conditions::input_just_pressed, prelude::*};
 
 use crate::{asset_tracking::LoadResource, audio::music, menus::Menu, theme::prelude::*};
 
@@ -57,8 +55,8 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
         Name::new("Grid"),
         Node {
             display: Display::Grid,
-            row_gap: Px(10.0),
-            column_gap: Px(30.0),
+            row_gap: px(10.0),
+            column_gap: px(30.0),
             grid_template_columns: RepeatedGridTrack::px(2, 400.0),
             ..default()
         },

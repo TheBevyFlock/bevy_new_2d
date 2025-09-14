@@ -2,7 +2,7 @@
 //!
 //! Additional settings and accessibility options should go here.
 
-use bevy::{audio::Volume, input::common_conditions::input_just_pressed, prelude::*, ui::Val::*};
+use bevy::{audio::Volume, input::common_conditions::input_just_pressed, prelude::*};
 
 use crate::{menus::Menu, screens::Screen, theme::prelude::*};
 
@@ -38,8 +38,8 @@ fn settings_grid() -> impl Bundle {
         Name::new("Settings Grid"),
         Node {
             display: Display::Grid,
-            row_gap: Px(10.0),
-            column_gap: Px(30.0),
+            row_gap: px(10.0),
+            column_gap: px(30.0),
             grid_template_columns: RepeatedGridTrack::px(2, 400.0),
             ..default()
         },
@@ -68,7 +68,7 @@ fn global_volume_widget() -> impl Bundle {
             (
                 Name::new("Current Volume"),
                 Node {
-                    padding: UiRect::horizontal(Px(10.0)),
+                    padding: UiRect::horizontal(px(10.0)),
                     justify_content: JustifyContent::Center,
                     ..default()
                 },
