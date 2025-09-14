@@ -15,8 +15,8 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
         Name::new(name),
         Node {
             position_type: PositionType::Absolute,
-            width: percent(100.0),
-            height: percent(100.0),
+            width: percent(100),
+            height: percent(100),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
