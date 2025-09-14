@@ -5,7 +5,7 @@ edition = "2024"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 
 [dependencies]
-bevy = { version = "0.17.0-rc", features = ["experimental_bevy_feathers"] }
+bevy = { version = "0.17.0-rc" }
 rand = "0.9"
 # Compile low-severity logs out of builds for performance.
 tracing = { version = "0.1", features = [
