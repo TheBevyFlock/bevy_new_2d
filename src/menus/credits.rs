@@ -54,8 +54,8 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
         Name::new("Grid"),
         Node {
             display: Display::Grid,
-            row_gap: px(10.0),
-            column_gap: px(30.0),
+            row_gap: px(10),
+            column_gap: px(30),
             grid_template_columns: RepeatedGridTrack::px(2, 400.0),
             ..default()
         },
