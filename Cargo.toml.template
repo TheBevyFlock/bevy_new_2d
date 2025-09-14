@@ -5,30 +5,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = { version = "0.16", features = ["wayland"] }
-rand = "0.8"
-# Compile low-severity logs out of native builds for performance.
-log = { version = "0.4", features = [
-    "max_level_debug",
-    "release_max_level_warn",
-] }
-# Compile low-severity logs out of web builds for performance.
+bevy = { version = "0.17.0-rc" }
+rand = "0.9"
+# Compile low-severity logs out of builds for performance.
 tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
 
-# Your web builds will start failing if you add a dependency that pulls in `getrandom` v0.3+.
-# To fix this, you should tell `getrandom` to use the `wasm_js` backend on Wasm.
-# See: <https://docs.rs/getrandom/0.3.3/getrandom/#webassembly-support>.
-#[target.wasm32-unknown-unknown.dependencies]
-#getrandom = { version = "0.3", features = ["wasm_js"] }
-# In addition to enabling the `wasm_js` feature, you need to include `--cfg 'getrandom_backend="wasm_js"'`
-# in your rustflags for both local and CI/CD web builds, taking into account that rustflags specified in
-# multiple places are NOT combined (see <https://github.com/rust-lang/cargo/issues/5376>).
-# Alternatively, you can opt out of the rustflags check with this patch:
-#[patch.crates-io]
-#getrandom = { git = "https://github.com/benfrankel/getrandom" }
+[target.wasm32-unknown-unknown.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [features]
 # Default to a native dev build.

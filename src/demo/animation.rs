@@ -84,7 +84,7 @@ fn trigger_step_sound_effect(
             && animation.changed()
             && (animation.frame == 2 || animation.frame == 5)
         {
-            let rng = &mut rand::thread_rng();
+            let rng = &mut rand::rng();
             let random_step = player_assets.steps.choose(rng).unwrap().clone();
             commands.spawn(sound_effect(random_step));
         }
@@ -140,7 +140,7 @@ impl PlayerAnimation {
     /// Update animation timers.
     pub fn update_timer(&mut self, delta: Duration) {
         self.timer.tick(delta);
-        if !self.timer.finished() {
+        if !self.timer.is_finished() {
             return;
         }
         self.frame = (self.frame + 1)
@@ -162,7 +162,7 @@ impl PlayerAnimation {
 
     /// Whether animation changed this tick.
     pub fn changed(&self) -> bool {
-        self.timer.finished()
+        self.timer.is_finished()
     }
 
     /// Return sprite index in the atlas.

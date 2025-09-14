@@ -82,12 +82,12 @@ fn global_volume_widget() -> impl Bundle {
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
-fn lower_global_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+fn lower_global_volume(_: On<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
     let linear = (global_volume.volume.to_linear() - 0.1).max(MIN_VOLUME);
     global_volume.volume = Volume::Linear(linear);
 }
 
-fn raise_global_volume(_: Trigger<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+fn raise_global_volume(_: On<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
     let linear = (global_volume.volume.to_linear() + 0.1).min(MAX_VOLUME);
     global_volume.volume = Volume::Linear(linear);
 }
@@ -105,7 +105,7 @@ fn update_global_volume_label(
 }
 
 fn go_back_on_click(
-    _: Trigger<Pointer<Click>>,
+    _: On<Pointer<Click>>,
     screen: Res<State<Screen>>,
     mut next_menu: ResMut<NextState<Menu>>,
 ) {
