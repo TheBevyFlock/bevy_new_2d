@@ -8,8 +8,8 @@ edition = "2024"
 bevy = { version = "0.17.0-rc" }
 rand = "0.9"
 # Compile low-severity logs out of builds for performance.
-# Remove these lines if you want to profile your game with tracy
-# (See <https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#tracy-profiler>)
+# Remove these features if you want to profile your game with tracy.
+# (see <https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#tracy-profiler>)
 tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
