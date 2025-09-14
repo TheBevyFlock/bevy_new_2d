@@ -60,8 +60,8 @@ where
         action,
         (
             Node {
-                width: px(380.0),
-                height: px(80.0),
+                width: px(380),
+                height: px(80),
                 align_items: AlignItems::Center,
                 justify_content: JustifyContent::Center,
                 ..default()
@@ -82,8 +82,8 @@ where
         text,
         action,
         Node {
-            width: px(30.0),
-            height: px(30.0),
+            width: px(30),
+            height: px(30),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             ..default()

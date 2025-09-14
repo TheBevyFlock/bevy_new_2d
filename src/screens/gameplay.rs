@@ -42,8 +42,8 @@ fn spawn_pause_overlay(mut commands: Commands) {
     commands.spawn((
         Name::new("Pause Overlay"),
         Node {
-            width: percent(100.0),
-            height: percent(100.0),
+            width: percent(100),
+            height: percent(100),
             ..default()
         },
         GlobalZIndex(1),

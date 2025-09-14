@@ -67,7 +67,7 @@ fn global_volume_widget() -> impl Bundle {
             (
                 Name::new("Current Volume"),
                 Node {
-                    padding: UiRect::horizontal(px(10.0)),
+                    padding: UiRect::horizontal(px(10)),
                     justify_content: JustifyContent::Center,
                     ..default()
                 },
