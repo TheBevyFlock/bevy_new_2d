@@ -2,7 +2,10 @@
 //!
 //! Additional settings and accessibility options should go here.
 
-use bevy::{audio::Volume, input::common_conditions::input_just_pressed, prelude::*, ui::Val::*};
+use bevy::{
+    audio::Volume, input::common_conditions::input_just_pressed, prelude::*, ui::Val::*,
+    ui_widgets::Activate,
+};
 
 use crate::{menus::Menu, screens::Screen, theme::prelude::*};
 
@@ -21,19 +24,21 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_settings_menu(mut commands: Commands) {
-    commands.spawn((
+    let bundle = (
         widget::ui_root("Settings Menu"),
         GlobalZIndex(2),
         DespawnOnExit(Menu::Settings),
         children![
             widget::header("Settings"),
-            settings_grid(),
-            widget::button("Back", go_back_on_click),
+            settings_grid(&mut commands),
+            widget::button("Back", commands.register_system(go_back_on_click)),
         ],
-    ));
+    );
+
+    commands.spawn(bundle);
 }
 
-fn settings_grid() -> impl Bundle {
+fn settings_grid(commands: &mut Commands) -> impl Bundle {
     (
         Name::new("Settings Grid"),
         Node {
@@ -51,12 +56,12 @@ fn settings_grid() -> impl Bundle {
                     ..default()
                 }
             ),
-            global_volume_widget(),
+            global_volume_widget(commands),
         ],
     )
 }
 
-fn global_volume_widget() -> impl Bundle {
+fn global_volume_widget(commands: &mut Commands) -> impl Bundle {
     (
         Name::new("Global Volume Widget"),
         Node {
@@ -64,7 +69,7 @@ fn global_volume_widget() -> impl Bundle {
             ..default()
         },
         children![
-            widget::button_small("-", lower_global_volume),
+            widget::button_small("-", commands.register_system(lower_global_volume)),
             (
                 Name::new("Current Volume"),
                 Node {
@@ -74,7 +79,7 @@ fn global_volume_widget() -> impl Bundle {
                 },
                 children![(widget::label(""), GlobalVolumeLabel)],
             ),
-            widget::button_small("+", raise_global_volume),
+            widget::button_small("+", commands.register_system(raise_global_volume)),
         ],
     )
 }
@@ -82,12 +87,12 @@ fn global_volume_widget() -> impl Bundle {
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
-fn lower_global_volume(_: On<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+fn lower_global_volume(_: In<Activate>, mut global_volume: ResMut<GlobalVolume>) {
     let linear = (global_volume.volume.to_linear() - 0.1).max(MIN_VOLUME);
     global_volume.volume = Volume::Linear(linear);
 }
 
-fn raise_global_volume(_: On<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+fn raise_global_volume(_: In<Activate>, mut global_volume: ResMut<GlobalVolume>) {
     let linear = (global_volume.volume.to_linear() + 0.1).min(MAX_VOLUME);
     global_volume.volume = Volume::Linear(linear);
 }
@@ -105,7 +110,7 @@ fn update_global_volume_label(
 }
 
 fn go_back_on_click(
-    _: On<Pointer<Click>>,
+    _: In<Activate>,
     screen: Res<State<Screen>>,
     mut next_menu: ResMut<NextState<Menu>>,
 ) {

@@ -2,6 +2,7 @@
 
 use bevy::{
     ecs::spawn::SpawnIter, input::common_conditions::input_just_pressed, prelude::*, ui::Val::*,
+    ui_widgets::Activate,
 };
 
 use crate::{asset_tracking::LoadResource, audio::music, menus::Menu, theme::prelude::*};
@@ -19,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_credits_menu(mut commands: Commands) {
-    commands.spawn((
+    let bundle = (
         widget::ui_root("Credits Menu"),
         GlobalZIndex(2),
         DespawnOnExit(Menu::Credits),
@@ -28,9 +29,11 @@ fn spawn_credits_menu(mut commands: Commands) {
             created_by(),
             widget::header("Assets"),
             assets(),
-            widget::button("Back", go_back_on_click),
+            widget::button("Back", commands.register_system(go_back_on_click)),
         ],
-    ));
+    );
+
+    commands.spawn(bundle);
 }
 
 fn created_by() -> impl Bundle {
@@ -80,7 +83,7 @@ fn grid(content: Vec<[&'static str; 2]>) -> impl Bundle {
     )
 }
 
-fn go_back_on_click(_: On<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>>) {
+fn go_back_on_click(_: In<Activate>, mut next_menu: ResMut<NextState<Menu>>) {
     next_menu.set(Menu::Main);
 }
 

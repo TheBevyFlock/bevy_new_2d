@@ -3,9 +3,14 @@
 use std::borrow::Cow;
 
 use bevy::{
-    ecs::{spawn::SpawnWith, system::IntoObserverSystem},
+    ecs::{
+        spawn::SpawnWith,
+        system::{IntoObserverSystem, SystemId},
+    },
+    feathers::{controls::ButtonProps, theme::ThemedText},
     prelude::*,
     ui::Val::*,
+    ui_widgets::{Activate, Callback},
 };
 
 use crate::theme::{interaction::InteractionPalette, palette::*};
@@ -50,12 +55,7 @@ pub fn label(text: impl Into<String>) -> impl Bundle {
 }
 
 /// A large rounded button with text and an action defined as an [`Observer`].
-pub fn button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
-where
-    E: EntityEvent,
-    B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
-{
+pub fn button(text: impl Into<String>, action: SystemId<In<Activate>>) -> impl Bundle {
     button_base(
         text,
         action,
@@ -73,12 +73,7 @@ where
 }
 
 /// A small square button with text and an action defined as an [`Observer`].
-pub fn button_small<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
-where
-    E: EntityEvent,
-    B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
-{
+pub fn button_small(text: impl Into<String>, action: SystemId<In<Activate>>) -> impl Bundle {
     button_base(
         text,
         action,
@@ -93,43 +88,18 @@ where
 }
 
 /// A simple button with text and an action defined as an [`Observer`]. The button's layout is provided by `button_bundle`.
-fn button_base<E, B, M, I>(
+fn button_base(
     text: impl Into<String>,
-    action: I,
+    action: SystemId<In<Activate>>,
+    // TODO: figure out how to add this
     button_bundle: impl Bundle,
-) -> impl Bundle
-where
-    E: EntityEvent,
-    B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
-{
-    let text = text.into();
-    let action = IntoObserverSystem::into_system(action);
-    (
-        Name::new("Button"),
-        Node::default(),
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
-            parent
-                .spawn((
-                    Name::new("Button Inner"),
-                    Button,
-                    BackgroundColor(BUTTON_BACKGROUND),
-                    InteractionPalette {
-                        none: BUTTON_BACKGROUND,
-                        hovered: BUTTON_HOVERED_BACKGROUND,
-                        pressed: BUTTON_PRESSED_BACKGROUND,
-                    },
-                    children![(
-                        Name::new("Button Text"),
-                        Text(text),
-                        TextFont::from_font_size(40.0),
-                        TextColor(BUTTON_TEXT),
-                        // Don't bubble picking events from the text up to the button.
-                        Pickable::IGNORE,
-                    )],
-                ))
-                .insert(button_bundle)
-                .observe(action);
-        })),
+) -> impl Bundle {
+    bevy::feathers::controls::button(
+        ButtonProps {
+            on_click: Callback::System(action),
+            ..default()
+        },
+        (),
+        Spawn((Text::new(text), ThemedText)),
     )
 }
