@@ -22,7 +22,7 @@ fn spawn_credits_menu(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Credits Menu"),
         GlobalZIndex(2),
-        StateScoped(Menu::Credits),
+        DespawnOnExit(Menu::Credits),
         children![
             widget::header("Created by"),
             created_by(),
@@ -107,7 +107,7 @@ impl FromWorld for CreditsAssets {
 fn start_credits_music(mut commands: Commands, credits_music: Res<CreditsAssets>) {
     commands.spawn((
         Name::new("Credits Music"),
-        StateScoped(Menu::Credits),
+        DespawnOnExit(Menu::Credits),
         music(credits_music.music.clone()),
     ));
 }

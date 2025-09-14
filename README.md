@@ -13,7 +13,13 @@ See our [Design Document](./docs/design.md) for more information on how we struc
 
 ## Create a new game
 
-Install [`bevy_cli`](https://github.com/TheBevyFlock/bevy_cli/) and run the following command:
+Install [`bevy_cli`](https://github.com/TheBevyFlock/bevy_cli/) from its `main` branch:
+
+```sh
+cargo install bevy_cli --git https://github.com/TheBevyFlock/bevy_cli
+```
+
+and run the following command:
 
 ```sh
 bevy new my_game --template 2d

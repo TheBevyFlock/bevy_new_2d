@@ -90,7 +90,6 @@ enum AppSystems {
 
 /// Whether or not the game is paused.
 #[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default)]
-#[states(scoped_entities)]
 struct Pause(pub bool);
 
 /// A system set for systems that shouldn't run while the game is paused.

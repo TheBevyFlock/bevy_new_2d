@@ -98,7 +98,7 @@ For each screen, create a plugin that handles the setup and teardown in the
 [`OnEnter`](https://docs.rs/bevy/latest/bevy/prelude/struct.OnEnter.html) and
 [`OnExit`](https://docs.rs/bevy/latest/bevy/prelude/struct.OnExit.html) schedules.
 You should mark the screen's entities to despawn on exit by giving them the
-[`StateScoped`](https://docs.rs/bevy/latest/bevy/prelude/struct.StateScoped.html) component.
+[`DespawnOnExit`](https://docs.rs/bevy/latest/bevy/prelude/struct.DespawnOnExit.html) component.
 
 ```rust
 // victory.rs
@@ -110,7 +110,7 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_victory_screen(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Victory Screen"),
-        StateScoped(Screen::Victory),
+        DespawnOnExit(Screen::Victory),
         children![
             // UI elements.
         ],

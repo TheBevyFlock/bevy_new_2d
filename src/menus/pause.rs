@@ -16,7 +16,7 @@ fn spawn_pause_menu(mut commands: Commands) {
     commands.spawn((
         widget::ui_root("Pause Menu"),
         GlobalZIndex(2),
-        StateScoped(Menu::Pause),
+        DespawnOnExit(Menu::Pause),
         children![
             widget::header("Game paused"),
             widget::button("Continue", close_menu),
