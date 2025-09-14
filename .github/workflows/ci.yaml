@@ -162,6 +162,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up environment
+        run: echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }--cfg getrandom_backend=\"linux_getrandom\"" >> "${GITHUB_ENV}"
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@master
         with:
