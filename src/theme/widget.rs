@@ -20,7 +20,7 @@ pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
-            row_gap: px(20.0),
+            row_gap: px(20),
             ..default()
         },
         // Don't block picking events for other UI roots.
