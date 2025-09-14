@@ -1,9 +1,6 @@
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<Music>();
-    app.register_type::<SoundEffect>();
-
     app.add_systems(
         Update,
         apply_global_volume.run_if(resource_changed::<GlobalVolume>),

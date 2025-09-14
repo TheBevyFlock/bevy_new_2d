@@ -11,7 +11,6 @@ pub(super) fn plugin(app: &mut App) {
         go_back.run_if(in_state(Menu::Credits).and(input_just_pressed(KeyCode::Escape))),
     );
 
-    app.register_type::<CreditsAssets>();
     app.load_resource::<CreditsAssets>();
     app.add_systems(OnEnter(Menu::Credits), start_credits_music);
 }

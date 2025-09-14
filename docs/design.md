@@ -248,7 +248,6 @@ Then start preloading in `actor::plugin`:
 
 ```rust
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<ActorAssets>();
     app.load_resource::<ActorAssets>();
 }
 ```

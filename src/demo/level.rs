@@ -10,7 +10,6 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<LevelAssets>();
     app.load_resource::<LevelAssets>();
 }
 

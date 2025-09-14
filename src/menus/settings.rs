@@ -13,7 +13,6 @@ pub(super) fn plugin(app: &mut App) {
         go_back.run_if(in_state(Menu::Settings).and(input_just_pressed(KeyCode::Escape))),
     );
 
-    app.register_type::<GlobalVolumeLabel>();
     app.add_systems(
         Update,
         update_global_volume_label.run_if(in_state(Menu::Settings)),

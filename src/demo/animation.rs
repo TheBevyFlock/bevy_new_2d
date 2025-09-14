@@ -16,7 +16,6 @@ use crate::{
 
 pub(super) fn plugin(app: &mut App) {
     // Animate and play sound effects based on controls.
-    app.register_type::<PlayerAnimation>();
     app.add_systems(
         Update,
         (

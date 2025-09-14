@@ -15,9 +15,6 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<Player>();
-
-    app.register_type::<PlayerAssets>();
     app.load_resource::<PlayerAssets>();
 
     // Record directional input as movement controls.

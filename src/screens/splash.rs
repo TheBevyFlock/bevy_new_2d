@@ -24,7 +24,6 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     // Add splash timer.
-    app.register_type::<SplashTimer>();
     app.add_systems(OnEnter(Screen::Splash), insert_splash_timer);
     app.add_systems(OnExit(Screen::Splash), remove_splash_timer);
     app.add_systems(
