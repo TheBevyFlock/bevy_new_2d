@@ -184,9 +184,10 @@ jobs:
           shared-key: web-ci
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
+      # TODO: We may be able to skip these :)
       - name: Install build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check web
-        run: bevy lint web --verbose
+        run: bevy lint web
