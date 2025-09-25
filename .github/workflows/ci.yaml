@@ -162,14 +162,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up environment
-        run: echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }--cfg getrandom_backend=\"wasm_js\"" >> "${GITHUB_ENV}"
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@master
+      - name: Install Rust toolchain (plus bevy_lint)
+        uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.4.0
         with:
-          toolchain: ${{ env.toolchain }}
-          targets: wasm32-unknown-unknown
+          cache: true
+          save-cache-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install wasm32-unknown-unknown target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Bevy CLI
+        run: cargo binstall --version 0.1.0-alpha.2 --locked --no-confirm --force --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
       - name: Restore Rust cache
         id: cache
@@ -178,9 +184,10 @@ jobs:
           shared-key: web-ci
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
+      # TODO: We may be able to skip these :)
       - name: Install build dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check web
-        run: cargo check --config 'profile.web.inherits="dev"' --profile ci --no-default-features --features dev --target wasm32-unknown-unknown
+        run: bevy lint web
