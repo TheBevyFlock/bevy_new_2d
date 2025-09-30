@@ -88,7 +88,7 @@ to help run your game from your IDE.
   Run your game with hot-patching enabled:
 
   ```shell
-  dx serve --hot-patch
+  BEVY_ASSET_ROOT='.' dx serve --hot-patch --features "bevy/hotpatching"
   ```
 
   Now edit a system's code while the game is running, and save the file.
