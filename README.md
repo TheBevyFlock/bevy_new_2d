@@ -83,27 +83,7 @@ to help run your game from your IDE.
   Hot-patching is an experimental feature that allows you to edit your game's code _while it's running_
   and see the changes without having to recompile or restart.
 
-  To set this up, follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/).
-  Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations)
-  section and update your [`Cargo.toml`](./Cargo.toml):
-
-  ```diff
-  [dependencies]
-  + bevy_simple_subsecond_system = { version = "0.1", optional = true }
-  
-  [features]
-  dev_native = [
-  +   "dep:bevy_simple_subsecond_system",
-  ]
-  ```
-
-  Annotate your systems to enable hot-patching.
-  The functions they call can be hot-patched too; no additional annotations required!
-
-  ```rust
-  #[cfg_attr(feature = "dev_native", hot)]
-  fn my_system() {}
-  ```
+  To set this up, follow the instructions in the [release announcement](https://bevy.org/news/bevy-0-17/#hot-patching-systems-in-a-running-app).
 
   Run your game with hot-patching enabled:
 
@@ -111,7 +91,7 @@ to help run your game from your IDE.
   dx serve --hot-patch
   ```
 
-  Now edit an annotated system's code while the game is running, and save the file.
+  Now edit a system's code while the game is running, and save the file.
   You should see `Status: Hot-patching...` in the CLI if you've got it working.
 </details>
 
