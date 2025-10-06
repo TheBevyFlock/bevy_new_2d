@@ -168,7 +168,7 @@ jobs:
           if [ '${{ matrix.platform }}' != 'windows' ]; then
             RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y'
           fi
-          if [ '${{ inputs.deny_warnings }}' ]; then
+          if [ '${{ inputs.deny_warnings }}' = 'true' ]; then
             RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }"'-Dwarnings'
           fi
           echo "RUSTFLAGS=${RUSTFLAGS}" >> "${GITHUB_ENV}"
