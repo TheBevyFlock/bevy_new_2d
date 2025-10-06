@@ -307,7 +307,7 @@ jobs:
           retention-days: 1
 
       - name: Upload package to GitHub release
-        if: ${{ env.is_platform_enabled == 'true' && inputs.upload_to_github == 'true' }}
+        if: ${{ env.is_platform_enabled == 'true' && inputs.upload_to_github }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
