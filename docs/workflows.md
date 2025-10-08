@@ -29,7 +29,8 @@ The [CD workflow](../.github/workflows/release.yaml) will trigger on manual work
 
 - (Optional) Create a release build for Windows, macOS, Linux, and web.
 - (Optional) Upload to [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github).
-- (Optional) Upload to [itch.io](https://itch.io).
+- (Optional) Deploy to [itch.io](https://itch.io).
+- (Optional) Deploy to [GitHub Pages](https://docs.github.com/en/pages).
 
 <details>
   <summary><ins>Triggering a release</ins></summary>
@@ -58,8 +59,8 @@ The release workflow can be configured by tweaking the environment variables in 
   # The path to the assets directory.
   assets_path: assets
 
-  # The itch.io project to upload to in the format `user-name/project-name`.
-  # There will be no upload to itch.io if this is commented out.
+  # The itch.io project to deploy to in the format `user-name/project-name`.
+  # There will be no deployment to itch.io if this is commented out.
   itch_page: the-bevy-flock/bevy-new-2d
 
   # The ID of the app produced by this workflow.
@@ -99,7 +100,7 @@ The release workflow can be configured by tweaking the environment variables in 
 
 The initial values are set automatically by `bevy new`, but you can edit them yourself and push a commit.
 
-### Set up itch.io upload
+### Set up itch.io deployment
 
 #### Add butler credentials
 
@@ -116,7 +117,7 @@ Hit `New repository secret` and enter the following values, then hit `Add secret
 
 #### Create itch.io project
 
-Create a new itch.io project with the same user and project name as in the `upload_to_itch` variable in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
+Create a new itch.io project with the same user and project name as in the `itch_page` variable in [`.github/workflows/release.yaml`](../.github/workflows/release.yaml).
 Hit `Save & view page` at the bottom of the page.
 
 Trigger the [release workflow](#cd-releasing) for the first time. Once it's done, go back to itch.io and hit `Edit game` in the top left.
@@ -125,7 +126,7 @@ Set `Kind of project` to `HTML`, then find the newly uploaded `web` build and ti
 
 ![A screenshot showing a web build selected in the itch.io uploads](./img/workflow-itch-release.png)
 
-### Set up GitHub Pages upload
+### Set up GitHub Pages deployment
 
 #### Enable deployment via GitHub Actions
 
@@ -139,7 +140,7 @@ Hit the drop-down under `Source` and choose `Github Actions` as the source of yo
 
 #### Add your branch to the `github-pages` environment
 
-If you want to upload to GitHub Pages from a branch other than `main`, you'll have to add that branch to the `github-pages` environment.
+If you want to deploy to GitHub Pages from a branch other than `main`, you'll have to add that branch to the `github-pages` environment.
 
 <details>
   <summary>In your GitHub repository, navigate to <code>Settings > Environments > github-pages > Deployment branches</code>.</summary>
@@ -147,4 +148,4 @@ If you want to upload to GitHub Pages from a branch other than `main`, you'll ha
   ![A screenshot showing where to add a branch to the github-pages environment](./img/add_branch_to_github_pages_environment.png)
 </details>
 
-Hit `Add deployment branch rule`, type in the name of the branch you want to upload to Pages, and hit `Add rule`.
+Hit `Add deployment branch rule`, type in the name of the branch you want to deploy to Pages, and hit `Add rule`.
