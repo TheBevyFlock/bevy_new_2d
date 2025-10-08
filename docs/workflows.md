@@ -123,23 +123,23 @@ Trigger the [release workflow](#cd-releasing) for the first time. Once it's done
 
 Set `Kind of project` to `HTML`, then find the newly uploaded `web` build and tick the box that says `This file will be played in the browser`.
 
-![A screenshot showing a web build selected in the itch.io uploads](img/workflow-itch-release.png)
+![A screenshot showing a web build selected in the itch.io uploads](./img/workflow-itch-release.png)
 
-### Set up Github Pages
+### Set up GitHub Pages upload
 
-#### Enable deployment via Github Actions
+#### Enable deployment via GitHub Actions
 
 <details>
   <summary>In your GitHub repository, navigate to <code>Settings > Pages > Build and Deployment</code>.</summary>
 
-  ![A screenshot showing where to enable Pages deployment via Github Actions](./img/enable_github_pages.png)
+  ![A screenshot showing where to enable Pages deployment via GitHub Actions](./img/enable_github_pages.png)
 </details>
-  
+
 Hit the drop-down under `Source` and choose `Github Actions` as the source of your Pages deployment.
 
-### Add your branch to the `github-pages` environment
+#### Add your branch to the `github-pages` environment
 
-If the branch you want to upload to Github Pages is not the main one, you need to add it to the `github-pages` environment.
+If you want to upload to GitHub Pages from a branch other than `main`, you'll have to add that branch to the `github-pages` environment.
 
 <details>
   <summary>In your GitHub repository, navigate to <code>Settings > Environments > github-pages > Deployment branches</code>.</summary>

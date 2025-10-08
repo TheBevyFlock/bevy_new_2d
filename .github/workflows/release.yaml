@@ -28,12 +28,12 @@ on:
         description: "Upload to GitHub releases"
         default: true
         type: boolean
-      upload_to_itch:
-        description: "Upload to itch.io (if configured)"
+      deploy_to_itch:
+        description: "Deploy to itch.io (if configured)"
         default: true
         type: boolean
-      upload_to_github_pages:
-        description: "Upload web build to GitHub Pages"
+      deploy_to_github_pages:
+        description: "Deploy web build to GitHub Pages"
         default: false
         type: boolean
       deny_warnings:
@@ -54,8 +54,8 @@ env:
   # The path to the assets directory.
   assets_path: assets
 
-  # The itch.io project to upload to in the format `user-name/project-name`.
-  # There will be no upload to itch.io if this is commented out.
+  # The itch.io project to deploy to in the format `user-name/project-name`.
+  # There will be no deployment to itch.io if this is commented out.
   itch_page: the-bevy-flock/bevy-new-2d
 
   # The ID of the app produced by this workflow.
@@ -310,8 +310,8 @@ jobs:
           name: package-${{ matrix.platform }}
           retention-days: 1
 
-      - name: Upload web bundle to workflow artifacts for GitHub Pages (web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' && inputs.upload_to_github_pages }}
+      - name: Upload web bundle to workflow artifacts for GitHub Pages (Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' && inputs.deploy_to_github_pages }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ env.app }}/${{ env.cargo_build_binary_name }}
@@ -327,20 +327,20 @@ jobs:
           tag: ${{ env.version }}
           overwrite: true
 
-  # Upload all packages to itch.io.
-  upload-to-itch:
+  # Deploy to itch.io.
+  deploy-to-itch:
     runs-on: ubuntu-latest
     needs:
       - forward-env
       - get-version
       - build
-    if: ${{ inputs.upload_to_itch && needs.forward-env.outputs.itch_page != '' }}
+    if: ${{ inputs.deploy_to_itch && needs.forward-env.outputs.itch_page != '' }}
 
     steps:
-      - name: Download all packages
+      - name: Download packages
         uses: actions/download-artifact@v4
         with:
-          pattern: package-*
+          pattern: package-(windows|macos|linux|web)
           path: tmp
 
       - name: Install butler
@@ -350,16 +350,16 @@ jobs:
           chmod +x butler
           ./butler -V
 
-      - name: Upload all packages to itch.io
+      - name: Upload packages to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
         run: |
-          for channel in $(ls tmp); do
+          for package in $(ls tmp); do
             ./butler push \
               --fix-permissions \
               --userversion='${{ needs.get-version.outputs.version }}' \
-              tmp/"${channel}"/* \
-              '${{ env.itch_page }}':"${channel#package-}"
+              tmp/"${package}"/* \
+              '${{ env.itch_page }}':"${package#package-}"
           done
 
   # Deploy to GitHub Pages.
@@ -369,12 +369,13 @@ jobs:
     permissions:
       # Required to deploy to GitHub Pages.
       pages: write
-      # Required for GitHub Pages to verify the source of the upload.
+      # Required for GitHub Pages to verify the source of the deployment.
       # See: <https://github.com/actions/deploy-pages/issues/329>.
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
+    if: ${{ inputs.deploy_to_github_pages && inputs.build_for_web }}
 
     steps:
       - name: Deploy to GitHub Pages
