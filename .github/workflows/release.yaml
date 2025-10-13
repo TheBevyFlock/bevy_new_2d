@@ -340,7 +340,7 @@ jobs:
       - name: Download packages
         uses: actions/download-artifact@v4
         with:
-          pattern: package-(windows|macos|linux|web)
+          pattern: package-*
           path: tmp
 
       - name: Install butler
