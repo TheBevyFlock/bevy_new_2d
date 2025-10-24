@@ -26,11 +26,17 @@ pub(super) fn plugin(app: &mut App) {
                 trigger_step_sound_effect,
             )
                 .chain()
-                .run_if(resource_exists::<PlayerAssets>)
                 .in_set(AppSystems::Update),
         )
             .in_set(PausableSystems),
     );
+}
+
+/// Update the animation timer.
+fn update_animation_timer(time: Res<Time>, mut query: Query<&mut PlayerAnimation>) {
+    for mut animation in &mut query {
+        animation.update_timer(time.delta());
+    }
 }
 
 /// Update the sprite direction and animation state (idling/walking).
@@ -52,13 +58,6 @@ fn update_animation_movement(
     }
 }
 
-/// Update the animation timer.
-fn update_animation_timer(time: Res<Time>, mut query: Query<&mut PlayerAnimation>) {
-    for mut animation in &mut query {
-        animation.update_timer(time.delta());
-    }
-}
-
 /// Update the texture atlas to reflect changes in the animation.
 fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut Sprite)>) {
     for (animation, mut sprite) in &mut query {
@@ -75,7 +74,7 @@ fn update_animation_atlas(mut query: Query<(&PlayerAnimation, &mut Sprite)>) {
 /// animation.
 fn trigger_step_sound_effect(
     mut commands: Commands,
-    player_assets: Res<PlayerAssets>,
+    player_assets: If<Res<PlayerAssets>>,
     mut step_query: Query<&PlayerAnimation>,
 ) {
     for animation in &mut step_query {
