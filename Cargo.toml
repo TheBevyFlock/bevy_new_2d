@@ -5,7 +5,8 @@ edition = "2024"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 
 [dependencies]
-bevy = { version = "0.18" }
+# Use only features needed for a 2D game to improve compile time and size
+bevy = { version = "0.18", default-features = false, features = ["2d"] }
 rand = "0.9"
 # Compile out low-severity logs to improve performance.
 # Remove these features if you want to profile your game with tracy.
