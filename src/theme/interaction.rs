@@ -88,17 +88,23 @@ impl FromWorld for InteractionAssets {
 }
 
 fn play_sound_effect_on_click(
-    _: On<Pointer<Click>>,
+    on: On<Pointer<Click>>,
     interaction_assets: If<Res<InteractionAssets>>,
+    interaction_entities: Query<Entity, With<InteractionPalette>>,
     mut commands: Commands,
 ) {
-    commands.spawn(sound_effect(interaction_assets.click.clone()));
+    if interaction_entities.contains(on.event_target()) {
+        commands.spawn(sound_effect(interaction_assets.click.clone()));
+    }
 }
 
 fn play_sound_effect_on_over(
-    _: On<Pointer<Over>>,
+    on: On<Pointer<Over>>,
     interaction_assets: If<Res<InteractionAssets>>,
+    interaction_entities: Query<Entity, With<InteractionPalette>>,
     mut commands: Commands,
 ) {
-    commands.spawn(sound_effect(interaction_assets.hover.clone()));
+    if interaction_entities.contains(on.event_target()) {
+        commands.spawn(sound_effect(interaction_assets.hover.clone()));
+    }
 }
