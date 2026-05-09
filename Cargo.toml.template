@@ -65,7 +65,7 @@ type_complexity = "allow"
 nonstandard_macro_braces = "warn"
 
 # You can configure the warning levels of Bevy lints here. For a list of all lints, see:
-# <https://thebevyflock.github.io/bevy_cli/bevy_lint/lints/>
+# <https://thebevyflock.github.io/bevy_cli/api/bevy_lint/lints/>
 [package.metadata.bevy_lint]
 # panicking_methods = "deny"
 # pedantic = "warn"
