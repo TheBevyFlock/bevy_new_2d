@@ -104,13 +104,13 @@ impl FromWorld for PlayerAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            ducky: assets.load_with_settings(
-                "images/ducky.png",
-                |settings: &mut ImageLoaderSettings| {
+            ducky: assets
+                .load_builder()
+                .with_settings(|settings: &mut ImageLoaderSettings| {
                     // Use `nearest` image sampling to preserve pixel art style.
                     settings.sampler = ImageSampler::nearest();
-                },
-            ),
+                })
+                .load("images/ducky.png"),
             steps: vec![
                 assets.load("audio/sound_effects/step1.ogg"),
                 assets.load("audio/sound_effects/step2.ogg"),

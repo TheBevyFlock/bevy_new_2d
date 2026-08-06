@@ -8,7 +8,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Menu::Credits), spawn_credits_menu);
     app.add_systems(
         Update,
-        go_back.run_if(in_state(Menu::Credits).and(input_just_pressed(KeyCode::Escape))),
+        go_back.run_if(in_state(Menu::Credits).and_then(input_just_pressed(KeyCode::Escape))),
     );
 
     app.load_resource::<CreditsAssets>();
