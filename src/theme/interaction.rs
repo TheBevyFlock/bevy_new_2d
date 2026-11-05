@@ -16,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
 /// Palette for widget interactions. Add this to an entity that supports
 /// [`Interaction`]s, such as a button, to change its [`BackgroundColor`] based
 /// on the current interaction state.
-#[derive(Component, Debug, Reflect)]
+#[derive(Component, Debug, Reflect, Clone, Default)]
 #[reflect(Component)]
 pub struct InteractionPalette {
     pub none: Color,
@@ -25,7 +25,7 @@ pub struct InteractionPalette {
 }
 
 fn apply_interaction_palette_on_click(
-    click: On<Pointer<Click>>,
+    click: On<PointerClick>,
     mut palette_query: Query<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
     let Ok((palette, mut bg)) = palette_query.get_mut(click.event_target()) else {
@@ -36,7 +36,7 @@ fn apply_interaction_palette_on_click(
 }
 
 fn apply_interaction_palette_on_release(
-    click: On<Pointer<Release>>,
+    click: On<PointerRelease>,
     mut palette_query: Query<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
     let Ok((palette, mut bg)) = palette_query.get_mut(click.event_target()) else {
@@ -47,7 +47,7 @@ fn apply_interaction_palette_on_release(
 }
 
 fn apply_interaction_palette_on_over(
-    over: On<Pointer<Over>>,
+    over: On<PointerOver>,
     mut palette_query: Query<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
     let Ok((palette, mut bg)) = palette_query.get_mut(over.event_target()) else {
@@ -58,7 +58,7 @@ fn apply_interaction_palette_on_over(
 }
 
 fn apply_interaction_palette_on_out(
-    out: On<Pointer<Out>>,
+    out: On<PointerOut>,
     mut palette_query: Query<(&InteractionPalette, &mut BackgroundColor)>,
 ) {
     let Ok((palette, mut bg)) = palette_query.get_mut(out.event_target()) else {
@@ -88,23 +88,23 @@ impl FromWorld for InteractionAssets {
 }
 
 fn play_sound_effect_on_click(
-    on: On<Pointer<Click>>,
+    on: On<PointerClick>,
     interaction_assets: If<Res<InteractionAssets>>,
     interaction_entities: Query<Entity, With<InteractionPalette>>,
     mut commands: Commands,
 ) {
     if interaction_entities.contains(on.event_target()) {
-        commands.spawn(sound_effect(interaction_assets.click.clone()));
+        commands.spawn_scene(sound_effect(interaction_assets.click.clone()));
     }
 }
 
 fn play_sound_effect_on_over(
-    on: On<Pointer<Over>>,
+    on: On<PointerOver>,
     interaction_assets: If<Res<InteractionAssets>>,
     interaction_entities: Query<Entity, With<InteractionPalette>>,
     mut commands: Commands,
 ) {
     if interaction_entities.contains(on.event_target()) {
-        commands.spawn(sound_effect(interaction_assets.hover.clone()));
+        commands.spawn_scene(sound_effect(interaction_assets.hover.clone()));
     }
 }

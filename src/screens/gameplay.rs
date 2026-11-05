@@ -42,17 +42,16 @@ fn pause(mut next_pause: ResMut<NextState<Pause>>) {
 }
 
 fn spawn_pause_overlay(mut commands: Commands) {
-    commands.spawn((
-        Name::new("Pause Overlay"),
+    commands.spawn_scene(bsn! {
+        #PauseOverlay
         Node {
             width: percent(100),
             height: percent(100),
-            ..default()
-        },
-        GlobalZIndex(1),
-        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.8)),
-        DespawnOnExit(Pause(true)),
-    ));
+        }
+        GlobalZIndex(1)
+        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.8))
+        DespawnOnExit<Pause>(Pause(true))
+    });
 }
 
 fn open_pause_menu(mut next_menu: ResMut<NextState<Menu>>) {

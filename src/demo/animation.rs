@@ -84,14 +84,14 @@ fn trigger_step_sound_effect(
         {
             let rng = &mut rand::rng();
             let random_step = player_assets.steps.choose(rng).unwrap().clone();
-            commands.spawn(sound_effect(random_step));
+            commands.spawn_scene(sound_effect(random_step));
         }
     }
 }
 
 /// Component that tracks player's animation state.
 /// It is tightly bound to the texture atlas we use.
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default, Clone)]
 #[reflect(Component)]
 pub struct PlayerAnimation {
     timer: Timer,
@@ -99,8 +99,9 @@ pub struct PlayerAnimation {
     state: PlayerAnimationState,
 }
 
-#[derive(Reflect, PartialEq)]
+#[derive(Reflect, PartialEq, Default, Clone)]
 pub enum PlayerAnimationState {
+    #[default]
     Idling,
     Walking,
 }

@@ -36,17 +36,16 @@ pub fn spawn_level(
     player_assets: Res<PlayerAssets>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    commands.spawn((
-        Name::new("Level"),
-        Transform::default(),
-        Visibility::default(),
-        DespawnOnExit(Screen::Gameplay),
-        children![
-            player(400.0, &player_assets, &mut texture_atlas_layouts),
-            (
-                Name::new("Gameplay Music"),
-                music(level_assets.music.clone())
-            )
-        ],
-    ));
+    commands.spawn_scene(bsn! {
+        #Level
+        Transform
+        Visibility
+        DespawnOnExit<Screen>(Screen::Gameplay)
+        Children [
+            @player(400.0, &player_assets, &mut texture_atlas_layouts)
+            --
+            #GameplayMusic
+            @music(level_assets.music.clone())
+        ]
+    });
 }

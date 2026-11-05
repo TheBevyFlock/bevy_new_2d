@@ -7,7 +7,7 @@ use bevy::{audio::Volume, input::common_conditions::input_just_pressed, prelude:
 use crate::{menus::Menu, screens::Screen, theme::prelude::*};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Menu::Settings), spawn_settings_menu);
+    app.add_systems(OnEnter(Menu::Settings), spawn_settings_menu.spawn());
     app.add_systems(
         Update,
         go_back.run_if(in_state(Menu::Settings).and_then(input_just_pressed(KeyCode::Escape))),
@@ -19,79 +19,81 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn spawn_settings_menu(mut commands: Commands) {
-    commands.spawn((
-        widget::ui_root("Settings Menu"),
-        GlobalZIndex(2),
-        DespawnOnExit(Menu::Settings),
-        children![
-            widget::header("Settings"),
-            settings_grid(),
-            widget::button("Back", go_back_on_click),
-        ],
-    ));
+fn spawn_settings_menu() -> impl Scene {
+    bsn! {
+        @widget::ui_root("Settings Menu")
+        GlobalZIndex(2)
+        DespawnOnExit<Menu>(Menu::Settings)
+        Children [
+            @widget::header("Settings")
+            --
+            @settings_grid()
+            --
+            @widget::button("Back", go_back_on_click)
+        ]
+    }
 }
 
-fn settings_grid() -> impl Bundle {
-    (
-        Name::new("Settings Grid"),
+fn settings_grid() -> impl Scene {
+    let cols: Vec<RepeatedGridTrack> = RepeatedGridTrack::px(2, 400.0);
+
+    bsn! {
+        #SettingsGrid
         Node {
             display: Display::Grid,
             row_gap: px(10),
             column_gap: px(30),
-            grid_template_columns: RepeatedGridTrack::px(2, 400.0),
-            ..default()
-        },
-        children![
-            (
-                widget::label("Master Volume"),
-                Node {
-                    justify_self: JustifySelf::End,
-                    ..default()
-                }
-            ),
-            global_volume_widget(),
-        ],
-    )
+            grid_template_columns: cols,
+        }
+        Children [
+            @widget::label("Master Volume")
+            Node {
+                justify_self: JustifySelf::End,
+            }
+            --
+            @global_volume_widget()
+        ]
+    }
 }
 
-fn global_volume_widget() -> impl Bundle {
-    (
-        Name::new("Global Volume Widget"),
+fn global_volume_widget() -> impl Scene {
+    bsn! {
+        #GlobalVolumeWidget
         Node {
             justify_self: JustifySelf::Start,
-            ..default()
-        },
-        children![
-            widget::button_small("-", lower_global_volume),
-            (
-                Name::new("Current Volume"),
-                Node {
-                    padding: UiRect::horizontal(px(10)),
-                    justify_content: JustifyContent::Center,
-                    ..default()
-                },
-                children![(widget::label(""), GlobalVolumeLabel)],
-            ),
-            widget::button_small("+", raise_global_volume),
-        ],
-    )
+        }
+        Children [
+            @widget::button_small("-", lower_global_volume)
+            --
+            #CurrentVolume
+            Node {
+                padding: UiRect::horizontal(px(10)),
+                justify_content: JustifyContent::Center,
+            }
+            Children [
+                @widget::label("")
+                GlobalVolumeLabel
+            ]
+            --
+            @widget::button_small("+", raise_global_volume)
+        ]
+    }
 }
 
 const MIN_VOLUME: f32 = 0.0;
 const MAX_VOLUME: f32 = 3.0;
 
-fn lower_global_volume(_: On<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+fn lower_global_volume(_: On<PointerClick>, mut global_volume: ResMut<GlobalVolume>) {
     let linear = (global_volume.volume.to_linear() - 0.1).max(MIN_VOLUME);
     global_volume.volume = Volume::Linear(linear);
 }
 
-fn raise_global_volume(_: On<Pointer<Click>>, mut global_volume: ResMut<GlobalVolume>) {
+fn raise_global_volume(_: On<PointerClick>, mut global_volume: ResMut<GlobalVolume>) {
     let linear = (global_volume.volume.to_linear() + 0.1).min(MAX_VOLUME);
     global_volume.volume = Volume::Linear(linear);
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone, Default)]
 #[reflect(Component)]
 struct GlobalVolumeLabel;
 
@@ -104,7 +106,7 @@ fn update_global_volume_label(
 }
 
 fn go_back_on_click(
-    _: On<Pointer<Click>>,
+    _: On<PointerClick>,
     screen: Res<State<Screen>>,
     mut next_menu: ResMut<NextState<Menu>>,
 ) {
